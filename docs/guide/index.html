@@ -524,6 +524,32 @@ img.brand-card {
     .asset-link:hover { border-color: rgba(47,107,255,0.18); background: rgba(47,107,255,0.04); color: var(--text-900); }
     .asset-link strong { font-size: 0.96rem; }
     .asset-link span { color: var(--text-600); font-size: 0.88rem; }
+    .gallery-section { display:grid; gap: 14px; }
+    .gallery-section h2 { font-size: 1.18rem; }
+    .gallery-grid { display:grid; gap: 16px; }
+    .gallery-card { display:grid; grid-template-columns: 220px minmax(0, 1fr); gap: 18px; align-items: start; padding: 16px 18px; border:1px solid var(--border); border-radius: 18px; background: var(--surface-strong); box-shadow: var(--shadow-sm); }
+    .gallery-thumb { display:block; border: 1px solid var(--border); border-radius: 16px; padding: 10px; background: linear-gradient(180deg, #fffdfa 0%, #ffffff 100%); overflow: hidden; }
+    .gallery-thumb svg { display:block; width: 100%; height: auto; }
+    .gallery-body { display:grid; gap: 8px; min-width: 0; }
+    .gallery-body h3 { font-size: 1.2rem; line-height: 1.25; }
+    .gallery-body p { margin: 0; }
+    .gallery-links { display:flex; flex-wrap:wrap; gap: 12px; font-weight: 700; }
+    .gallery-links a { color: var(--blue-700); }
+    .gallery-links a:hover { text-decoration: underline; }
+    .gallery-kicker { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-600); }
+    .example-page-intro { display:grid; gap: 16px; }
+    .example-breadcrumb { font-size: 0.9rem; color: var(--text-600); }
+    .example-head { display:grid; gap: 10px; }
+    .example-head h1 { font-size: clamp(1.8rem, 3vw, 2.55rem); line-height: 1.08; }
+    .example-summary-grid { display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; }
+    .example-teaser { display:grid; gap: 14px; }
+    .example-score { font-size: 2.5rem; line-height: 0.95; font-weight: 800; letter-spacing: -0.05em; color: var(--text-900); }
+    .example-score-label { font-size: 0.95rem; color: var(--text-600); font-weight: 700; }
+    .component-list { display:grid; gap: 10px; }
+    .component-row { display:grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+    .component-row span { color: var(--text-600); }
+    .component-track { grid-column: 1 / -1; height: 8px; border-radius: 999px; background: #f3f4f6; overflow: hidden; }
+    .component-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--sun-500), #f1b62a); }
     @media (max-width: 1180px) {
       .docs-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .example-figure-grid, .asset-list { grid-template-columns: 1fr; }
@@ -533,6 +559,7 @@ img.brand-card {
       .docs-sidebar { position: static; }
       .docs-grid-2, .docs-grid-3 { grid-template-columns: 1fr; }
       .example-figure-grid { grid-template-columns: 1fr; }
+      .gallery-card, .example-summary-grid { grid-template-columns: 1fr; }
     }
     </style></head>
 <body>
@@ -574,11 +601,7 @@ img.brand-card {
     
   </aside>
   <section class='docs-main'>
-    <div class='docs-hero'>
-      <div class='eyebrow'>Documentation</div>
-      <h1>Documentation Home</h1>
-      <p class='subhead'>A docs-first entry point inspired by scikit-learn: separate pages, strong left navigation, and clear boundaries between tutorials, API reference, and ecosystem guidance.</p>
-    </div>
+    <div class='docs-hero'><div class='eyebrow'>Documentation</div><h1>Documentation Home</h1><p class='subhead'>A docs-first entry point inspired by scikit-learn: separate pages, strong left navigation, and clear boundaries between tutorials, API reference, and ecosystem guidance.</p></div>
     
     <div class='docs-grid-2'>
       <div class='docs-card'>

@@ -95,7 +95,27 @@ def _weekly_website_traffic(seed: int = 0) -> dict[str, Any]:
     burst[28:33] += np.array([0.6, 1.2, 1.8, 1.1, 0.5])
     burst[56:60] += np.array([0.4, 0.9, 0.6, 0.2])
     sessions = 1000 * (weekly + trend + burst + 0.08 * rng.normal(size=n))
-    signups = 85 * (0.7 * weekly + 0.5 * trend + 0.8 * burst + 0.1 * rng.normal(size=n) + 0.8)
+    weekly_lagged = np.roll(weekly, 2)
+    weekly_lagged[0] = weekly_lagged[1]
+    weekly_lagged[1] = weekly_lagged[2]
+    burst_lagged = np.zeros(n)
+    burst_lagged[30:36] += np.array([0.12, 0.34, 0.74, 0.58, 0.24, 0.06])
+    burst_lagged[58:63] += np.array([0.08, 0.20, 0.34, 0.18, 0.05])
+    weekday_bias = np.where((t % 7 >= 1) & (t % 7 <= 3), 0.18, -0.12)
+    saturation_drag = np.zeros(n)
+    saturation_drag[31:37] -= np.array([0.00, 0.08, 0.22, 0.24, 0.14, 0.04])
+    saturation_drag[58:63] -= np.array([0.00, 0.05, 0.13, 0.09, 0.03])
+    signups = 92 * (
+        0.24 * weekly_lagged
+        + 0.08 * trend
+        + 0.92 * burst_lagged
+        + weekday_bias
+        + saturation_drag
+        + 0.18 * np.sin(2 * np.pi * t / 11 + 0.9)
+        + 0.09 * np.cos(2 * np.pi * t / 19 + 0.2)
+        + 1.1
+        + 0.26 * rng.normal(size=n)
+    )
     values = np.column_stack([sessions, signups])
     return {
         "name": "weekly_website_traffic",

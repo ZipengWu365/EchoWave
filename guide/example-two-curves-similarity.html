@@ -524,6 +524,32 @@ img.brand-card {
     .asset-link:hover { border-color: rgba(47,107,255,0.18); background: rgba(47,107,255,0.04); color: var(--text-900); }
     .asset-link strong { font-size: 0.96rem; }
     .asset-link span { color: var(--text-600); font-size: 0.88rem; }
+    .gallery-section { display:grid; gap: 14px; }
+    .gallery-section h2 { font-size: 1.18rem; }
+    .gallery-grid { display:grid; gap: 16px; }
+    .gallery-card { display:grid; grid-template-columns: 220px minmax(0, 1fr); gap: 18px; align-items: start; padding: 16px 18px; border:1px solid var(--border); border-radius: 18px; background: var(--surface-strong); box-shadow: var(--shadow-sm); }
+    .gallery-thumb { display:block; border: 1px solid var(--border); border-radius: 16px; padding: 10px; background: linear-gradient(180deg, #fffdfa 0%, #ffffff 100%); overflow: hidden; }
+    .gallery-thumb svg { display:block; width: 100%; height: auto; }
+    .gallery-body { display:grid; gap: 8px; min-width: 0; }
+    .gallery-body h3 { font-size: 1.2rem; line-height: 1.25; }
+    .gallery-body p { margin: 0; }
+    .gallery-links { display:flex; flex-wrap:wrap; gap: 12px; font-weight: 700; }
+    .gallery-links a { color: var(--blue-700); }
+    .gallery-links a:hover { text-decoration: underline; }
+    .gallery-kicker { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-600); }
+    .example-page-intro { display:grid; gap: 16px; }
+    .example-breadcrumb { font-size: 0.9rem; color: var(--text-600); }
+    .example-head { display:grid; gap: 10px; }
+    .example-head h1 { font-size: clamp(1.8rem, 3vw, 2.55rem); line-height: 1.08; }
+    .example-summary-grid { display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; }
+    .example-teaser { display:grid; gap: 14px; }
+    .example-score { font-size: 2.5rem; line-height: 0.95; font-weight: 800; letter-spacing: -0.05em; color: var(--text-900); }
+    .example-score-label { font-size: 0.95rem; color: var(--text-600); font-weight: 700; }
+    .component-list { display:grid; gap: 10px; }
+    .component-row { display:grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+    .component-row span { color: var(--text-600); }
+    .component-track { grid-column: 1 / -1; height: 8px; border-radius: 999px; background: #f3f4f6; overflow: hidden; }
+    .component-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--sun-500), #f1b62a); }
     @media (max-width: 1180px) {
       .docs-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .example-figure-grid, .asset-list { grid-template-columns: 1fr; }
@@ -533,6 +559,7 @@ img.brand-card {
       .docs-sidebar { position: static; }
       .docs-grid-2, .docs-grid-3 { grid-template-columns: 1fr; }
       .example-figure-grid { grid-template-columns: 1fr; }
+      .gallery-card, .example-summary-grid { grid-template-columns: 1fr; }
     }
     </style></head>
 <body>
@@ -574,49 +601,38 @@ img.brand-card {
     <div class='sidebar-card'><div class='sidebar-title'>Example gallery</div><a class='doc-link active' href='example-two-curves-similarity.html'>Two curves, one similarity verdict</a><a class='doc-link' href='example-weekly-traffic-signals.html'>Weekly traffic signals move together, but not identically</a><a class='doc-link' href='example-irregular-patient-similarity.html'>Irregular patient trajectories still deserve a similarity verdict</a><a class='doc-link' href='example-github-breakout-analogs.html'>GitHub breakout analogs</a><a class='doc-link' href='example-btc-gold-under-shocks.html'>BTC vs gold under shocks</a><a class='doc-link' href='example-heatwave-grid-load.html'>Heatwave vs grid load</a></div>
   </aside>
   <section class='docs-main'>
-    <div class='docs-hero'>
-      <div class='eyebrow'>Documentation</div>
-      <h1>Two curves, one similarity verdict</h1>
-      <p class='subhead'>A compact first example: a phase-shifted analog, one similarity verdict, and a rolling view of where the match stays stable.</p>
+    
+    <div class='example-page-intro'>
+      <div class='example-breadcrumb'><a href='tutorials.html'>Examples</a> / Beginner example</div>
+      <div class='example-head'>
+        <div class='eyebrow'>Beginner example</div>
+        <h1>Two curves, one similarity verdict</h1>
+        <p class='subhead'>A compact first example: a phase-shifted analog, one similarity verdict, and a rolling view of where the match stays stable.</p>
+      </div>
     </div>
     
-    <div class='docs-grid-2'>
-      <div class='docs-card'>
-        <span class='pill sun'>Beginner example</span>
+    
+    <div class='example-summary-grid'>
+      <div class='docs-card example-teaser'>
+        <div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='520' height='200' viewBox='0 0 520 200' role='img' aria-label='EchoWave series preview'><title>EchoWave series preview</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Series preview</text><line x1='40' y1='24' x2='40' y2='212' stroke='#E5E7EB'/><line x1='40' y1='212' x2='700' y2='212' stroke='#E5E7EB'/><polyline points='40.0,92.4 43.6,78.6 47.2,65.5 50.9,53.4 54.5,43.0 58.1,34.5 61.7,28.4 65.4,24.8 69.0,24.0 72.6,26.0 76.2,30.6 79.8,37.8 83.5,47.3 87.1,58.7 90.7,71.5 94.3,85.4 98.0,99.8 101.6,114.1 105.2,127.7 108.8,140.3 112.4,151.2 116.1,160.2 119.7,166.7 123.3,170.7 126.9,172.0 130.6,170.5 134.2,166.3 137.8,159.5 141.4,150.5 145.0,139.6 148.7,127.3 152.3,113.9 155.9,100.1 159.5,86.4 163.1,73.3 166.8,61.3 170.4,50.9 174.0,42.5 177.6,36.4 181.3,32.8 184.9,31.9 188.5,33.7 192.1,38.1 195.7,44.9 199.4,53.9 203.0,64.6 206.6,76.7 210.2,89.7 213.9,103.0 217.5,116.0 221.1,128.4 224.7,139.5 228.3,149.0 232.0,156.4 235.6,161.4 239.2,163.8 242.8,163.6 246.5,160.7 250.1,155.2 253.7,147.4 257.3,137.4 260.9,125.8 264.6,112.9 268.2,99.3 271.8,85.5 275.4,71.9 279.1,59.3 282.7,48.0 286.3,38.5 289.9,31.1 293.5,26.3 297.2,24.1 300.8,24.6 304.4,27.9 308.0,33.9 311.7,42.3 315.3,52.8 318.9,64.9 322.5,78.4 326.1,92.6 329.8,107.0 333.4,121.0 337.0,134.2 340.6,146.0 344.3,156.0 347.9,163.8 351.5,169.1 355.1,171.7 358.7,171.6 362.4,168.7 366.0,163.2 369.6,155.3 373.2,145.3 376.9,133.6 380.5,120.7 384.1,107.0 387.7,93.2 391.3,79.7 395.0,67.1 398.6,55.9 402.2,46.4 405.8,39.1 409.4,34.3 413.1,32.0 416.7,32.5 420.3,35.6 423.9,41.2 427.6,49.2 431.2,59.1 434.8,70.5 438.4,83.1 442.0,96.3 445.7,109.6 449.3,122.3 452.9,134.1 456.5,144.5 460.2,152.9 463.8,159.2 467.4,162.9 471.0,164.1 474.6,162.5 478.3,158.3 481.9,151.6 485.5,142.6 489.1,131.8 492.8,119.5 496.4,106.2 500.0,92.4' fill='none' stroke='#2F6BFF' stroke-width='2.5'/><text x='46' y='42' font-size='11' fill='#2F6BFF'>candidate</text><polyline points='40.0,79.2 43.6,66.1 47.2,54.1 50.9,43.7 54.5,35.4 58.1,29.4 61.7,26.0 65.4,25.3 69.0,27.4 72.6,32.1 76.2,39.4 79.8,48.9 83.5,60.2 87.1,73.0 90.7,86.8 94.3,100.9 98.0,115.0 101.6,128.4 105.2,140.6 108.8,151.1 112.4,159.6 116.1,165.8 119.7,169.3 123.3,170.2 126.9,168.2 130.6,163.6 134.2,156.6 137.8,147.3 141.4,136.2 145.0,123.7 148.7,110.2 152.3,96.5 155.9,82.8 159.5,69.9 163.1,58.2 166.8,48.1 170.4,40.0 174.0,34.4 177.6,31.2 181.3,30.8 184.9,33.1 188.5,38.0 192.1,45.3 195.7,54.7 199.4,65.8 203.0,78.2 206.6,91.4 210.2,104.9 213.9,118.2 217.5,130.6 221.1,141.7 224.7,151.2 228.3,158.5 232.0,163.4 235.6,165.7 239.2,165.3 242.8,162.2 246.5,156.5 250.1,148.4 253.7,138.3 257.3,126.6 260.9,113.6 264.6,99.9 268.2,86.0 271.8,72.5 275.4,59.9 279.1,48.7 282.7,39.3 286.3,32.1 289.9,27.3 293.5,25.3 297.2,26.0 300.8,29.4 304.4,35.4 308.0,43.9 311.7,54.4 315.3,66.5 318.9,79.8 322.5,93.8 326.1,108.0 329.8,121.8 333.4,134.6 337.0,146.1 340.6,155.7 344.3,163.0 347.9,167.9 351.5,170.1 355.1,169.5 358.7,166.3 362.4,160.4 366.0,152.2 369.6,141.9 373.2,130.1 376.9,117.0 380.5,103.4 384.1,89.6 387.7,76.2 391.3,63.8 395.0,52.9 398.6,43.8 402.2,36.9 405.8,32.5 409.4,30.7 413.1,31.6 416.7,35.2 420.3,41.3 423.9,49.7 427.6,60.0 431.2,71.9 434.8,84.8 438.4,98.2 442.0,111.6 445.7,124.5 449.3,136.4 452.9,146.7 456.5,155.1 460.2,161.2 463.8,164.9 467.4,165.8 471.0,164.0 474.6,159.6 478.3,152.7 481.9,143.6 485.5,132.6 489.1,120.2 492.8,106.8 496.4,92.9 500.0,79.2' fill='none' stroke='#C7950A' stroke-width='2.5' stroke-dasharray='5 4'/><text x='120' y='42' font-size='11' fill='#C7950A'>reference</text></svg></div>
         <div class='meta-line'>
           <span class='meta-chip'><strong>Mode</strong> compare_series</span>
           <span class='meta-chip'><strong>Headline</strong> 0.99 overall similarity</span>
         </div>
         <p>This is the shortest path from raw arrays to an interpretable similarity result. The two curves are not identical, but the structural match is strong enough that EchoWave explains the agreement instead of dumping one number.</p>
+        <div class='gallery-links'>
+          <a href='example-two-curves-similarity.html'>Permalink</a>
+          
+          <a href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_two_curves_similarity.py'>Source</a>
+        </div>
         <ul class='panel-list'><li>Overall similarity lands at 0.99 (very high).</li><li>Shape, DTW, and trend agreement stay high even with a mild phase shift.</li><li>Rolling similarity remains stable, so the match is structural rather than a single-window accident.</li></ul>
       </div>
       <div class='docs-card'>
-        <span class='pill blue'>Result snapshot</span>
-        <pre><code># EchoWave similarity summary
-
-**Compared:** candidate curve vs reference analog
-
-## Headline
-
-These two inputs show **very high** similarity overall (score 0.987).
-
-candidate curve and reference analog are strongly similar overall. The best agreement appears in spectral similarity and derivative similarity.
-
-## Most important similarity dimensions
-
-| plain-language label | score |
-|---|---:|
-| spectral similarity | 1.000 |
-| derivative similarity | 0.988 |
-| shape similarity | 0.988 |
-| dtw similarity | 0.982 |
-
-## Recommended next actions
-
-- Plot both series after z-score normalization to show the shared shape without scale differences.
-- Run rolling or windowed similarity if you expect the relationship to change over time.
-- Use structural-profile similarity when scales, frequencies, or observation modes differ too much for raw-shape comparison.
-- Inspect spectral or seasonality-aware models because the two series share rhythm strongly.</code></pre>
+        <span class='pill sun'>Similarity verdict</span>
+        <div class='example-score'>0.99</div>
+        <div class='example-score-label'>Very High similarity overall</div>
+        <p>candidate curve and reference analog are strongly similar overall. The best agreement appears in spectral similarity and derivative similarity.</p>
+        <div class='component-list'><div class='component-row'><span>spectral similarity</span><strong>1.00</strong><div class='component-track'><div class='component-fill' style='width:100.0%'></div></div></div><div class='component-row'><span>derivative similarity</span><strong>0.99</strong><div class='component-track'><div class='component-fill' style='width:98.8%'></div></div></div><div class='component-row'><span>shape similarity</span><strong>0.99</strong><div class='component-track'><div class='component-fill' style='width:98.8%'></div></div></div><div class='component-row'><span>dtw similarity</span><strong>0.98</strong><div class='component-track'><div class='component-fill' style='width:98.2%'></div></div></div></div>
       </div>
     </div>
     <div class='example-figure-grid'>

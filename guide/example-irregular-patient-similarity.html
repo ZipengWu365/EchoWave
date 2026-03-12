@@ -524,6 +524,32 @@ img.brand-card {
     .asset-link:hover { border-color: rgba(47,107,255,0.18); background: rgba(47,107,255,0.04); color: var(--text-900); }
     .asset-link strong { font-size: 0.96rem; }
     .asset-link span { color: var(--text-600); font-size: 0.88rem; }
+    .gallery-section { display:grid; gap: 14px; }
+    .gallery-section h2 { font-size: 1.18rem; }
+    .gallery-grid { display:grid; gap: 16px; }
+    .gallery-card { display:grid; grid-template-columns: 220px minmax(0, 1fr); gap: 18px; align-items: start; padding: 16px 18px; border:1px solid var(--border); border-radius: 18px; background: var(--surface-strong); box-shadow: var(--shadow-sm); }
+    .gallery-thumb { display:block; border: 1px solid var(--border); border-radius: 16px; padding: 10px; background: linear-gradient(180deg, #fffdfa 0%, #ffffff 100%); overflow: hidden; }
+    .gallery-thumb svg { display:block; width: 100%; height: auto; }
+    .gallery-body { display:grid; gap: 8px; min-width: 0; }
+    .gallery-body h3 { font-size: 1.2rem; line-height: 1.25; }
+    .gallery-body p { margin: 0; }
+    .gallery-links { display:flex; flex-wrap:wrap; gap: 12px; font-weight: 700; }
+    .gallery-links a { color: var(--blue-700); }
+    .gallery-links a:hover { text-decoration: underline; }
+    .gallery-kicker { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-600); }
+    .example-page-intro { display:grid; gap: 16px; }
+    .example-breadcrumb { font-size: 0.9rem; color: var(--text-600); }
+    .example-head { display:grid; gap: 10px; }
+    .example-head h1 { font-size: clamp(1.8rem, 3vw, 2.55rem); line-height: 1.08; }
+    .example-summary-grid { display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; }
+    .example-teaser { display:grid; gap: 14px; }
+    .example-score { font-size: 2.5rem; line-height: 0.95; font-weight: 800; letter-spacing: -0.05em; color: var(--text-900); }
+    .example-score-label { font-size: 0.95rem; color: var(--text-600); font-weight: 700; }
+    .component-list { display:grid; gap: 10px; }
+    .component-row { display:grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+    .component-row span { color: var(--text-600); }
+    .component-track { grid-column: 1 / -1; height: 8px; border-radius: 999px; background: #f3f4f6; overflow: hidden; }
+    .component-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--sun-500), #f1b62a); }
     @media (max-width: 1180px) {
       .docs-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .example-figure-grid, .asset-list { grid-template-columns: 1fr; }
@@ -533,6 +559,7 @@ img.brand-card {
       .docs-sidebar { position: static; }
       .docs-grid-2, .docs-grid-3 { grid-template-columns: 1fr; }
       .example-figure-grid { grid-template-columns: 1fr; }
+      .gallery-card, .example-summary-grid { grid-template-columns: 1fr; }
     }
     </style></head>
 <body>
@@ -574,49 +601,38 @@ img.brand-card {
     <div class='sidebar-card'><div class='sidebar-title'>Example gallery</div><a class='doc-link' href='example-two-curves-similarity.html'>Two curves, one similarity verdict</a><a class='doc-link' href='example-weekly-traffic-signals.html'>Weekly traffic signals move together, but not identically</a><a class='doc-link active' href='example-irregular-patient-similarity.html'>Irregular patient trajectories still deserve a similarity verdict</a><a class='doc-link' href='example-github-breakout-analogs.html'>GitHub breakout analogs</a><a class='doc-link' href='example-btc-gold-under-shocks.html'>BTC vs gold under shocks</a><a class='doc-link' href='example-heatwave-grid-load.html'>Heatwave vs grid load</a></div>
   </aside>
   <section class='docs-main'>
-    <div class='docs-hero'>
-      <div class='eyebrow'>Documentation</div>
-      <h1>Irregular patient trajectories still deserve a similarity verdict</h1>
-      <p class='subhead'>A clinical example that uses explicit timestamps so irregular sampling changes the verdict instead of being ignored.</p>
+    
+    <div class='example-page-intro'>
+      <div class='example-breadcrumb'><a href='tutorials.html'>Examples</a> / Cross-disciplinary example</div>
+      <div class='example-head'>
+        <div class='eyebrow'>Cross-disciplinary example</div>
+        <h1>Irregular patient trajectories still deserve a similarity verdict</h1>
+        <p class='subhead'>A clinical example that uses explicit timestamps so irregular sampling changes the verdict instead of being ignored.</p>
+      </div>
     </div>
     
-    <div class='docs-grid-2'>
-      <div class='docs-card'>
-        <span class='pill sun'>Cross-disciplinary example</span>
+    
+    <div class='example-summary-grid'>
+      <div class='docs-card example-teaser'>
+        <div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='520' height='220' viewBox='0 0 520 220' role='img' aria-label='EchoWave similarity components'><title>EchoWave similarity components</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Similarity components</text><text x='16' y='40' font-size='11' fill='#6B7280'>Overall similarity 0.90 (very high).</text><text x='16' y='62.0' font-size='12' fill='#1F2937'>trend similarity</text><rect x='160' y='48.0' width='340.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='48.0' width='339.3' height='16' rx='8' fill='#FFC83D'/><text x='498.0' y='61.0' font-size='11' fill='#6B7280' text-anchor='end'>1.00</text><text x='16' y='92.8' font-size='12' fill='#1F2937'>shape similarity</text><rect x='160' y='78.8' width='340.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='78.8' width='335.5' height='16' rx='8' fill='#FFC83D'/><text x='498.0' y='91.8' font-size='11' fill='#6B7280' text-anchor='end'>0.99</text><text x='16' y='123.6' font-size='12' fill='#1F2937'>dtw similarity</text><rect x='160' y='109.6' width='340.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='109.6' width='328.0' height='16' rx='8' fill='#FFC83D'/><text x='498.0' y='122.6' font-size='11' fill='#6B7280' text-anchor='end'>0.96</text><text x='16' y='154.4' font-size='12' fill='#1F2937'>spectral similarity</text><rect x='160' y='140.4' width='340.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='140.4' width='302.1' height='16' rx='8' fill='#FFC83D'/><text x='498.0' y='153.4' font-size='11' fill='#6B7280' text-anchor='end'>0.89</text><text x='16' y='185.2' font-size='12' fill='#1F2937'>derivative similarity</text><rect x='160' y='171.2' width='340.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='171.2' width='177.2' height='16' rx='8' fill='#FFC83D'/><text x='498.0' y='184.2' font-size='11' fill='#6B7280' text-anchor='end'>0.52</text></svg></div>
         <div class='meta-line'>
           <span class='meta-chip'><strong>Mode</strong> compare_series + profile_dataset</span>
           <span class='meta-chip'><strong>Headline</strong> 0.90 overall similarity</span>
         </div>
         <p>Clinical monitoring is rarely dense and tidy. This page compares two heart-rate trajectories with explicit timestamps, then uses a cohort profile to show why irregularity has to stay part of the story.</p>
+        <div class='gallery-links'>
+          <a href='example-irregular-patient-similarity.html'>Permalink</a>
+          <a href='../reports/irregular_patient_vitals_report.html'>Open report</a>
+          <a href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_irregular_patient_similarity.py'>Source</a>
+        </div>
         <ul class='panel-list'><li>Even with irregular timestamps, EchoWave still resolves a very high similarity judgment.</li><li>The comparison respects timing instead of forcing naive equal-interval alignment.</li><li>The cohort profile adds structural context so a clinician or collaborator can see why this dataset is hard.</li></ul>
       </div>
       <div class='docs-card'>
-        <span class='pill blue'>Result snapshot</span>
-        <pre><code># EchoWave similarity summary
-
-**Compared:** patient p1 heart rate vs patient p2 heart rate
-
-## Headline
-
-These two inputs show **very high** similarity overall (score 0.899).
-
-patient p1 heart rate and patient p2 heart rate are strongly similar overall. The best agreement appears in trend similarity and shape similarity.
-
-## Most important similarity dimensions
-
-| plain-language label | score |
-|---|---:|
-| trend similarity | 0.998 |
-| shape similarity | 0.987 |
-| dtw similarity | 0.965 |
-| spectral similarity | 0.889 |
-
-## Recommended next actions
-
-- Plot both series after z-score normalization to show the shared shape without scale differences.
-- Run rolling or windowed similarity if you expect the relationship to change over time.
-- Use structural-profile similarity when scales, frequencies, or observation modes differ too much for raw-shape comparison.
-- Inspect spectral or seasonality-aware models because the two series share rhythm strongly.</code></pre>
+        <span class='pill sun'>Similarity verdict</span>
+        <div class='example-score'>0.90</div>
+        <div class='example-score-label'>Very High similarity overall</div>
+        <p>patient p1 heart rate and patient p2 heart rate are strongly similar overall. The best agreement appears in trend similarity and shape similarity.</p>
+        <div class='component-list'><div class='component-row'><span>trend similarity</span><strong>1.00</strong><div class='component-track'><div class='component-fill' style='width:99.8%'></div></div></div><div class='component-row'><span>shape similarity</span><strong>0.99</strong><div class='component-track'><div class='component-fill' style='width:98.7%'></div></div></div><div class='component-row'><span>dtw similarity</span><strong>0.96</strong><div class='component-track'><div class='component-fill' style='width:96.5%'></div></div></div><div class='component-row'><span>spectral similarity</span><strong>0.89</strong><div class='component-track'><div class='component-fill' style='width:88.9%'></div></div></div></div>
       </div>
     </div>
     <div class='example-figure-grid'>

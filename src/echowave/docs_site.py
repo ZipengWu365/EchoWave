@@ -89,6 +89,7 @@ def _doc_shell(
     body: str,
     extra_css: str = "",
     sidebar_sections: Iterable[str] = (),
+    hero_html: str | None = None,
 ) -> str:
     sidebar = []
     for key, label in DOC_PAGES:
@@ -134,6 +135,32 @@ def _doc_shell(
     .asset-link:hover { border-color: rgba(47,107,255,0.18); background: rgba(47,107,255,0.04); color: var(--text-900); }
     .asset-link strong { font-size: 0.96rem; }
     .asset-link span { color: var(--text-600); font-size: 0.88rem; }
+    .gallery-section { display:grid; gap: 14px; }
+    .gallery-section h2 { font-size: 1.18rem; }
+    .gallery-grid { display:grid; gap: 16px; }
+    .gallery-card { display:grid; grid-template-columns: 220px minmax(0, 1fr); gap: 18px; align-items: start; padding: 16px 18px; border:1px solid var(--border); border-radius: 18px; background: var(--surface-strong); box-shadow: var(--shadow-sm); }
+    .gallery-thumb { display:block; border: 1px solid var(--border); border-radius: 16px; padding: 10px; background: linear-gradient(180deg, #fffdfa 0%, #ffffff 100%); overflow: hidden; }
+    .gallery-thumb svg { display:block; width: 100%; height: auto; }
+    .gallery-body { display:grid; gap: 8px; min-width: 0; }
+    .gallery-body h3 { font-size: 1.2rem; line-height: 1.25; }
+    .gallery-body p { margin: 0; }
+    .gallery-links { display:flex; flex-wrap:wrap; gap: 12px; font-weight: 700; }
+    .gallery-links a { color: var(--blue-700); }
+    .gallery-links a:hover { text-decoration: underline; }
+    .gallery-kicker { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-600); }
+    .example-page-intro { display:grid; gap: 16px; }
+    .example-breadcrumb { font-size: 0.9rem; color: var(--text-600); }
+    .example-head { display:grid; gap: 10px; }
+    .example-head h1 { font-size: clamp(1.8rem, 3vw, 2.55rem); line-height: 1.08; }
+    .example-summary-grid { display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; }
+    .example-teaser { display:grid; gap: 14px; }
+    .example-score { font-size: 2.5rem; line-height: 0.95; font-weight: 800; letter-spacing: -0.05em; color: var(--text-900); }
+    .example-score-label { font-size: 0.95rem; color: var(--text-600); font-weight: 700; }
+    .component-list { display:grid; gap: 10px; }
+    .component-row { display:grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+    .component-row span { color: var(--text-600); }
+    .component-track { grid-column: 1 / -1; height: 8px; border-radius: 999px; background: #f3f4f6; overflow: hidden; }
+    .component-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--sun-500), #f1b62a); }
     @media (max-width: 1180px) {
       .docs-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .example-figure-grid, .asset-list { grid-template-columns: 1fr; }
@@ -143,6 +170,7 @@ def _doc_shell(
       .docs-sidebar { position: static; }
       .docs-grid-2, .docs-grid-3 { grid-template-columns: 1fr; }
       .example-figure-grid { grid-template-columns: 1fr; }
+      .gallery-card, .example-summary-grid { grid-template-columns: 1fr; }
     }
     """
     return f"""<!doctype html>
@@ -187,11 +215,7 @@ def _doc_shell(
     {"".join(sidebar_sections)}
   </aside>
   <section class='docs-main'>
-    <div class='docs-hero'>
-      <div class='eyebrow'>Documentation</div>
-      <h1>{escape(title)}</h1>
-      <p class='subhead'>{escape(lead)}</p>
-    </div>
+    {hero_html or f"<div class='docs-hero'><div class='eyebrow'>Documentation</div><h1>{escape(title)}</h1><p class='subhead'>{escape(lead)}</p></div>"}
     {body}
   </section>
 </main>
@@ -253,7 +277,37 @@ def _example_sidebar(entries: list[dict[str, Any]], active_href: str) -> str:
     )
 
 
+def _example_report_href(entry: dict[str, Any]) -> str:
+    return next(
+        (
+            asset["href"]
+            for asset in entry["assets"]
+            if asset["label"] in {"Standalone report", "Related report", "Clinical report"}
+        ),
+        "",
+    )
+
+
+def _example_source_href(entry: dict[str, Any]) -> str:
+    return _repo_blob_href(f"examples/gallery/{entry['code_filename']}")
+
+
+def _component_rows(entry: dict[str, Any], *, limit: int = 4) -> str:
+    report = entry["report"]
+    rows = []
+    for label, value in sorted(report.component_scores.items(), key=lambda kv: kv[1], reverse=True)[:limit]:
+        rows.append(
+            "<div class='component-row'>"
+            f"<span>{escape(label.replace('_', ' '))}</span>"
+            f"<strong>{float(value):0.2f}</strong>"
+            f"<div class='component-track'><div class='component-fill' style='width:{max(0.0, min(100.0, float(value) * 100.0)):0.1f}%'></div></div>"
+            "</div>"
+        )
+    return "".join(rows)
+
+
 def _render_example_page(entry: dict[str, Any], entries: list[dict[str, Any]]) -> str:
+    report_href = _example_report_href(entry)
     figures_html = "".join(
         "<div class='docs-card"
         + (" example-figure-wide" if figure.get("wide") else "")
@@ -269,20 +323,38 @@ def _render_example_page(entry: dict[str, Any], entries: list[dict[str, Any]]) -
         for asset in entry["assets"]
     )
     highlights = "".join(f"<li>{escape(item)}</li>" for item in entry["highlights"])
+    hero_html = f"""
+    <div class='example-page-intro'>
+      <div class='example-breadcrumb'><a href='tutorials.html'>Examples</a> / {escape(entry['category'])}</div>
+      <div class='example-head'>
+        <div class='eyebrow'>{escape(entry['category'])}</div>
+        <h1>{escape(entry['title'])}</h1>
+        <p class='subhead'>{escape(entry['lead'])}</p>
+      </div>
+    </div>
+    """
     body = f"""
-    <div class='docs-grid-2'>
-      <div class='docs-card'>
-        {_pill(entry['category'], entry['tone'])}
+    <div class='example-summary-grid'>
+      <div class='docs-card example-teaser'>
+        <div class='example-preview'>{entry['preview_svg']}</div>
         <div class='meta-line'>
           <span class='meta-chip'><strong>Mode</strong> {escape(entry['mode'])}</span>
           <span class='meta-chip'><strong>Headline</strong> {escape(entry['score_text'])}</span>
         </div>
         <p>{escape(entry['deck'])}</p>
+        <div class='gallery-links'>
+          <a href='{entry['href']}'>Permalink</a>
+          {f"<a href='{report_href}'>Open report</a>" if report_href else ""}
+          <a href='{_example_source_href(entry)}'>Source</a>
+        </div>
         <ul class='panel-list'>{highlights}</ul>
       </div>
       <div class='docs-card'>
-        {_pill('Result snapshot', 'blue')}
-        <pre><code>{escape(entry['summary'])}</code></pre>
+        {_pill('Similarity verdict', 'sun')}
+        <div class='example-score'>{entry['report'].similarity_score:.2f}</div>
+        <div class='example-score-label'>{escape(entry['report'].qualitative_label.title())} similarity overall</div>
+        <p>{escape(entry['report'].interpretation)}</p>
+        <div class='component-list'>{_component_rows(entry)}</div>
       </div>
     </div>
     <div class='example-figure-grid'>
@@ -305,6 +377,7 @@ def _render_example_page(entry: dict[str, Any], entries: list[dict[str, Any]]) -
         lead=entry["lead"],
         body=body,
         sidebar_sections=(_example_sidebar(entries, entry["href"]),),
+        hero_html=hero_html,
     )
 
 
@@ -328,6 +401,8 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "mode": "compare_series",
             "score_text": f"{quick_report.similarity_score:.2f} overall similarity",
             "summary": quick_report.to_summary_card_markdown(),
+            "report": quick_report,
+            "code_filename": "plot_two_curves_similarity.py",
             "code": _load_example_source("plot_two_curves_similarity.py"),
             "highlights": [
                 f"Overall similarity lands at {quick_report.similarity_score:.2f} ({quick_report.qualitative_label}).",
@@ -386,18 +461,20 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "href": "example-weekly-traffic-signals.html",
             "slug": "weekly_traffic",
             "title": "Weekly traffic signals move together, but not identically",
-            "lead": "A product-style example showing that two business metrics can share rhythm and trend while still diverging during launch bursts.",
-            "deck": "Sessions and signups do not need to be identical to be meaningfully comparable. This example shows how EchoWave surfaces shared weekly structure while still exposing burst-driven mismatch windows.",
+            "lead": "A product-style example showing two metrics with shared weekly cadence, but enough lag and funnel drift that the match stays only moderate.",
+            "deck": "Sessions and signups are related, but they are not a scaled copy of one another. Conversion lag, saturation after launch bursts, and weekday bias all reduce the similarity score to something closer to a realistic product relationship.",
             "category": "Beginner example",
             "tone": "blue",
             "mode": "compare_series",
             "score_text": f"{traffic_report.similarity_score:.2f} overall similarity",
             "summary": traffic_report.to_summary_card_markdown(),
+            "report": traffic_report,
+            "code_filename": "plot_weekly_traffic_similarity.py",
             "code": _load_example_source("plot_weekly_traffic_similarity.py"),
             "highlights": [
-                f"The overall similarity is {traffic_report.similarity_score:.2f}, which is high enough to treat the two metrics as related signals.",
-                "The rolling panel makes launch-week divergence visible instead of hiding it in an average.",
-                "This is a good example of a product team comparing metrics without committing to a forecasting stack first.",
+                f"The overall similarity is {traffic_report.similarity_score:.2f}, so the metrics are related but clearly not interchangeable.",
+                "Launch-week divergence and conversion lag lower the pointwise agreement instead of disappearing into one average score.",
+                "This is closer to a realistic funnel relationship than a synthetic scaled-copy demo.",
             ],
             "figures": [
                 {
@@ -476,6 +553,8 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "mode": "compare_series + profile_dataset",
             "score_text": f"{clinical_report.similarity_score:.2f} overall similarity",
             "summary": clinical_report.to_summary_card_markdown(),
+            "report": clinical_report,
+            "code_filename": "plot_irregular_patient_similarity.py",
             "code": _load_example_source("plot_irregular_patient_similarity.py"),
             "highlights": [
                 f"Even with irregular timestamps, EchoWave still resolves a {clinical_report.qualitative_label} similarity judgment.",
@@ -548,6 +627,8 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "mode": "compare_series + rolling_similarity",
             "score_text": f"{github_report.similarity_score:.2f} durable analog score",
             "summary": github_report.to_summary_card_markdown(),
+            "report": github_report,
+            "code_filename": "plot_github_breakout_analogs.py",
             "code": _load_example_source("plot_github_breakout_analogs.py"),
             "highlights": [
                 f"The durable-breakout analog scores {github_report.similarity_score:.2f}, versus {github_hype.similarity_score:.2f} for the short-hype analog.",
@@ -630,6 +711,8 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "mode": "compare_series + rolling_similarity",
             "score_text": f"{btc_gold.similarity_score:.2f} BTC-vs-gold score",
             "summary": btc_gold.to_summary_card_markdown(),
+            "report": btc_gold,
+            "code_filename": "plot_btc_gold_under_shocks.py",
             "code": _load_example_source("plot_btc_gold_under_shocks.py"),
             "highlights": [
                 f"BTC-vs-gold scores {btc_gold.similarity_score:.2f}, while BTC-vs-oil scores {btc_oil.similarity_score:.2f}.",
@@ -710,6 +793,8 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "mode": "compare_series + profile_dataset",
             "score_text": f"{energy_report.similarity_score:.2f} north-vs-south score",
             "summary": energy_report.to_summary_card_markdown(),
+            "report": energy_report,
+            "code_filename": "plot_heatwave_grid_load.py",
             "code": _load_example_source("plot_heatwave_grid_load.py"),
             "highlights": [
                 f"Regional loads still score {energy_report.similarity_score:.2f} overall, so they remain comparable even under stress.",
@@ -864,41 +949,64 @@ def project_getting_started_html(*, version: str = PACKAGE_VERSION) -> str:
 
 def project_tutorials_html(*, version: str = PACKAGE_VERSION) -> str:
     examples = _tutorial_examples()
-    cards = []
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for entry in examples:
-        report_href = next(
-            (
-                asset["href"]
-                for asset in entry["assets"]
-                if asset["label"] in {"Standalone report", "Related report", "Clinical report"}
-            ),
-            "",
-        )
-        cards.append(
-            "<article class='docs-card example-card'>"
-            f"{_pill(entry['category'], entry['tone'])}"
-            f"<div class='example-preview'>{entry['preview_svg']}</div>"
-            f"<h3>{escape(entry['title'])}</h3>"
-            f"<p>{escape(entry['lead'])}</p>"
-            f"<div class='meta-line'><span class='meta-chip'><strong>Mode</strong> {escape(entry['mode'])}</span><span class='meta-chip'><strong>Headline</strong> {escape(entry['score_text'])}</span></div>"
-            "<div class='example-link-row'>"
-            f"<a class='button primary' href='{entry['href']}'>Open example</a>"
-            + (f"<a class='button secondary' href='{report_href}'>Open report</a>" if report_href else "")
-            + "</div>"
-            "</article>"
+        grouped[entry["category"]].append(entry)
+
+    group_order = [
+        ("Beginner example", "Short, low-friction walkthroughs that make the package legible in a few minutes."),
+        ("Cross-disciplinary example", "Examples where timestamps, cohorts, or domain structure matter enough to change the similarity story."),
+        ("Flagship demo", "Examples built to travel in talks, README sections, social posts, and benchmark discussions."),
+    ]
+    sections = []
+    for category, blurb in group_order:
+        group_entries = grouped.get(category, [])
+        if not group_entries:
+            continue
+        cards = []
+        for entry in group_entries:
+            report_href = _example_report_href(entry)
+            cards.append(
+                "<article class='gallery-card'>"
+                f"<a class='gallery-thumb' href='{entry['href']}'>{entry['preview_svg']}</a>"
+                "<div class='gallery-body'>"
+                f"<div class='gallery-kicker'>{escape(category)}</div>"
+                f"<h3><a href='{entry['href']}'>{escape(entry['title'])}</a></h3>"
+                f"<p>{escape(entry['lead'])}</p>"
+                f"<div class='meta-line'><span class='meta-chip'><strong>Mode</strong> {escape(entry['mode'])}</span><span class='meta-chip'><strong>Verdict</strong> {escape(entry['score_text'])}</span></div>"
+                "<div class='gallery-links'>"
+                f"<a href='{entry['href']}'>Open example</a>"
+                + (f"<a href='{report_href}'>Open report</a>" if report_href else "")
+                + f"<a href='{_example_source_href(entry)}'>View source</a>"
+                + "</div>"
+                "</div>"
+                "</article>"
+            )
+        sections.append(
+            "<section class='gallery-section'>"
+            f"<div><h2>{escape(category)}s</h2><p class='muted'>{escape(blurb)}</p></div>"
+            f"<div class='gallery-grid'>{''.join(cards)}</div>"
+            "</section>"
         )
     rows = "\n".join(
         f"<tr><td><strong>{escape(item['title'])}</strong><br><span class='muted'>{escape(item['name'])}</span></td><td>{escape(item['domain'])}</td><td>{escape(item['kind'])}</td><td>{escape(item['why'])}</td></tr>"
         for item in list_starter_datasets()
     )
+    hero_html = """
+    <div class='example-page-intro'>
+      <div class='example-head'>
+        <div class='eyebrow'>Examples gallery</div>
+        <h1>Tutorials and runnable examples</h1>
+        <p class='subhead'>A scikit-learn-style example index: compact summaries first, then dedicated pages with figures, source code, and downloadable assets.</p>
+      </div>
+    </div>
+    """
     body = f"""
     <div class='docs-card'>
       {_pill('Tutorial map', 'sun')}
       <p>This page is now a real example gallery, not a placeholder card deck. Every entry below links to a dedicated page generated from an actual EchoWave run, with visual outputs, runnable source code, and links to reports, notebooks, or social assets where they exist.</p>
     </div>
-    <div class='docs-grid-3'>
-      {"".join(cards)}
-    </div>
+    {"".join(sections)}
     <div class='docs-card'>
       {_pill('Starter datasets', 'sun')}
       <table class='small-table'>
@@ -913,6 +1021,7 @@ def project_tutorials_html(*, version: str = PACKAGE_VERSION) -> str:
         lead="Begin with tiny scenarios, then move to flagship demos built for GitHub, talks, social posts, and notebooks.",
         body=body,
         sidebar_sections=(_example_sidebar(examples, ""),),
+        hero_html=hero_html,
     )
 
 
