@@ -45,6 +45,7 @@ from .real_tutorial_data import (
     treasury_yields_2024,
     usgs_earthquakes_ca_ak_2024,
 )
+from .runtime_paths import resolve_repo_subdir
 from .similarity import compare_series, rolling_similarity
 from .visuals import (
     axis_bar_svg,
@@ -64,7 +65,7 @@ DOC_PAGES = (
     ("agents", "Agent Tools"),
 )
 
-_EXAMPLES_DIR = Path(__file__).resolve().parents[2] / "examples" / "gallery"
+_EXAMPLES_DIR = resolve_repo_subdir("examples", "gallery", sentinel="plot_weekly_traffic_similarity.py")
 
 
 def _clean(text: str) -> str:

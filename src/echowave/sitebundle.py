@@ -26,6 +26,7 @@ from .real_tutorial_data import (
     python_javascript_pageviews_2024,
     usgs_earthquakes_ca_ak_2024,
 )
+from .runtime_paths import resolve_repo_subdir
 from .similarity import compare_series, rolling_similarity
 from .visuals import (
     axis_bar_svg,
@@ -167,7 +168,7 @@ def project_demo_manifest(*, version: str = PACKAGE_VERSION) -> dict[str, Any]:
 
 
 def project_pages_bundle(*, version: str = PACKAGE_VERSION) -> dict[str, str]:
-    assets_root = Path(__file__).resolve().parents[2] / "assets"
+    assets_root = resolve_repo_subdir("assets", sentinel="echowave_title_card.svg")
     title_card = (assets_root / "echowave_title_card.svg").read_text(encoding="utf-8") if (assets_root / "echowave_title_card.svg").exists() else ""
     mark_svg = (assets_root / "echowave_mark.svg").read_text(encoding="utf-8") if (assets_root / "echowave_mark.svg").exists() else ""
     affiliation_svg = (assets_root / "bham_affiliation_badge.svg").read_text(encoding="utf-8") if (assets_root / "bham_affiliation_badge.svg").exists() else ""

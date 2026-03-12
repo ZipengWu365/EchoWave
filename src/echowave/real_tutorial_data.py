@@ -10,8 +10,9 @@ from typing import Any
 
 import numpy as np
 
+from .runtime_paths import resolve_repo_subdir
 
-DATA_DIR = Path(__file__).resolve().parents[2] / "examples" / "data"
+DATA_DIR = resolve_repo_subdir("examples", "data", sentinel="real_example_sources.json")
 
 
 def _read_csv_rows(filename: str) -> list[dict[str, str]]:
