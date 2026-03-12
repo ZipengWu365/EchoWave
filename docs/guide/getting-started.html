@@ -592,7 +592,7 @@ img.brand-card {
       <div class='sidebar-title'>Quick links</div>
       <a class='doc-link' href='../playground.html'>Static playground</a>
       <a class='doc-link' href='../start-here.html'>Start here</a>
-      <a class='doc-link' href='../reports/github_breakout_similarity.html'>Flagship report</a>
+      <a class='doc-link' href='../reports/github_breakout_similarity.html'>Real-data flagship report</a>
     </div>
     <div class='sidebar-card'>
       <div class='sidebar-title'>Maintainer</div>
@@ -603,36 +603,76 @@ img.brand-card {
   <section class='docs-main'>
     <div class='docs-hero'><div class='eyebrow'>Documentation</div><h1>Getting Started</h1><p class='subhead'>The job of this page is simple: make the first successful EchoWave interaction obvious, fast, and realistic.</p></div>
     
-    <div class='docs-card'>
-      <span class='pill sun'>Install</span>
-      <pre><code>pip install echowave
-python -c &quot;import numpy as np; from echowave import compare_series; x=np.sin(np.linspace(0,8*np.pi,128)); y=np.sin(np.linspace(0,8*np.pi,128)+0.2); print(compare_series(x,y).to_summary_card_markdown())&quot;</code></pre>
-      <p>EchoWave keeps the install surface light, but mixed scientific Python stacks can still produce resolver noise. Use a clean environment when possible, and use the compatibility / doctor flow when you cannot.</p>
+    <div class='docs-grid-2'>
+      <div class='docs-card'>
+        <span class='pill sun'>Install</span>
+        <pre><code>pip install echowave</code></pre>
+        <p>EchoWave keeps the install surface light, but mixed scientific Python stacks can still produce resolver noise. Use a clean environment when possible, and use the compatibility / doctor flow when you cannot.</p>
+      </div>
+      <div class='docs-card'>
+        <span class='pill blue'>What this page is for</span>
+        <ul class='panel-list'>
+          <li>Read data with pandas or NumPy.</li>
+          <li>Call one EchoWave function.</li>
+          <li>Print a summary card first; export HTML second.</li>
+        </ul>
+      </div>
     </div>
     <div class='docs-grid-2'>
+      <div class='docs-card'>
+        <span class='pill sun'>Compare two columns</span>
+        <pre><code>import pandas as pd
+from echowave import compare_series
+
+df = pd.read_csv("my_metrics.csv")
+report = compare_series(df["sessions"], df["signups"])
+print(report.to_summary_card_markdown())</code></pre>
+        <p>Use this when your question is "does column A move like column B?"</p>
+      </div>
+      <div class='docs-card'>
+        <span class='pill blue'>Profile a wide table</span>
+        <pre><code>import pandas as pd
+from echowave import profile_dataset
+
+df = pd.read_csv("my_timeseries.csv").rename(columns={"date": "timestamp"})
+profile = profile_dataset(df, domain="energy")
+print(profile.to_summary_card_markdown())</code></pre>
+        <p>Use this when you have one timestamp column and multiple numeric measurements.</p>
+      </div>
+    </div>
+    <div class='docs-grid-2'>
+      <div class='docs-card'>
+        <span class='pill sun'>Profile an irregular long table</span>
+        <pre><code>import pandas as pd
+from echowave import profile_dataset
+
+df = pd.read_csv("patient_vitals.csv").rename(columns={
+    "patient_id": "subject",
+    "charttime": "timestamp",
+    "lab_name": "channel",
+    "lab_value": "value",
+})
+profile = profile_dataset(df, domain="clinical")
+print(profile.to_summary_card_markdown())</code></pre>
+        <p>Use this when your data are sparse or irregular and live in rows instead of a clean matrix.</p>
+      </div>
       <div class='docs-card'>
         <span class='pill blue'>Expected output</span>
         <pre><code># EchoWave similarity summary
 overall similarity: ...
 top components: shape similarity, trend similarity, spectral similarity</code></pre>
-      </div>
-      <div class='docs-card'>
-        <span class='pill sun'>First minute</span>
-        <ul class='panel-list'>
-          <li>Use the homepage when you want a product-level overview.</li>
-          <li>Use the static playground when you want a zero-install demo.</li>
-          <li>Use <span class='inline-code'>start-here.html</span> when you want the local demo, doctor, and Pages export in one place.</li>
-        </ul>
+        <p>Once the summary card looks sensible, write <span class='inline-code'>to_html_report()</span> to disk if you want a shareable artifact.</p>
       </div>
     </div>
     <div class='docs-grid-2'>
       <div class='docs-card'><span class='pill blue'>Static playground</span><p>Preview similarity reports, visuals, and flagship cases without installing Python or starting a server.</p></div><div class='docs-card'><span class='pill blue'>Colab quickstart</span><p>Open a starter notebook in a hosted notebook environment.</p></div><div class='docs-card'><span class='pill blue'>uvx CLI</span><p>Run the CLI in an isolated ephemeral environment when packaging allows it.</p></div><div class='docs-card'><span class='pill blue'>Local demo server</span><p>Run a tiny local web app that turns pasted values into similarity verdicts on your own machine.</p></div>
     </div>
     <div class='docs-card'>
-      <span class='pill blue'>Install notes</span>
+      <span class='pill blue'>Practical notes</span>
       <ul class='panel-list'>
         <li>Core install is intentionally small: numpy and scipy.</li>
         <li>Older aeon / sktime / numba-heavy stacks may still surface resolver warnings.</li>
+        <li>If your column names differ, rename them to aliases like timestamp, subject, channel, and value before the first run.</li>
         <li>If you only need proof of value first, use the static Pages bundle or local demo instead of installing into a crowded environment immediately.</li>
       </ul>
     </div>

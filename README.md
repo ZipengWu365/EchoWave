@@ -37,6 +37,93 @@ overall similarity: ...
 top components: shape similarity, trend similarity, spectral similarity
 ```
 
+## Use your own data
+
+If you already have a file, start by matching it to one of these shapes:
+
+| your data | what EchoWave expects | first API |
+|---|---|---|
+| one numeric series | a 1D array or one numeric pandas column | `profile_series(...)` |
+| wide table | one `timestamp` column plus one or more numeric columns | `profile_dataset(df, domain=...)` |
+| irregular long table | `subject`, `timestamp`, `channel`, `value` columns | `profile_dataset(df, domain=...)` |
+| two series to compare | two arrays or two numeric columns | `compare_series(left, right)` |
+
+Tabular inputs are auto-detected from names such as `timestamp` / `time`, `value` / `measurement`, `channel` / `sensor` / `metric`, and `subject` / `patient` / `participant`. If your file uses different names, rename them first. Sparse event tables can also use `timestamp`, `event_type`, `value`, and optional `subject`.
+
+### 1) One CSV column -> first report
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from echowave import profile_series
+
+df = pd.read_csv("my_signal.csv")
+series = pd.to_numeric(df["load_kw"], errors="coerce").dropna().to_numpy()
+
+profile = profile_series(series, domain="energy")
+print(profile.to_summary_card_markdown())
+Path("my_signal_report.html").write_text(profile.to_html_report(), encoding="utf-8")
+```
+
+### 2) Wide DataFrame -> profile your own dataset
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from echowave import profile_dataset
+
+df = pd.read_csv("my_timeseries.csv")
+df = df.rename(columns={"date": "timestamp"})  # only needed if your time column has a different name
+
+profile = profile_dataset(df, domain="energy")
+print(profile.to_summary_card_markdown())
+Path("my_dataset_report.html").write_text(profile.to_html_report(), encoding="utf-8")
+```
+
+All remaining numeric columns are treated as channels or measurements in the same dataset.
+
+### 3) Long irregular table -> keep timestamps honest
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from echowave import profile_dataset
+
+df = pd.read_csv("patient_vitals.csv")
+df = df.rename(columns={
+    "patient_id": "subject",
+    "charttime": "timestamp",
+    "lab_name": "channel",
+    "lab_value": "value",
+})
+
+profile = profile_dataset(df, domain="clinical")
+print(profile.to_summary_card_markdown())
+Path("patient_vitals_report.html").write_text(profile.to_html_report(), encoding="utf-8")
+```
+
+Each `(subject, channel)` stream can stay irregular; EchoWave keeps the gaps instead of forcing a fake regular grid.
+
+### 4) Compare two columns from your own file
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from echowave import compare_series
+
+df = pd.read_csv("load_by_region.csv")
+report = compare_series(df["north_load_mw"], df["south_load_mw"])
+print(report.to_summary_card_markdown())
+Path("north_vs_south_similarity.html").write_text(report.to_html_report(), encoding="utf-8")
+```
+
+If you want a file you can edit in place, start with `examples/integrations/pandas_notebook_template.py`.
+
+
 ## Why teams use this before or beside a model
 
 Because many time-series teams do not just need a distance score. They need to know whether two curves are similar enough to compare, whether two datasets are structurally similar enough to transfer intuition, and why the package thinks that.

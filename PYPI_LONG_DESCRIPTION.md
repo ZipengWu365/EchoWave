@@ -31,6 +31,30 @@ overall similarity: ...
 top components: shape similarity, trend similarity, spectral similarity
 ```
 
+## Use your own data
+
+EchoWave is meant to run on real files, not just toy arrays.
+
+- single numeric column -> `profile_series(...)`
+- wide table with one `timestamp` column and one or more numeric columns -> `profile_dataset(df, domain=...)`
+- irregular long table -> rename columns to `subject`, `timestamp`, `channel`, `value`, then call `profile_dataset(...)`
+- two columns to compare -> `compare_series(df["left"], df["right"])`
+
+Tabular inputs are auto-detected from names such as `timestamp` / `time`, `value` / `measurement`, `channel` / `sensor` / `metric`, and `subject` / `patient` / `participant`.
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from echowave import profile_dataset
+
+df = pd.read_csv("my_timeseries.csv").rename(columns={"date": "timestamp"})
+profile = profile_dataset(df, domain="energy")
+print(profile.to_summary_card_markdown())
+Path("my_dataset_report.html").write_text(profile.to_html_report(), encoding="utf-8")
+```
+
+
 ## What ships in v0.16.0
 
 - compare-first public package surface

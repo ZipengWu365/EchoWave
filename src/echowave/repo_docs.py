@@ -187,17 +187,27 @@ def starter_datasets_guide(*, format: GuideFormat = "markdown") -> str | dict:
 
 def integration_templates_guide(*, format: GuideFormat = "markdown") -> str | dict:
     payload = {
-        "summary": "Copyable integration templates for the three entry paths most likely to be used in real projects.",
+        "summary": "Copyable templates for bringing your own CSV or DataFrame into EchoWave, then scaling up to tool-calling or MCP when needed.",
         "templates": [
             "pandas notebook template: examples/integrations/pandas_notebook_template.py",
             "OpenAI tool-calling template: examples/integrations/openai_tool_calling_template.py",
             "MCP server template: examples/integrations/mcp_server_template.py",
             "local live demo entry: echowave-demo --open-browser",
         ],
+        "notes": [
+            "Use the pandas template when you already have a CSV, parquet file, or DataFrame and want the shortest path to a summary card plus HTML report.",
+            "For wide tables, keep one `timestamp` column and one or more numeric measurement columns.",
+            "For irregular long tables, rename columns to `subject`, `timestamp`, `channel`, and `value` before profiling.",
+            "If your file uses different names, rename from aliases such as `time`, `measurement`, `sensor`, and `patient` before calling the API.",
+        ],
     }
     if format == "json":
         return payload
-    return _render(payload, title="Integration templates", bullets_key="templates")
+    lines = ["# Integration templates", "", payload["summary"], "", "## Templates", ""]
+    lines += [f"- {item}" for item in payload["templates"]]
+    lines += ["", "## Bring your own data", ""]
+    lines += [f"- {item}" for item in payload["notes"]]
+    return "\n".join(lines)
 
 
 def case_studies_guide(*, format: GuideFormat = "markdown") -> str | dict:
@@ -276,6 +286,121 @@ def utility_benchmark_guide(*, format: GuideFormat = "markdown") -> str | dict:
     return "\n".join(lines)
 
 
+def _bring_your_own_data_readme() -> str:
+    return """## Use your own data
+
+If you already have a file, start by matching it to one of these shapes:
+
+| your data | what EchoWave expects | first API |
+|---|---|---|
+| one numeric series | a 1D array or one numeric pandas column | `profile_series(...)` |
+| wide table | one `timestamp` column plus one or more numeric columns | `profile_dataset(df, domain=...)` |
+| irregular long table | `subject`, `timestamp`, `channel`, `value` columns | `profile_dataset(df, domain=...)` |
+| two series to compare | two arrays or two numeric columns | `compare_series(left, right)` |
+
+Tabular inputs are auto-detected from names such as `timestamp` / `time`, `value` / `measurement`, `channel` / `sensor` / `metric`, and `subject` / `patient` / `participant`. If your file uses different names, rename them first. Sparse event tables can also use `timestamp`, `event_type`, `value`, and optional `subject`.
+
+### 1) One CSV column -> first report
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from echowave import profile_series
+
+df = pd.read_csv("my_signal.csv")
+series = pd.to_numeric(df["load_kw"], errors="coerce").dropna().to_numpy()
+
+profile = profile_series(series, domain="energy")
+print(profile.to_summary_card_markdown())
+Path("my_signal_report.html").write_text(profile.to_html_report(), encoding="utf-8")
+```
+
+### 2) Wide DataFrame -> profile your own dataset
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from echowave import profile_dataset
+
+df = pd.read_csv("my_timeseries.csv")
+df = df.rename(columns={"date": "timestamp"})  # only needed if your time column has a different name
+
+profile = profile_dataset(df, domain="energy")
+print(profile.to_summary_card_markdown())
+Path("my_dataset_report.html").write_text(profile.to_html_report(), encoding="utf-8")
+```
+
+All remaining numeric columns are treated as channels or measurements in the same dataset.
+
+### 3) Long irregular table -> keep timestamps honest
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from echowave import profile_dataset
+
+df = pd.read_csv("patient_vitals.csv")
+df = df.rename(columns={
+    "patient_id": "subject",
+    "charttime": "timestamp",
+    "lab_name": "channel",
+    "lab_value": "value",
+})
+
+profile = profile_dataset(df, domain="clinical")
+print(profile.to_summary_card_markdown())
+Path("patient_vitals_report.html").write_text(profile.to_html_report(), encoding="utf-8")
+```
+
+Each `(subject, channel)` stream can stay irregular; EchoWave keeps the gaps instead of forcing a fake regular grid.
+
+### 4) Compare two columns from your own file
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from echowave import compare_series
+
+df = pd.read_csv("load_by_region.csv")
+report = compare_series(df["north_load_mw"], df["south_load_mw"])
+print(report.to_summary_card_markdown())
+Path("north_vs_south_similarity.html").write_text(report.to_html_report(), encoding="utf-8")
+```
+
+If you want a file you can edit in place, start with `examples/integrations/pandas_notebook_template.py`.
+"""
+
+
+def _bring_your_own_data_pypi() -> str:
+    return """## Use your own data
+
+EchoWave is meant to run on real files, not just toy arrays.
+
+- single numeric column -> `profile_series(...)`
+- wide table with one `timestamp` column and one or more numeric columns -> `profile_dataset(df, domain=...)`
+- irregular long table -> rename columns to `subject`, `timestamp`, `channel`, `value`, then call `profile_dataset(...)`
+- two columns to compare -> `compare_series(df["left"], df["right"])`
+
+Tabular inputs are auto-detected from names such as `timestamp` / `time`, `value` / `measurement`, `channel` / `sensor` / `metric`, and `subject` / `patient` / `participant`.
+
+```python
+from pathlib import Path
+
+import pandas as pd
+from echowave import profile_dataset
+
+df = pd.read_csv("my_timeseries.csv").rename(columns={"date": "timestamp"})
+profile = profile_dataset(df, domain="energy")
+print(profile.to_summary_card_markdown())
+Path("my_dataset_report.html").write_text(profile.to_html_report(), encoding="utf-8")
+```
+"""
+
+
 def github_readme(*, format: GuideFormat = "markdown") -> str | dict:
     badges = "\n".join(README_BADGES)
     beginner_lines = "\n".join(f"- **{item['title']}** - {item['why']}" for item in BEGINNER_EXAMPLES)
@@ -284,6 +409,7 @@ def github_readme(*, format: GuideFormat = "markdown") -> str | dict:
     integrations = "\n".join(f"- {item}" for item in INTEGRATIONS)
     zero_install = "\n".join(f"- **{item['title']}** - {item['why']}" for item in ZERO_INSTALL_OPTIONS)
     expected_lines = "\n".join(QUICKSTART_EXPECTED_LINES)
+    own_data = _bring_your_own_data_readme()
     text = f"""# {DISPLAY_NAME}
 
 > **{HEADLINE}**
@@ -314,6 +440,8 @@ Expected output starts like this:
 ```text
 {expected_lines}
 ```
+
+{own_data}
 
 ## Why teams use this before or beside a model
 
@@ -457,6 +585,7 @@ MIT.
 def pypi_long_description(*, format: GuideFormat = "markdown") -> str | dict:
     badges = "\n".join(README_BADGES[:5])
     expected_lines = "\n".join(QUICKSTART_EXPECTED_LINES)
+    own_data = _bring_your_own_data_pypi()
     text = f"""# {DISPLAY_NAME}
 
 **{TAGLINE}**
@@ -483,6 +612,8 @@ Expected output starts like this:
 ```text
 {expected_lines}
 ```
+
+{own_data}
 
 ## What ships in v0.16.0
 
@@ -573,7 +704,7 @@ def routing_contract_guide(*, format: GuideFormat = "markdown") -> str | dict:
 
 def start_here_guide(*, format: GuideFormat = "markdown") -> str | dict:
     payload = {
-        "summary": "A single landing point for compare-first quickstart, zero-install preview, local live demo, environment diagnostics, and GitHub Pages export.",
+        "summary": "A single landing point for compare-first quickstart, bringing your own data, zero-install preview, local live demo, environment diagnostics, and GitHub Pages export.",
         "entrypoints": [
             "Open start-here.html or docs/start-here.html to choose the fastest path.",
             "Use the static playground if you only want to inspect similarity demos and visuals.",
@@ -583,11 +714,21 @@ def start_here_guide(*, format: GuideFormat = "markdown") -> str | dict:
             "Run echowave --write-constraints constraints/mixed-scientific-stack.txt --constraint-profile mixed-scientific-stack before installing into a busy scientific stack.",
             "Use echowave --export-pages docs to generate a Pages bundle for GitHub publishing.",
         ],
+        "own_data": [
+            "Single numeric CSV column: load the column into pandas and call `profile_series(...)` for the fastest first report.",
+            "Wide table: keep one `timestamp` column and one or more numeric columns, then call `profile_dataset(df, domain=...)`.",
+            "Irregular long table: rename columns to `subject`, `timestamp`, `channel`, and `value`, then call `profile_dataset(df, domain=...)`.",
+            "Two columns to compare: call `compare_series(df['left'], df['right'])` and write the HTML report to disk.",
+            "If your names differ, rename from aliases such as `time`, `measurement`, `sensor`, and `patient` before calling the API.",
+            "Edit `examples/integrations/pandas_notebook_template.py` when you want a concrete file instead of starting from a blank notebook.",
+        ],
     }
     if format == "json":
         return payload
     lines = [f"# {START_HERE_HEADING}", "", payload["summary"], "", "## Fast paths", ""]
     lines += [f"- {item}" for item in payload["entrypoints"]]
+    lines += ["", "## If you already have your own data", ""]
+    lines += [f"- {item}" for item in payload["own_data"]]
     return "\n".join(lines)
 
 

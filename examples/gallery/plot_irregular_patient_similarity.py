@@ -1,35 +1,29 @@
 from pathlib import Path
-import sys
 
-ROOT = Path(__file__).resolve().parents[2]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
-
-from echowave import compare_series, profile_dataset, starter_dataset
+import pandas as pd
+from echowave import compare_series, profile_dataset
 
 
-payload = starter_dataset("irregular_patient_vitals")
-cohort = payload["values"]
-subjects = list(cohort.subjects)
+data_path = Path(__file__).resolve().parents[1] / "data" / "real_usgs_earthquakes_ca_ak_2024.csv"
+df = pd.read_csv(data_path)
+df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True, format="mixed").astype("int64") / 1_000_000_000
+df["event_type"] = df["magnitude"].map(lambda value: "M4+" if value >= 4.0 else "M2.5-4")
 
-left_subject = subjects[0]
-right_subject = subjects[1]
-
-left_hr = left_subject.values[0]
-right_hr = right_subject.values[0]
-left_times = left_subject.timestamps[0]
-right_times = right_subject.timestamps[0]
+california = df.loc[df["region"] == "California"].sort_values("timestamp")
+alaska = df.loc[df["region"] == "Alaska"].sort_values("timestamp")
 
 report = compare_series(
-    left_hr,
-    right_hr,
-    left_timestamps=left_times,
-    right_timestamps=right_times,
-    left_name="patient p1 heart rate",
-    right_name="patient p2 heart rate",
+    california["magnitude"],
+    alaska["magnitude"],
+    left_timestamps=california["timestamp"],
+    right_timestamps=alaska["timestamp"],
+    left_name="California earthquakes",
+    right_name="Alaska earthquakes",
 )
-profile = profile_dataset(cohort, domain="clinical")
+profile = profile_dataset(
+    df.rename(columns={"region": "subject", "magnitude": "value"})[["timestamp", "value", "subject", "event_type"]],
+    domain="earth_science",
+)
 
 print(report.to_summary_card_markdown())
 print(profile.to_summary_card_markdown())

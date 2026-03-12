@@ -57,7 +57,9 @@ from tsontology import (
     profile_from_text,
     project_api_reference_html,
     project_docs_home_html,
+    project_docs_pages,
     project_demo_manifest,
+    project_getting_started_html,
     project_tutorials_html,
     profile_dataset,
     register_plugin,
@@ -718,10 +720,28 @@ def test_docs_pages_render_sidebar_layout() -> None:
 
 def test_tutorials_page_links_real_example_gallery() -> None:
     html = project_tutorials_html()
-    assert "actual EchoWave run" in html
+    assert "real example gallery built from frozen snapshots of public data" in html
     assert "example-github-breakout-analogs.html" in html
     assert "example-two-curves-similarity.html" in html
     assert "Open example" in html
+
+
+def test_getting_started_page_shows_human_data_workflows() -> None:
+    html = project_getting_started_html()
+    assert "my_metrics.csv" in html
+    assert "my_timeseries.csv" in html
+    assert "patient_vitals.csv" in html
+    assert "Print a summary card first; export HTML second." in html
+
+
+def test_example_page_uses_clean_runnable_code_for_humans() -> None:
+    pages = project_docs_pages()
+    html = pages["guide/example-weekly-traffic-signals.html"]
+    assert "Runnable example" in html
+    assert "Use your own data" in html
+    assert "import pandas as pd" in html
+    assert "real_python_javascript_pageviews_2024.csv" in html
+    assert "sys.path" not in html
 
 
 def test_explain_dataset_returns_plain_summary_card() -> None:

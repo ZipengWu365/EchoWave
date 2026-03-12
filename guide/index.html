@@ -592,7 +592,7 @@ img.brand-card {
       <div class='sidebar-title'>Quick links</div>
       <a class='doc-link' href='../playground.html'>Static playground</a>
       <a class='doc-link' href='../start-here.html'>Start here</a>
-      <a class='doc-link' href='../reports/github_breakout_similarity.html'>Flagship report</a>
+      <a class='doc-link' href='../reports/github_breakout_similarity.html'>Real-data flagship report</a>
     </div>
     <div class='sidebar-card'>
       <div class='sidebar-title'>Maintainer</div>
@@ -606,20 +606,39 @@ img.brand-card {
     <div class='docs-grid-2'>
       <div class='docs-card'>
         <span class='pill sun'>Docs home</span>
-        <p><strong>EchoWave separates its landing page from its documentation.</strong> The homepage is now a product entry point, while the docs area is organized like a proper technical manual with a persistent left sidebar.</p>
+        <p><strong>Start here if you want to use EchoWave as a normal Python package.</strong> The human path is: load data, call one function, inspect the returned object, then export HTML only if you need to share the result.</p>
         <div class='meta-line'>
           <span class='meta-chip'><strong>Version</strong> 0.16.0</span>
-          <span class='meta-chip'><strong>Audience</strong> researchers, engineers, technical founders</span>
+          <span class='meta-chip'><strong>Audience</strong> researchers, engineers, analysts</span>
         </div>
       </div>
       <div class='docs-card'>
-        <span class='pill blue'>60-second quickstart</span>
+        <span class='pill blue'>Human path</span>
+        <pre><code>import pandas as pd
+from echowave import profile_dataset
+
+df = pd.read_csv("my_timeseries.csv").rename(columns={"date": "timestamp"})
+profile = profile_dataset(df, domain="energy")
+print(profile.to_summary_card_markdown())</code></pre>
+      </div>
+    </div>
+    <div class='docs-grid-2'>
+      <div class='docs-card'>
+        <span class='pill sun'>60-second quickstart</span>
         <pre><code>pip install echowave
 python -c &quot;import numpy as np; from echowave import compare_series; x=np.sin(np.linspace(0,8*np.pi,128)); y=np.sin(np.linspace(0,8*np.pi,128)+0.2); print(compare_series(x,y).to_summary_card_markdown())&quot;</code></pre>
       </div>
+      <div class='docs-card'>
+        <span class='pill blue'>Three first moves</span>
+        <ul class='panel-list'>
+          <li>If you already have your own table, open Getting Started first.</li>
+          <li>If you want runnable worked examples, open Tutorials.</li>
+          <li>If you only need integration details later, keep Advanced Integrations for last.</li>
+        </ul>
+      </div>
     </div>
     <div class='docs-grid-3'>
-      <div class='docs-card'><span class='pill sun'>Getting Started</span><h3>Getting Started</h3><p>Install, zero-install paths, and the first 60 seconds.</p><a class='button ghost' href='getting-started.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Tutorials</span><h3>Tutorials</h3><p>Beginner examples, flagship demos, and starter datasets.</p><a class='button ghost' href='tutorials.html'>Open page</a></div><div class='docs-card'><span class='pill sun'>API Reference</span><h3>API Reference</h3><p>The public compare/profile surface and result objects.</p><a class='button ghost' href='api.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Scenarios</span><h3>Scenarios</h3><p>Where EchoWave fits across medicine, engineering, product, and research.</p><a class='button ghost' href='scenarios.html'>Open page</a></div><div class='docs-card'><span class='pill sun'>Ecosystem</span><h3>Ecosystem</h3><p>How EchoWave complements sktime, tsfresh, DTAIDistance, and others.</p><a class='button ghost' href='ecosystem.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Agent Tools</span><h3>Agent Tools</h3><p>Compact routing, stable schemas, and compare-first wrappers.</p><a class='button ghost' href='agents.html'>Open page</a></div>
+      <div class='docs-card'><span class='pill sun'>Getting Started</span><h3>Getting Started</h3><p>Start with your own CSV, DataFrame, or two columns and get to a first result quickly.</p><a class='button ghost' href='getting-started.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Tutorials</span><h3>Tutorials</h3><p>Runnable examples in the style of a human tutorial: load data, call a function, inspect the result.</p><a class='button ghost' href='tutorials.html'>Open page</a></div><div class='docs-card'><span class='pill sun'>API Reference</span><h3>API Reference</h3><p>The public compare/profile surface and the result objects you will actually call from Python.</p><a class='button ghost' href='api.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Scenarios</span><h3>Scenarios</h3><p>Where EchoWave fits across medicine, engineering, product, and research.</p><a class='button ghost' href='scenarios.html'>Open page</a></div><div class='docs-card'><span class='pill sun'>Ecosystem</span><h3>Ecosystem</h3><p>How EchoWave complements sktime, tsfresh, DTAIDistance, and others.</p><a class='button ghost' href='ecosystem.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Advanced Integrations</span><h3>Advanced Integrations</h3><p>Tool-calling and agent wrappers live here when you need them, not before.</p><a class='button ghost' href='agents.html'>Open page</a></div>
     </div>
     <div class='docs-card'>
       <span class='pill sun'>Expected output</span>

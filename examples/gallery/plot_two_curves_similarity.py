@@ -1,27 +1,14 @@
 from pathlib import Path
-import sys
 
-import numpy as np
-
-ROOT = Path(__file__).resolve().parents[2]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
-
+import pandas as pd
 from echowave import compare_series, rolling_similarity
 
 
-t = np.linspace(0, 8 * np.pi, 128)
-candidate = np.sin(t) + 0.08 * np.cos(t / 2.0)
-reference = np.sin(t + 0.22) + 0.05 * np.cos(t / 2.0)
+data_path = Path(__file__).resolve().parents[1] / "data" / "real_treasury_yields_2024.csv"
+df = pd.read_csv(data_path)
 
-report = compare_series(
-    candidate,
-    reference,
-    left_name="candidate curve",
-    right_name="reference analog",
-)
-windows = rolling_similarity(candidate, reference, window=24, step=6)
+report = compare_series(df["dgs10"], df["dgs2"], left_name="10Y Treasury", right_name="2Y Treasury")
+windows = rolling_similarity(df["dgs10"], df["dgs2"], window=30, step=10)
 
 print(report.to_summary_card_markdown())
 print({"rolling_windows": len(windows), "mean_similarity": round(report.similarity_score, 3)})

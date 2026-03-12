@@ -2,7 +2,7 @@
 <html lang='en'>
 <head><meta charset='utf-8'/><meta name='viewport' content='width=device-width, initial-scale=1'/><link rel='preconnect' href='https://fonts.googleapis.com'>
 <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
-<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap' rel='stylesheet'><title>EchoWave docs - GitHub breakout analogs</title><style>
+<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap' rel='stylesheet'><title>EchoWave docs - AI attention breakout analogs</title><style>
 :root {
   --page-bg: #FFFFFF;
   --surface: #FAFAFA;
@@ -592,13 +592,13 @@ img.brand-card {
       <div class='sidebar-title'>Quick links</div>
       <a class='doc-link' href='../playground.html'>Static playground</a>
       <a class='doc-link' href='../start-here.html'>Start here</a>
-      <a class='doc-link' href='../reports/github_breakout_similarity.html'>Flagship report</a>
+      <a class='doc-link' href='../reports/github_breakout_similarity.html'>Real-data flagship report</a>
     </div>
     <div class='sidebar-card'>
       <div class='sidebar-title'>Maintainer</div>
       <div class='toc-note'><strong>Zipeng Wu</strong><br>The University of Birmingham<br><a href='mailto:zxw365@student.bham.ac.uk'>zxw365@student.bham.ac.uk</a></div>
     </div>
-    <div class='sidebar-card'><div class='sidebar-title'>Example gallery</div><a class='doc-link' href='example-two-curves-similarity.html'>Two curves, one similarity verdict</a><a class='doc-link' href='example-weekly-traffic-signals.html'>Weekly traffic signals move together, but not identically</a><a class='doc-link' href='example-irregular-patient-similarity.html'>Irregular patient trajectories still deserve a similarity verdict</a><a class='doc-link active' href='example-github-breakout-analogs.html'>GitHub breakout analogs</a><a class='doc-link' href='example-btc-gold-under-shocks.html'>BTC vs gold under shocks</a><a class='doc-link' href='example-heatwave-grid-load.html'>Heatwave vs grid load</a></div>
+    <div class='sidebar-card'><div class='sidebar-title'>Example gallery</div><a class='doc-link' href='example-two-curves-similarity.html'>US Treasury 10Y and 2Y yields in 2024</a><a class='doc-link' href='example-weekly-traffic-signals.html'>Python and JavaScript pageviews move together, but not identically</a><a class='doc-link' href='example-irregular-patient-similarity.html'>Irregular earthquake streams can still be compared</a><a class='doc-link active' href='example-github-breakout-analogs.html'>AI attention breakout analogs</a><a class='doc-link' href='example-btc-gold-under-shocks.html'>BTC, Brent, and VIX in 2024</a><a class='doc-link' href='example-heatwave-grid-load.html'>Southwest heatwave city temperatures</a></div>
   </aside>
   <section class='docs-main'>
     
@@ -606,85 +606,115 @@ img.brand-card {
       <div class='example-breadcrumb'><a href='tutorials.html'>Examples</a> / Flagship demo</div>
       <div class='example-head'>
         <div class='eyebrow'>Flagship demo</div>
-        <h1>GitHub breakout analogs</h1>
-        <p class='subhead'>A flagship demo for asking whether a new repository resembles a durable breakout or only a short-lived spike.</p>
+        <h1>AI attention breakout analogs</h1>
+        <p class='subhead'>A flagship real-data example asking which historical attention curve DeepSeek looked more like over its first breakout window: ChatGPT or Threads.</p>
       </div>
     </div>
     
     
     <div class='example-summary-grid'>
       <div class='docs-card example-teaser'>
-        <div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='520' height='220' viewBox='0 0 520 220' role='img' aria-label='EchoWave similarity components'><title>EchoWave similarity components</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Similarity components</text><text x='16' y='40' font-size='11' fill='#6B7280'>Overall similarity 0.99 (very high).</text><text x='16' y='62.0' font-size='12' fill='#1F2937'>trend similarity</text><rect x='160' y='48.0' width='340.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='48.0' width='339.9' height='16' rx='8' fill='#FFC83D'/><text x='498.0' y='61.0' font-size='11' fill='#6B7280' text-anchor='end'>1.00</text><text x='16' y='92.8' font-size='12' fill='#1F2937'>shape similarity</text><rect x='160' y='78.8' width='340.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='78.8' width='339.9' height='16' rx='8' fill='#FFC83D'/><text x='498.0' y='91.8' font-size='11' fill='#6B7280' text-anchor='end'>1.00</text><text x='16' y='123.6' font-size='12' fill='#1F2937'>dtw similarity</text><rect x='160' y='109.6' width='340.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='109.6' width='338.8' height='16' rx='8' fill='#FFC83D'/><text x='498.0' y='122.6' font-size='11' fill='#6B7280' text-anchor='end'>1.00</text><text x='16' y='154.4' font-size='12' fill='#1F2937'>spectral similarity</text><rect x='160' y='140.4' width='340.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='140.4' width='336.9' height='16' rx='8' fill='#FFC83D'/><text x='498.0' y='153.4' font-size='11' fill='#6B7280' text-anchor='end'>0.99</text><text x='16' y='185.2' font-size='12' fill='#1F2937'>derivative similarity</text><rect x='160' y='171.2' width='340.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='171.2' width='327.1' height='16' rx='8' fill='#FFC83D'/><text x='498.0' y='184.2' font-size='11' fill='#6B7280' text-anchor='end'>0.96</text></svg></div>
+        <span class='pill blue'>Question</span>
+        <p><strong>Which historical breakout curve is closest to the new one you care about?</strong></p>
+        <p>The data here are real Wikimedia pageviews aligned to the early breakout periods for DeepSeek, ChatGPT, and Threads. EchoWave compares the cumulative attention curves and makes the analog choice explicit instead of leaving it as a vibes-only story.</p>
         <div class='meta-line'>
-          <span class='meta-chip'><strong>Mode</strong> compare_series + rolling_similarity</span>
-          <span class='meta-chip'><strong>Headline</strong> 0.99 durable analog score</span>
+          <span class='meta-chip'><strong>Input</strong> one target series plus one or more analog curves</span>
+          <span class='meta-chip'><strong>Call</strong> compare_series(target, analog)</span>
+          <span class='meta-chip'><strong>Output</strong> SimilarityReport + rolling windows</span>
         </div>
-        <p>This example is built to travel. It compares a target repository curve against two analog families and shows why the durable analog is the more convincing match.</p>
+        <ol class='panel-list'><li>Load the target curve and the analog curves.</li><li>Compare the target against each analog with compare_series(...).</li><li>Use rolling_similarity(...) to see whether the match survives beyond the initial spike.</li></ol>
         <div class='gallery-links'>
           <a href='example-github-breakout-analogs.html'>Permalink</a>
           <a href='../reports/github_breakout_similarity.html'>Open report</a>
-          <a href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_github_breakout_analogs.py'>Source</a>
+          <a href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_github_breakout_analogs.py'>Open script</a>
         </div>
-        <ul class='panel-list'><li>The durable-breakout analog scores 0.99, versus 0.96 for the short-hype analog.</li><li>Rolling similarity is what makes the story credible: the match remains strong after the initial spike.</li><li>This is the clearest product-style demo in the package because anyone can read the narrative.</li></ul>
       </div>
       <div class='docs-card'>
-        <span class='pill sun'>Similarity verdict</span>
-        <div class='example-score'>0.99</div>
+        <span class='pill sun'>Result at a glance</span>
+        <div class='example-score'>0.91</div>
         <div class='example-score-label'>Very High similarity overall</div>
-        <p>OpenClaw-style candidate and durable breakout analog are strongly similar overall. The best agreement appears in trend similarity and shape similarity.</p>
-        <div class='component-list'><div class='component-row'><span>trend similarity</span><strong>1.00</strong><div class='component-track'><div class='component-fill' style='width:100.0%'></div></div></div><div class='component-row'><span>shape similarity</span><strong>1.00</strong><div class='component-track'><div class='component-fill' style='width:100.0%'></div></div></div><div class='component-row'><span>dtw similarity</span><strong>1.00</strong><div class='component-track'><div class='component-fill' style='width:99.7%'></div></div></div><div class='component-row'><span>spectral similarity</span><strong>0.99</strong><div class='component-track'><div class='component-fill' style='width:99.1%'></div></div></div></div>
+        <p>DeepSeek and Threads are strongly similar overall. The best agreement appears in spectral similarity and trend similarity.</p>
+        <div class='component-list'><div class='component-row'><span>spectral similarity</span><strong>0.98</strong><div class='component-track'><div class='component-fill' style='width:98.3%'></div></div></div><div class='component-row'><span>trend similarity</span><strong>0.98</strong><div class='component-track'><div class='component-fill' style='width:97.5%'></div></div></div><div class='component-row'><span>shape similarity</span><strong>0.97</strong><div class='component-track'><div class='component-fill' style='width:96.8%'></div></div></div><div class='component-row'><span>dtw similarity</span><strong>0.94</strong><div class='component-track'><div class='component-fill' style='width:94.2%'></div></div></div></div>
       </div>
-    </div>
-    <div class='example-figure-grid'>
-      <div class='docs-card'><span class='pill blue'>Target vs durable analog</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='720' height='240' viewBox='0 0 720 240' role='img' aria-label='EchoWave series preview'><title>EchoWave series preview</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Series preview</text><line x1='40' y1='24' x2='40' y2='212' stroke='#E5E7EB'/><line x1='40' y1='212' x2='700' y2='212' stroke='#E5E7EB'/><polyline points='40.0,211.6 45.5,208.8 51.1,205.8 56.6,202.8 62.2,199.9 67.7,196.9 73.3,193.9 78.8,191.0 84.4,188.3 89.9,185.7 95.5,183.1 101.0,180.5 106.6,177.9 112.1,175.2 117.6,172.5 123.2,169.6 128.7,166.9 134.3,164.2 139.8,161.7 145.4,159.3 150.9,157.1 156.5,155.0 162.0,153.3 167.6,151.6 173.1,150.0 178.7,148.5 184.2,147.1 189.7,145.8 195.3,144.4 200.8,143.0 206.4,141.6 211.9,140.2 217.5,138.8 223.0,137.5 228.6,136.3 234.1,135.2 239.7,133.9 245.2,132.7 250.8,131.5 256.3,130.2 261.8,129.1 267.4,127.8 272.9,126.5 278.5,125.1 284.0,123.7 289.6,122.3 295.1,120.8 300.7,119.4 306.2,118.0 311.8,116.7 317.3,115.5 322.9,114.5 328.4,113.5 333.9,112.4 339.5,111.4 345.0,110.3 350.6,109.0 356.1,107.7 361.7,106.5 367.2,105.2 372.8,103.9 378.3,102.6 383.9,101.2 389.4,100.0 395.0,98.9 400.5,97.8 406.1,96.7 411.6,95.5 417.1,94.4 422.7,93.4 428.2,92.1 433.8,90.8 439.3,89.4 444.9,88.0 450.4,86.5 456.0,85.2 461.5,83.9 467.1,82.6 472.6,81.4 478.2,80.1 483.7,79.0 489.2,77.9 494.8,76.7 500.3,75.6 505.9,74.4 511.4,73.0 517.0,71.5 522.5,69.9 528.1,68.5 533.6,66.9 539.2,65.5 544.7,64.1 550.3,62.8 555.8,61.6 561.3,60.4 566.9,59.1 572.4,57.9 578.0,56.6 583.5,55.3 589.1,53.9 594.6,52.4 600.2,50.8 605.7,49.2 611.3,47.7 616.8,46.2 622.4,44.8 627.9,43.5 633.4,42.1 639.0,41.0 644.5,39.7 650.1,38.4 655.6,37.0 661.2,35.5 666.7,33.9 672.3,32.3 677.8,30.7 683.4,28.9 688.9,27.2 694.5,25.6 700.0,24.0' fill='none' stroke='#2F6BFF' stroke-width='2.5'/><text x='46' y='42' font-size='11' fill='#2F6BFF'>candidate</text><polyline points='40.0,212.0 45.5,209.6 51.1,207.1 56.6,204.7 62.2,202.1 67.7,199.7 73.3,197.3 78.8,194.8 84.4,192.5 89.9,190.2 95.5,187.9 101.0,185.6 106.6,183.2 112.1,180.9 117.6,178.4 123.2,175.9 128.7,173.5 134.3,171.0 139.8,168.6 145.4,166.2 150.9,164.1 156.5,162.2 162.0,160.4 167.6,158.7 173.1,157.0 178.7,155.4 184.2,153.8 189.7,152.3 195.3,150.9 200.8,149.5 206.4,147.9 211.9,146.6 217.5,145.4 223.0,144.4 228.6,143.4 234.1,142.4 239.7,141.4 245.2,140.6 250.8,139.7 256.3,138.7 261.8,137.7 267.4,136.4 272.9,135.1 278.5,133.9 284.0,132.8 289.6,131.6 295.1,130.4 300.7,129.4 306.2,128.3 311.8,127.2 317.3,126.1 322.9,125.1 328.4,123.9 333.9,122.7 339.5,121.5 345.0,120.2 350.6,119.0 356.1,117.8 361.7,116.7 367.2,115.5 372.8,114.3 378.3,113.2 383.9,112.1 389.4,111.2 395.0,110.0 400.5,108.9 406.1,107.7 411.6,106.4 417.1,105.2 422.7,103.8 428.2,102.6 433.8,101.4 439.3,100.1 444.9,99.0 450.4,97.8 456.0,96.6 461.5,95.5 467.1,94.3 472.6,93.1 478.2,91.7 483.7,90.4 489.2,89.0 494.8,87.7 500.3,86.3 505.9,84.9 511.4,83.6 517.0,82.3 522.5,81.1 528.1,79.8 533.6,78.6 539.2,77.2 544.7,75.9 550.3,74.5 555.8,73.0 561.3,71.5 566.9,70.0 572.4,68.6 578.0,67.2 583.5,65.7 589.1,64.4 594.6,63.1 600.2,61.7 605.7,60.2 611.3,58.7 616.8,57.2 622.4,55.8 627.9,54.2 633.4,52.6 639.0,50.9 644.5,49.3 650.1,47.8 655.6,46.1 661.2,44.6 666.7,43.2 672.3,41.6 677.8,40.0 683.4,38.5 688.9,36.9 694.5,35.1 700.0,33.4' fill='none' stroke='#C7950A' stroke-width='2.5' stroke-dasharray='5 4'/><text x='120' y='42' font-size='11' fill='#C7950A'>durable analog</text></svg></div><p class='muted'>The target and durable analog stay shape-aligned beyond the launch spike.</p></div><div class='docs-card'><span class='pill sun'>Component breakdown</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='560' height='280' viewBox='0 0 560 280' role='img' aria-label='EchoWave similarity components'><title>EchoWave similarity components</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Similarity components</text><text x='16' y='40' font-size='11' fill='#6B7280'>Overall similarity 0.99 (very high).</text><text x='16' y='62.0' font-size='12' fill='#1F2937'>trend similarity</text><rect x='160' y='48.0' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='48.0' width='379.9' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='61.0' font-size='11' fill='#6B7280' text-anchor='end'>1.00</text><text x='16' y='104.8' font-size='12' fill='#1F2937'>shape similarity</text><rect x='160' y='90.8' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='90.8' width='379.9' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='103.8' font-size='11' fill='#6B7280' text-anchor='end'>1.00</text><text x='16' y='147.6' font-size='12' fill='#1F2937'>dtw similarity</text><rect x='160' y='133.6' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='133.6' width='378.7' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='146.6' font-size='11' fill='#6B7280' text-anchor='end'>1.00</text><text x='16' y='190.4' font-size='12' fill='#1F2937'>spectral similarity</text><rect x='160' y='176.4' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='176.4' width='376.5' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='189.4' font-size='11' fill='#6B7280' text-anchor='end'>0.99</text><text x='16' y='233.2' font-size='12' fill='#1F2937'>derivative similarity</text><rect x='160' y='219.2' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='219.2' width='365.6' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='232.2' font-size='11' fill='#6B7280' text-anchor='end'>0.96</text></svg></div><p class='muted'>The similarity verdict is backed by multiple components instead of a single point metric.</p></div><div class='docs-card example-figure-wide'><span class='pill blue'>Rolling similarity</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='720' height='240' viewBox='0 0 720 240' role='img' aria-label='Rolling similarity'><title>Rolling similarity</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Rolling similarity</text><line x1='40' y1='24' x2='40' y2='212' stroke='#E5E7EB'/><line x1='40' y1='212' x2='700' y2='212' stroke='#E5E7EB'/><line x1='40' y1='118' x2='700' y2='118' stroke='#F3F4F6' stroke-dasharray='4 4'/><polyline points='40.0,35.5 73.0,25.7 106.0,24.6 139.0,25.0 172.0,27.7 205.0,28.5 238.0,31.7 271.0,38.6 304.0,44.1 337.0,40.9 370.0,41.3 403.0,44.0 436.0,47.1 469.0,46.3 502.0,49.9 535.0,60.6 568.0,51.6 601.0,46.2 634.0,45.0 667.0,50.0 700.0,48.8' fill='none' stroke='#2F6BFF' stroke-width='2.5'/><text x='46' y='42' font-size='11' fill='#2554CC'>mean=0.91, min=0.81, max=1.00</text></svg></div><p class='muted'>Windowed similarity is what separates a durable analog from a short-lived hype curve.</p></div>
     </div>
     <div class='docs-grid-2'>
       <div class='docs-card'>
-        <span class='pill blue'>Python source</span>
+        <span class='pill blue'>Runnable example</span>
+        <p>This is the minimal script a human user would actually run: load data, call EchoWave, inspect the returned object.</p>
         <pre><code>from pathlib import Path
-import sys
 
-ROOT = Path(__file__).resolve().parents[2]
-SRC = ROOT / &quot;src&quot;
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
+import pandas as pd
+from echowave import compare_series, rolling_similarity
 
-from echowave import compare_series, rolling_similarity, starter_dataset
+data_path = Path(__file__).resolve().parents[1] / &quot;data&quot; / &quot;real_ai_attention_breakouts.csv&quot;
+df = pd.read_csv(data_path)
 
-
-payload = starter_dataset(&quot;github_breakout_analogs&quot;)
-target = payload[&quot;target&quot;]
-durable = payload[&quot;durable_breakout&quot;]
-short_hype = payload[&quot;short_hype&quot;]
-
-durable_report = compare_series(
-    target,
-    durable,
-    left_name=&quot;OpenClaw-style candidate&quot;,
-    right_name=&quot;durable breakout analog&quot;,
+threads_report = compare_series(
+    df[&quot;deepseek_cumulative&quot;],
+    df[&quot;threads_cumulative&quot;],
+    left_name=&quot;DeepSeek&quot;,
+    right_name=&quot;Threads&quot;,
 )
-hype_report = compare_series(
-    target,
-    short_hype,
-    left_name=&quot;OpenClaw-style candidate&quot;,
-    right_name=&quot;short-hype analog&quot;,
+chatgpt_report = compare_series(
+    df[&quot;deepseek_cumulative&quot;],
+    df[&quot;chatgpt_cumulative&quot;],
+    left_name=&quot;DeepSeek&quot;,
+    right_name=&quot;ChatGPT&quot;,
 )
-windows = rolling_similarity(target, durable, window=20, step=5)
+windows = rolling_similarity(df[&quot;deepseek_cumulative&quot;], df[&quot;threads_cumulative&quot;], window=20, step=5)
 
-print(durable_report.to_summary_card_markdown())
+print(threads_report.to_summary_card_markdown())
 print(
     {
-        &quot;durable_similarity&quot;: round(durable_report.similarity_score, 3),
-        &quot;hype_similarity&quot;: round(hype_report.similarity_score, 3),
+        &quot;threads_similarity&quot;: round(threads_report.similarity_score, 3),
+        &quot;chatgpt_similarity&quot;: round(chatgpt_report.similarity_score, 3),
         &quot;rolling_windows&quot;: len(windows),
     }
 )
 </code></pre>
       </div>
       <div class='docs-card'>
-        <span class='pill sun'>Open assets</span>
-        <div class='asset-list'><a class='asset-link' href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_github_breakout_analogs.py'><strong>Python source</strong><span>The exact script used for this example.</span></a><a class='asset-link' href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/notebooks/04_github_breakout_analogs.ipynb'><strong>Notebook</strong><span>The full notebook walkthrough.</span></a><a class='asset-link' href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/data/github_breakout_analogs.csv'><strong>Starter CSV</strong><span>The starter stars-over-time data.</span></a><a class='asset-link' href='../reports/github_breakout_similarity.html'><strong>Standalone report</strong><span>Open the full HTML similarity report.</span></a><a class='asset-link' href='../blog/github_breakout_analogs.html'><strong>Story page</strong><span>The blog-style explainer for this demo.</span></a><a class='asset-link' href='../social/github_breakout_card.svg'><strong>Social card</strong><span>The shareable card for the same result.</span></a></div>
+        <span class='pill sun'>What you should see</span>
+        <p>You should see one analog score materially higher than the others, with rolling windows supporting the choice.</p>
+        <pre><code># EchoWave similarity summary
+
+**Compared:** DeepSeek vs Threads
+
+## Headline
+
+These two inputs show **very high** similarity overall (score 0.910).
+
+DeepSeek and Threads are strongly similar overall. The best agreement appears in spectral similarity and trend similarity.
+
+## Most important similarity dimensions
+
+| plain-language label | score |
+|---|---:|
+| spectral similarity | 0.983 |
+| trend similarity | 0.975 |
+| shape similarity | 0.968 |
+| dtw similarity | 0.942 |
+
+## Recommended next actions
+
+- Plot both series after z-score normalization to show the shared shape without scale differences.
+- Run rolling or windowed similarity if you expect the relationship to change over time.
+- Use structural-profile similarity when scales, frequencies, or observation modes differ too much for raw-shape comparison.
+- Inspect spectral or seasonality-aware models because the two series share rhythm strongly.</code></pre>
+        <ul class='panel-list'><li>DeepSeek vs Threads scores 0.91, compared with 0.73 against ChatGPT.</li><li>The rolling view makes the analog choice inspectable instead of reducing everything to one headline score.</li><li>This is a real analog-selection workflow on public data, not a hand-drawn breakout curve.</li></ul>
       </div>
+    </div>
+    <div class='docs-card'>
+      <span class='pill blue'>Use your own data</span>
+      <p>This workflow generalizes to any &quot;which historical analog is closest?&quot; question.</p>
+      <ul class='panel-list'><li>Replace the example curves with your own daily installs, signups, traffic, or attention series.</li><li>Compare against several historical candidates, not just one, if you want a defensible analog story.</li><li>Keep event dates such as releases or campaigns nearby even if the first pass only compares the numeric curves.</li></ul>
+    </div>
+    <div class='example-figure-grid'>
+      <div class='docs-card'><span class='pill blue'>DeepSeek vs Threads</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='720' height='240' viewBox='0 0 720 240' role='img' aria-label='EchoWave series preview'><title>EchoWave series preview</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Series preview</text><line x1='40' y1='24' x2='40' y2='212' stroke='#E5E7EB'/><line x1='40' y1='212' x2='700' y2='212' stroke='#E5E7EB'/><polyline points='40.0,211.9 47.9,211.8 55.7,211.7 63.6,211.6 71.4,211.5 79.3,211.1 87.1,210.2 95.0,208.9 102.9,207.4 110.7,205.0 118.6,201.8 126.4,196.7 134.3,164.8 142.1,123.3 150.0,101.6 157.9,89.9 165.7,83.6 173.6,79.7 181.4,76.4 189.3,72.9 197.1,69.7 205.0,66.7 212.9,64.0 220.7,61.8 228.6,60.3 236.4,59.0 244.3,57.3 252.1,55.6 260.0,53.9 267.9,52.2 275.7,51.1 283.6,50.2 291.4,49.3 299.3,48.1 307.1,46.9 315.0,45.9 322.9,44.9 330.7,44.0 338.6,43.4 346.4,42.8 354.3,42.1 362.1,41.3 370.0,40.6 377.9,39.9 385.7,39.4 393.6,39.0 401.4,38.5 409.3,37.9 417.1,37.3 425.0,36.8 432.9,36.3 440.7,35.8 448.6,35.4 456.4,35.0 464.3,34.5 472.1,34.0 480.0,33.6 487.9,33.1 495.7,32.8 503.6,32.4 511.4,32.1 519.3,31.6 527.1,31.2 535.0,30.8 542.9,30.4 550.7,30.1 558.6,29.9 566.4,29.7 574.3,29.4 582.1,29.0 590.0,28.7 597.9,28.3 605.7,27.9 613.6,27.6 621.4,27.3 629.3,26.9 637.1,26.6 645.0,26.2 652.9,25.8 660.7,25.5 668.6,25.2 676.4,25.0 684.3,24.6 692.1,24.3 700.0,24.0' fill='none' stroke='#2F6BFF' stroke-width='2.5'/><text x='46' y='42' font-size='11' fill='#2F6BFF'>DeepSeek</text><polyline points='40.0,212.0 47.9,212.0 55.7,211.1 63.6,210.3 71.4,209.4 79.3,208.5 87.1,207.7 95.0,207.1 102.9,206.4 110.7,205.7 118.6,205.1 126.4,204.5 134.3,204.1 142.1,203.7 150.0,203.5 157.9,203.1 165.7,202.5 173.6,202.0 181.4,201.6 189.3,201.3 197.1,200.9 205.0,200.6 212.9,200.3 220.7,200.0 228.6,199.8 236.4,199.5 244.3,199.3 252.1,199.0 260.0,198.8 267.9,198.5 275.7,198.3 283.6,198.0 291.4,197.9 299.3,197.7 307.1,197.6 315.0,197.4 322.9,197.3 330.7,197.1 338.6,196.9 346.4,196.8 354.3,196.6 362.1,196.5 370.0,196.4 377.9,196.2 385.7,196.1 393.6,195.9 401.4,195.7 409.3,195.6 417.1,195.4 425.0,195.3 432.9,195.2 440.7,195.1 448.6,195.0 456.4,194.9 464.3,194.7 472.1,194.6 480.0,194.5 487.9,194.4 495.7,194.3 503.6,194.2 511.4,194.1 519.3,194.0 527.1,193.9 535.0,193.8 542.9,193.7 550.7,193.6 558.6,193.6 566.4,193.5 574.3,193.4 582.1,193.3 590.0,193.2 597.9,193.1 605.7,193.0 613.6,192.9 621.4,192.8 629.3,192.7 637.1,192.6 645.0,192.5 652.9,192.5 660.7,192.4 668.6,192.3 676.4,192.2 684.3,192.1 692.1,192.0 700.0,191.9' fill='none' stroke='#C7950A' stroke-width='2.5' stroke-dasharray='5 4'/><text x='120' y='42' font-size='11' fill='#C7950A'>Threads</text></svg></div><p class='muted'>The cumulative attention curves stay close enough that the analog is visible before you read the score.</p></div><div class='docs-card'><span class='pill sun'>Component breakdown</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='560' height='280' viewBox='0 0 560 280' role='img' aria-label='EchoWave similarity components'><title>EchoWave similarity components</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Similarity components</text><text x='16' y='40' font-size='11' fill='#6B7280'>Overall similarity 0.91 (very high).</text><text x='16' y='62.0' font-size='12' fill='#1F2937'>spectral similarity</text><rect x='160' y='48.0' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='48.0' width='373.5' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='61.0' font-size='11' fill='#6B7280' text-anchor='end'>0.98</text><text x='16' y='104.8' font-size='12' fill='#1F2937'>trend similarity</text><rect x='160' y='90.8' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='90.8' width='370.6' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='103.8' font-size='11' fill='#6B7280' text-anchor='end'>0.98</text><text x='16' y='147.6' font-size='12' fill='#1F2937'>shape similarity</text><rect x='160' y='133.6' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='133.6' width='367.8' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='146.6' font-size='11' fill='#6B7280' text-anchor='end'>0.97</text><text x='16' y='190.4' font-size='12' fill='#1F2937'>dtw similarity</text><rect x='160' y='176.4' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='176.4' width='358.0' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='189.4' font-size='11' fill='#6B7280' text-anchor='end'>0.94</text><text x='16' y='233.2' font-size='12' fill='#1F2937'>derivative similarity</text><rect x='160' y='219.2' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='219.2' width='227.8' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='232.2' font-size='11' fill='#6B7280' text-anchor='end'>0.60</text></svg></div><p class='muted'>The analog call is backed by multiple similarity components rather than a single scalar.</p></div><div class='docs-card example-figure-wide'><span class='pill blue'>Rolling similarity</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='720' height='240' viewBox='0 0 720 240' role='img' aria-label='Rolling similarity'><title>Rolling similarity</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Rolling similarity</text><line x1='40' y1='24' x2='40' y2='212' stroke='#E5E7EB'/><line x1='40' y1='212' x2='700' y2='212' stroke='#E5E7EB'/><line x1='40' y1='118' x2='700' y2='118' stroke='#F3F4F6' stroke-dasharray='4 4'/><polyline points='40.0,60.1 90.8,49.4 141.5,48.1 192.3,26.7 243.1,28.2 293.8,28.8 344.6,48.4 395.4,33.3 446.2,34.5 496.9,30.8 547.7,31.4 598.5,42.8 649.2,42.9 700.0,44.5' fill='none' stroke='#2F6BFF' stroke-width='2.5'/><text x='46' y='42' font-size='11' fill='#2554CC'>mean=0.92, min=0.81, max=0.99</text></svg></div><p class='muted'>Rolling similarity shows whether the match survives beyond the initial breakout surge.</p></div>
+    </div>
+    <div class='docs-card'>
+      <span class='pill sun'>Data and outputs</span>
+      <div class='asset-list'><a class='asset-link' href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_github_breakout_analogs.py'><strong>Python source</strong><span>The exact script used for this example.</span></a><a class='asset-link' href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/data/real_ai_attention_breakouts.csv'><strong>Real CSV snapshot</strong><span>The frozen CSV snapshot used to generate this page.</span></a><a class='asset-link' href='https://wikimedia.org/api/rest_v1/#/Pageviews%20data'><strong>Original source</strong><span>The public upstream source used to refresh the CSV snapshot.</span></a><a class='asset-link' href='../reports/github_breakout_similarity.html'><strong>Standalone report</strong><span>Open the full real-data similarity report.</span></a><a class='asset-link' href='../blog/github_breakout_analogs.html'><strong>Story page</strong><span>Open the blog-style explainer for the same real-data result.</span></a><a class='asset-link' href='../social/github_breakout_card.svg'><strong>Social card</strong><span>Open the shareable card generated from the same run.</span></a></div>
     </div>
     
   </section>

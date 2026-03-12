@@ -14,12 +14,18 @@ from pathlib import Path
 from typing import Any
 
 from .copydeck import FLAGSHIP_DEMOS, PACKAGE_VERSION
-from .datasets import starter_dataset
 from .docs_site import project_docs_pages
 from .homepage import project_homepage_html
 from .launchpad import project_launchpad_html
 from .playground import project_playground_html
 from .profile import profile_dataset
+from .real_tutorial_data import (
+    ai_attention_breakouts,
+    btc_oil_vix_2024,
+    heatwave_city_temps_2024,
+    python_javascript_pageviews_2024,
+    usgs_earthquakes_ca_ak_2024,
+)
 from .similarity import compare_series, rolling_similarity
 from .visuals import (
     axis_bar_svg,
@@ -40,7 +46,9 @@ def _blog_page(
     deck: str,
     report_href: str,
     social_href: str,
-    notebook_hint: str,
+    support_note: str,
+    data_href: str,
+    source_data_href: str,
     bullets: list[str],
     visuals: list[dict[str, str]],
     source_href: str,
@@ -114,12 +122,13 @@ h1 {{ margin:0 0 10px; font-size:clamp(2rem,4vw,3rem); line-height:1.05; letter-
       <a href='../{report_href}'>Open the HTML report</a>
       <a href='../{social_href}'>Open the social card</a>
       <a href='{source_href}'>Open the Python source</a>
-      <a href='#notebook'>{notebook_hint}</a>
+      <a href='{data_href}'>Open the local CSV snapshot</a>
+      <a href='{source_data_href}'>Open the upstream public source</a>
     </div>
   </div>
-  <div class='card' id='notebook'>
-    <h2>Notebook hint</h2>
-    <p>{notebook_hint}</p>
+  <div class='card'>
+    <h2>Data note</h2>
+    <p>{support_note}</p>
   </div>
 </div>
 </body>
@@ -162,22 +171,22 @@ def project_pages_bundle(*, version: str = PACKAGE_VERSION) -> dict[str, str]:
     title_card = (assets_root / "echowave_title_card.svg").read_text(encoding="utf-8") if (assets_root / "echowave_title_card.svg").exists() else ""
     mark_svg = (assets_root / "echowave_mark.svg").read_text(encoding="utf-8") if (assets_root / "echowave_mark.svg").exists() else ""
     affiliation_svg = (assets_root / "bham_affiliation_badge.svg").read_text(encoding="utf-8") if (assets_root / "bham_affiliation_badge.svg").exists() else ""
-    weekly = starter_dataset("weekly_website_traffic")
-    weekly_profile = profile_dataset(weekly["values"], domain="traffic", timestamps=weekly["timestamps"], channel_names=weekly["channels"])
+    pageviews = python_javascript_pageviews_2024()
+    pageview_profile = profile_dataset(pageviews["values"], domain="traffic", channel_names=pageviews["channels"])
 
-    clinical = starter_dataset("irregular_patient_vitals")
-    clinical_profile = profile_dataset(clinical["values"], domain="clinical")
+    earthquakes = usgs_earthquakes_ca_ak_2024()
+    earthquake_profile = profile_dataset(earthquakes["event_records"], domain="earth_science")
 
-    github_case = starter_dataset("github_breakout_analogs")
-    github_report = compare_series(github_case["target"], github_case["durable_breakout"], left_name="OpenClaw-style candidate", right_name="durable breakout analog")
-    github_roll = rolling_similarity(github_case["target"], github_case["durable_breakout"], window=20, step=5)
+    attention = ai_attention_breakouts()
+    attention_report = compare_series(attention["deepseek_cumulative"], attention["threads_cumulative"], left_name="DeepSeek", right_name="Threads")
+    attention_roll = rolling_similarity(attention["deepseek_cumulative"], attention["threads_cumulative"], window=20, step=5)
 
-    markets = starter_dataset("btc_gold_oil_shocks")
-    market_report = compare_series(markets["btc"], markets["gold"], left_name="BTC", right_name="Gold")
-    market_roll = rolling_similarity(markets["btc"], markets["gold"], window=24, step=6)
+    markets = btc_oil_vix_2024()
+    market_report = compare_series(markets["btc_usd"], markets["vix"], left_name="BTC", right_name="VIX")
+    market_roll = rolling_similarity(markets["btc_usd"], markets["vix"], window=30, step=10)
 
-    energy = starter_dataset("energy_load_heatwave")
-    energy_profile = profile_dataset(energy["values"], domain="energy", timestamps=energy["timestamps"], channel_names=energy["channels"])
+    heatwave = heatwave_city_temps_2024()
+    heat_profile = profile_dataset(heatwave["values"], domain="climate", channel_names=heatwave["channels"])
 
     manifest = json.dumps(project_demo_manifest(version=version), indent=2)
 
@@ -192,61 +201,77 @@ def project_pages_bundle(*, version: str = PACKAGE_VERSION) -> dict[str, str]:
         "social/echowave_title_card.svg": title_card,
         "social/echowave_mark.svg": mark_svg,
         "social/bham_affiliation_badge.svg": affiliation_svg,
-        "reports/weekly_website_traffic_report.html": profile_html_report(weekly_profile, title="Weekly website traffic"),
-        "reports/irregular_patient_vitals_report.html": profile_html_report(clinical_profile, title="Irregular patient vitals", audience="clinical"),
-        "reports/github_breakout_similarity.html": similarity_html_report(github_report, title="GitHub breakout analogs", left_series=github_case["target"], right_series=github_case["durable_breakout"], rolling_windows=github_roll),
-        "reports/btc_vs_gold_similarity.html": similarity_html_report(market_report, title="BTC vs Gold under shocks", left_series=markets["btc"], right_series=markets["gold"], rolling_windows=market_roll),
-        "reports/energy_load_heatwave_report.html": profile_html_report(energy_profile, title="Heatwave vs grid load", audience="operations"),
-        "social/weekly_website_traffic_card.svg": profile_social_card_svg(weekly_profile, title="Website traffic report"),
-        "social/irregular_patient_vitals_card.svg": profile_social_card_svg(clinical_profile, title="Irregular patient vitals"),
-        "social/github_breakout_card.svg": similarity_social_card_svg(github_report, title="GitHub breakout analogs"),
-        "social/btc_vs_gold_card.svg": similarity_social_card_svg(market_report, title="BTC vs Gold under shocks"),
-        "social/energy_load_card.svg": profile_social_card_svg(energy_profile, title="Heatwave vs grid load"),
+        "reports/weekly_website_traffic_report.html": profile_html_report(pageview_profile, title="Python and JavaScript pageviews"),
+        "reports/irregular_patient_vitals_report.html": profile_html_report(earthquake_profile, title="California and Alaska earthquake streams"),
+        "reports/github_breakout_similarity.html": similarity_html_report(
+            attention_report,
+            title="AI attention breakout analogs",
+            left_series=attention["deepseek_cumulative"],
+            right_series=attention["threads_cumulative"],
+            rolling_windows=attention_roll,
+        ),
+        "reports/btc_vs_gold_similarity.html": similarity_html_report(
+            market_report,
+            title="BTC vs VIX in 2024",
+            left_series=markets["btc_usd"],
+            right_series=markets["vix"],
+            rolling_windows=market_roll,
+        ),
+        "reports/energy_load_heatwave_report.html": profile_html_report(heat_profile, title="Southwest heatwave city temperatures"),
+        "social/weekly_website_traffic_card.svg": profile_social_card_svg(pageview_profile, title="Python vs JavaScript pageviews"),
+        "social/irregular_patient_vitals_card.svg": profile_social_card_svg(earthquake_profile, title="California vs Alaska earthquake streams"),
+        "social/github_breakout_card.svg": similarity_social_card_svg(attention_report, title="AI attention breakout analogs"),
+        "social/btc_vs_gold_card.svg": similarity_social_card_svg(market_report, title="BTC vs VIX in 2024"),
+        "social/energy_load_card.svg": profile_social_card_svg(heat_profile, title="Southwest heatwave city temperatures"),
         "blog/github_breakout_analogs.html": _blog_page(
-            title="GitHub breakout analogs",
-            deck="A showcase story for asking whether a new repository looks like a durable breakout or only a short viral spike.",
+            title="AI attention breakout analogs",
+            deck="A showcase story for asking which historical attention breakout DeepSeek looked most like over its first breakout window.",
             report_href="reports/github_breakout_similarity.html",
             social_href="social/github_breakout_card.svg",
-            notebook_hint="See the matching notebook in examples/notebooks/04_github_breakout_analogs.ipynb.",
+            support_note="This story uses a frozen local CSV snapshot plus the upstream Wikimedia pageviews endpoint so the result stays reproducible.",
+            data_href="https://github.com/ZipengWu365/EchoWave/blob/main/examples/data/real_ai_attention_breakouts.csv",
+            source_data_href=attention["source_url"],
             bullets=[
-                "The story is easy to explain to both engineers and non-specialists.",
-                "The report gives a readable similarity verdict before you reach for lower-level DTW tooling.",
-                "The same asset pack works on GitHub, LinkedIn, X, and a project homepage.",
+                "The question is easy to understand even if the reader is not a time-series specialist.",
+                "The report makes the analog choice explicit instead of leaving it at anecdote level.",
+                "The same asset pack works in docs, social cards, and project updates.",
             ],
             visuals=[
                 {
                     "label": "Series overlay",
-                    "svg": series_overlay_svg(github_case["target"], github_case["durable_breakout"], left_label="candidate", right_label="durable analog"),
-                    "caption": "The durable analog stays shape-aligned beyond the opening spike, so the story is visible before you read the verdict.",
+                    "svg": series_overlay_svg(attention["deepseek_cumulative"], attention["threads_cumulative"], left_label="DeepSeek", right_label="Threads"),
+                    "caption": "The closest analog stays shape-aligned enough that the story is visible before you read the verdict.",
                 },
                 {
                     "label": "Component breakdown",
-                    "svg": similarity_components_svg(github_report),
+                    "svg": similarity_components_svg(attention_report),
                     "caption": "The similarity is not just one score. EchoWave shows which structural dimensions make the analogy convincing.",
                 },
                 {
                     "label": "Rolling similarity",
-                    "svg": rolling_similarity_svg(github_roll),
-                    "caption": "Windowed similarity is what separates a durable breakout from a short viral burst.",
+                    "svg": rolling_similarity_svg(attention_roll),
+                    "caption": "Windowed similarity shows whether the analog survives beyond the first surge of attention.",
                 },
             ],
             source_href="https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_github_breakout_analogs.py",
         ),
         "blog/btc_vs_gold_under_shocks.html": _blog_page(
-            title="BTC vs gold under shocks",
-            deck="A macro narrative that turns rolling similarity and regime-aware comparison into a shareable story.",
+            title="BTC vs VIX in 2024",
+            deck="A macro narrative that turns rolling similarity and regime-aware comparison into a shareable story without pretending the analogy is stronger than it is.",
             report_href="reports/btc_vs_gold_similarity.html",
             social_href="social/btc_vs_gold_card.svg",
-            notebook_hint="See the matching notebook in examples/notebooks/05_btc_gold_oil_shocks.ipynb.",
+            support_note="This story uses a frozen local CSV snapshot built from FRED so the exact comparison can be regenerated later.",
+            data_href="https://github.com/ZipengWu365/EchoWave/blob/main/examples/data/real_btc_oil_vix_2024.csv",
+            source_data_href=markets["source_url"],
             bullets=[
                 "The asset is understandable even if the reader is not a time-series specialist.",
-                "The report shows where similarity is stable versus shock-dependent.",
-                "The demo demonstrates how EchoWave can explain a comparison without claiming to replace market modelling libraries.",
+                "The report shows where similarity is stable versus regime-dependent.",
+                "The demo explains a comparison without claiming to replace market modelling libraries.",
             ],
             visuals=[
                 {
                     "label": "Series overlay",
-                    "svg": series_overlay_svg(markets["btc"], markets["gold"], left_label="BTC", right_label="Gold"),
+                    "svg": series_overlay_svg(markets["btc_usd"], markets["vix"], left_label="BTC", right_label="VIX"),
                     "caption": "The normalized overlay makes the shared structural windows visible despite the scale mismatch.",
                 },
                 {
@@ -257,36 +282,38 @@ def project_pages_bundle(*, version: str = PACKAGE_VERSION) -> dict[str, str]:
                 {
                     "label": "Rolling similarity",
                     "svg": rolling_similarity_svg(market_roll),
-                    "caption": "The rolling panel shows when the safe-haven analogy actually strengthens instead of pretending the relationship is constant.",
+                    "caption": "The rolling panel shows when the BTC-VIX analogy actually strengthens instead of pretending the relationship is constant.",
                 },
             ],
             source_href="https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_btc_gold_under_shocks.py",
         ),
         "blog/heatwave_vs_grid_load.html": _blog_page(
-            title="Heatwave vs grid load",
-            deck="An operations-friendly report story about drift, rhythm, and regime switching under extreme weather.",
+            title="Southwest heatwave city temperatures",
+            deck="An operations-friendly report story about drift, rhythm, and cross-city similarity under extreme weather.",
             report_href="reports/energy_load_heatwave_report.html",
             social_href="social/energy_load_card.svg",
-            notebook_hint="See the matching notebook in examples/notebooks/06_energy_load_heatwave.ipynb.",
+            support_note="This story uses a frozen local CSV snapshot built from Open-Meteo archive data so the same panel can be reused in docs and reports.",
+            data_href="https://github.com/ZipengWu365/EchoWave/blob/main/examples/data/real_heatwave_city_temps_2024.csv",
+            source_data_href=heatwave["source_url"],
             bullets=[
                 "This demo travels well because the narrative is operational, not purely methodological.",
-                "The report makes structural instability legible before transfer or forecasting decisions begin.",
-                "It is a good example of how EchoWave can turn a dataset handoff into an artifact someone else can act on.",
+                "The report makes panel structure legible before transfer or forecasting decisions begin.",
+                "It is a good example of how EchoWave can turn a small wide-table handoff into an artifact someone else can act on.",
             ],
             visuals=[
                 {
-                    "label": "Regional loads",
-                    "svg": series_overlay_svg(energy["values"][:, 0], energy["values"][:, 1], left_label="north", right_label="south"),
-                    "caption": "The two regional load curves still share rhythm, but the heatwave response is clearly not identical.",
+                    "label": "City temperatures",
+                    "svg": series_overlay_svg(heatwave["phoenix_temp_max"], heatwave["las_vegas_temp_max"], left_label="Phoenix", right_label="Las Vegas"),
+                    "caption": "The two city temperature curves still share rhythm, but the heatwave response is clearly not identical.",
                 },
                 {
                     "label": "Dataset radar",
-                    "svg": profile_radar_svg(energy_profile),
+                    "svg": profile_radar_svg(heat_profile),
                     "caption": "The profile radar adds context around drift, complexity, and coupling before any model handoff begins.",
                 },
                 {
                     "label": "Top axes",
-                    "svg": axis_bar_svg(energy_profile),
+                    "svg": axis_bar_svg(heat_profile),
                     "caption": "The axis view turns the dataset profile into something an operations or reliability team can scan quickly.",
                 },
             ],
