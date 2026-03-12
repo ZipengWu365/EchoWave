@@ -58,6 +58,7 @@ from tsontology import (
     project_api_reference_html,
     project_docs_home_html,
     project_demo_manifest,
+    project_tutorials_html,
     profile_dataset,
     register_plugin,
     scenario_guide,
@@ -715,6 +716,14 @@ def test_docs_pages_render_sidebar_layout() -> None:
     assert "compare_series" in api_html
 
 
+def test_tutorials_page_links_real_example_gallery() -> None:
+    html = project_tutorials_html()
+    assert "actual EchoWave run" in html
+    assert "example-github-breakout-analogs.html" in html
+    assert "example-two-curves-similarity.html" in html
+    assert "Open example" in html
+
+
 def test_explain_dataset_returns_plain_summary_card() -> None:
     x = np.sin(np.linspace(0, 8 * np.pi, 128))
     text = explain_dataset(x)
@@ -826,9 +835,18 @@ def test_project_pages_bundle_contains_docs_surface() -> None:
     assert "playground.html" in bundle
     assert "guide/index.html" in bundle
     assert "guide/api.html" in bundle
+    assert "guide/example-github-breakout-analogs.html" in bundle
     assert "reports/github_breakout_similarity.html" in bundle
     assert "social/github_breakout_card.svg" in bundle
 
+
+def test_example_page_contains_code_and_visual_assets() -> None:
+    bundle = project_pages_bundle(version="0.16.0")
+    html = bundle["guide/example-github-breakout-analogs.html"]
+    assert "plot_github_breakout_analogs.py" in html
+    assert "Standalone report" in html
+    assert "Social card" in html
+    assert "<svg" in html
 
 
 def test_new_repo_guides_cover_zero_install_and_pages() -> None:

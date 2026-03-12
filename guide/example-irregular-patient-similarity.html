@@ -2,7 +2,7 @@
 <html lang='en'>
 <head><meta charset='utf-8'/><meta name='viewport' content='width=device-width, initial-scale=1'/><link rel='preconnect' href='https://fonts.googleapis.com'>
 <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
-<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap' rel='stylesheet'><title>EchoWave docs - Documentation Home</title><style>
+<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap' rel='stylesheet'><title>EchoWave docs - Irregular patient trajectories still deserve a similarity verdict</title><style>
 :root {
   --page-bg: #FFFFFF;
   --surface: #FAFAFA;
@@ -559,7 +559,7 @@ img.brand-card {
   <aside class='docs-sidebar'>
     <div class='sidebar-card'>
       <div class='sidebar-title'>Documentation</div>
-      <a class='doc-link active' href='index.html'>Docs Home</a><a class='doc-link' href='getting-started.html'>Getting Started</a><a class='doc-link' href='tutorials.html'>Tutorials</a><a class='doc-link' href='api.html'>API Reference</a><a class='doc-link' href='scenarios.html'>Scenarios</a><a class='doc-link' href='ecosystem.html'>Ecosystem</a><a class='doc-link' href='agents.html'>Agent Tools</a>
+      <a class='doc-link' href='index.html'>Docs Home</a><a class='doc-link' href='getting-started.html'>Getting Started</a><a class='doc-link active' href='tutorials.html'>Tutorials</a><a class='doc-link' href='api.html'>API Reference</a><a class='doc-link' href='scenarios.html'>Scenarios</a><a class='doc-link' href='ecosystem.html'>Ecosystem</a><a class='doc-link' href='agents.html'>Agent Tools</a>
     </div>
     <div class='sidebar-card'>
       <div class='sidebar-title'>Quick links</div>
@@ -571,38 +571,101 @@ img.brand-card {
       <div class='sidebar-title'>Maintainer</div>
       <div class='toc-note'><strong>Zipeng Wu</strong><br>The University of Birmingham<br><a href='mailto:zxw365@student.bham.ac.uk'>zxw365@student.bham.ac.uk</a></div>
     </div>
-    
+    <div class='sidebar-card'><div class='sidebar-title'>Example gallery</div><a class='doc-link' href='example-two-curves-similarity.html'>Two curves, one similarity verdict</a><a class='doc-link' href='example-weekly-traffic-signals.html'>Weekly traffic signals move together, but not identically</a><a class='doc-link active' href='example-irregular-patient-similarity.html'>Irregular patient trajectories still deserve a similarity verdict</a><a class='doc-link' href='example-github-breakout-analogs.html'>GitHub breakout analogs</a><a class='doc-link' href='example-btc-gold-under-shocks.html'>BTC vs gold under shocks</a><a class='doc-link' href='example-heatwave-grid-load.html'>Heatwave vs grid load</a></div>
   </aside>
   <section class='docs-main'>
     <div class='docs-hero'>
       <div class='eyebrow'>Documentation</div>
-      <h1>Documentation Home</h1>
-      <p class='subhead'>A docs-first entry point inspired by scikit-learn: separate pages, strong left navigation, and clear boundaries between tutorials, API reference, and ecosystem guidance.</p>
+      <h1>Irregular patient trajectories still deserve a similarity verdict</h1>
+      <p class='subhead'>A clinical example that uses explicit timestamps so irregular sampling changes the verdict instead of being ignored.</p>
     </div>
     
     <div class='docs-grid-2'>
       <div class='docs-card'>
-        <span class='pill sun'>Docs home</span>
-        <p><strong>EchoWave separates its landing page from its documentation.</strong> The homepage is now a product entry point, while the docs area is organized like a proper technical manual with a persistent left sidebar.</p>
+        <span class='pill sun'>Cross-disciplinary example</span>
         <div class='meta-line'>
-          <span class='meta-chip'><strong>Version</strong> 0.16.0</span>
-          <span class='meta-chip'><strong>Audience</strong> researchers, engineers, technical founders</span>
+          <span class='meta-chip'><strong>Mode</strong> compare_series + profile_dataset</span>
+          <span class='meta-chip'><strong>Headline</strong> 0.90 overall similarity</span>
         </div>
+        <p>Clinical monitoring is rarely dense and tidy. This page compares two heart-rate trajectories with explicit timestamps, then uses a cohort profile to show why irregularity has to stay part of the story.</p>
+        <ul class='panel-list'><li>Even with irregular timestamps, EchoWave still resolves a very high similarity judgment.</li><li>The comparison respects timing instead of forcing naive equal-interval alignment.</li><li>The cohort profile adds structural context so a clinician or collaborator can see why this dataset is hard.</li></ul>
       </div>
       <div class='docs-card'>
-        <span class='pill blue'>60-second quickstart</span>
-        <pre><code>pip install echowave
-python -c &quot;import numpy as np; from echowave import compare_series; x=np.sin(np.linspace(0,8*np.pi,128)); y=np.sin(np.linspace(0,8*np.pi,128)+0.2); print(compare_series(x,y).to_summary_card_markdown())&quot;</code></pre>
+        <span class='pill blue'>Result snapshot</span>
+        <pre><code># EchoWave similarity summary
+
+**Compared:** patient p1 heart rate vs patient p2 heart rate
+
+## Headline
+
+These two inputs show **very high** similarity overall (score 0.899).
+
+patient p1 heart rate and patient p2 heart rate are strongly similar overall. The best agreement appears in trend similarity and shape similarity.
+
+## Most important similarity dimensions
+
+| plain-language label | score |
+|---|---:|
+| trend similarity | 0.998 |
+| shape similarity | 0.987 |
+| dtw similarity | 0.965 |
+| spectral similarity | 0.889 |
+
+## Recommended next actions
+
+- Plot both series after z-score normalization to show the shared shape without scale differences.
+- Run rolling or windowed similarity if you expect the relationship to change over time.
+- Use structural-profile similarity when scales, frequencies, or observation modes differ too much for raw-shape comparison.
+- Inspect spectral or seasonality-aware models because the two series share rhythm strongly.</code></pre>
       </div>
     </div>
-    <div class='docs-grid-3'>
-      <div class='docs-card'><span class='pill sun'>Getting Started</span><h3>Getting Started</h3><p>Install, zero-install paths, and the first 60 seconds.</p><a class='button ghost' href='getting-started.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Tutorials</span><h3>Tutorials</h3><p>Beginner examples, flagship demos, and starter datasets.</p><a class='button ghost' href='tutorials.html'>Open page</a></div><div class='docs-card'><span class='pill sun'>API Reference</span><h3>API Reference</h3><p>The public compare/profile surface and result objects.</p><a class='button ghost' href='api.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Scenarios</span><h3>Scenarios</h3><p>Where EchoWave fits across medicine, engineering, product, and research.</p><a class='button ghost' href='scenarios.html'>Open page</a></div><div class='docs-card'><span class='pill sun'>Ecosystem</span><h3>Ecosystem</h3><p>How EchoWave complements sktime, tsfresh, DTAIDistance, and others.</p><a class='button ghost' href='ecosystem.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Agent Tools</span><h3>Agent Tools</h3><p>Compact routing, stable schemas, and compare-first wrappers.</p><a class='button ghost' href='agents.html'>Open page</a></div>
+    <div class='example-figure-grid'>
+      <div class='docs-card'><span class='pill blue'>Heart-rate overlay</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='720' height='240' viewBox='0 0 720 240' role='img' aria-label='EchoWave series preview'><title>EchoWave series preview</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Series preview</text><line x1='40' y1='24' x2='40' y2='212' stroke='#E5E7EB'/><line x1='40' y1='212' x2='700' y2='212' stroke='#E5E7EB'/><polyline points='40.0,24.0 58.9,24.8 77.7,30.3 96.6,54.6 115.4,36.1 134.3,37.7 153.1,43.7 172.0,70.7 190.9,60.6 209.7,104.2 228.6,109.5 247.4,97.1 266.3,110.1 285.1,93.5 304.0,108.6 322.9,114.6 341.7,107.7 360.6,110.7 379.4,110.8 398.3,93.4 417.1,93.8 436.0,88.1 454.9,109.5 473.7,95.6 492.6,122.6 511.4,114.5 530.3,150.1 549.1,168.4 568.0,167.8 586.9,165.0 605.7,172.9 624.6,177.9 643.4,183.4 662.3,179.7 681.1,160.1 700.0,154.4' fill='none' stroke='#2F6BFF' stroke-width='2.5'/><text x='46' y='42' font-size='11' fill='#2F6BFF'>patient p1</text><polyline points='40.0,71.7 58.9,59.4 77.7,70.5 96.6,76.1 115.4,90.0 134.3,78.9 153.1,89.5 172.0,116.5 190.9,115.5 209.7,135.8 228.6,139.4 247.4,124.7 266.3,138.7 285.1,119.5 304.0,142.8 322.9,130.2 341.7,134.3 360.6,126.6 379.4,128.6 398.3,132.6 417.1,136.5 436.0,109.9 454.9,140.1 473.7,170.6 492.6,162.0 511.4,159.0 530.3,178.5 549.1,171.9 568.0,188.0 586.9,203.7 605.7,207.4 624.6,212.0 643.4,206.3 662.3,208.0 681.1,182.1 700.0,177.6' fill='none' stroke='#C7950A' stroke-width='2.5' stroke-dasharray='5 4'/><text x='120' y='42' font-size='11' fill='#C7950A'>patient p2</text></svg></div><p class='muted'>The raw shapes look similar, but the timestamps are not evenly spaced, so EchoWave resamples them before comparison.</p></div><div class='docs-card'><span class='pill sun'>Similarity components</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='560' height='280' viewBox='0 0 560 280' role='img' aria-label='EchoWave similarity components'><title>EchoWave similarity components</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Similarity components</text><text x='16' y='40' font-size='11' fill='#6B7280'>Overall similarity 0.90 (very high).</text><text x='16' y='62.0' font-size='12' fill='#1F2937'>trend similarity</text><rect x='160' y='48.0' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='48.0' width='379.2' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='61.0' font-size='11' fill='#6B7280' text-anchor='end'>1.00</text><text x='16' y='104.8' font-size='12' fill='#1F2937'>shape similarity</text><rect x='160' y='90.8' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='90.8' width='375.0' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='103.8' font-size='11' fill='#6B7280' text-anchor='end'>0.99</text><text x='16' y='147.6' font-size='12' fill='#1F2937'>dtw similarity</text><rect x='160' y='133.6' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='133.6' width='366.6' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='146.6' font-size='11' fill='#6B7280' text-anchor='end'>0.96</text><text x='16' y='190.4' font-size='12' fill='#1F2937'>spectral similarity</text><rect x='160' y='176.4' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='176.4' width='337.7' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='189.4' font-size='11' fill='#6B7280' text-anchor='end'>0.89</text><text x='16' y='233.2' font-size='12' fill='#1F2937'>derivative similarity</text><rect x='160' y='219.2' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='219.2' width='198.0' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='232.2' font-size='11' fill='#6B7280' text-anchor='end'>0.52</text></svg></div><p class='muted'>The component view keeps the similarity verdict interpretable even in irregular monitoring data.</p></div><div class='docs-card example-figure-wide'><span class='pill blue'>Clinical cohort axes</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='560' height='300' viewBox='0 0 560 300' role='img' aria-label='EchoWave top axes'><title>EchoWave top axes</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Top structure axes</text><text x='16' y='40' font-size='11' fill='#6B7280'>The axes most likely to shape modelling and communication choices.</text><text x='16' y='62.0' font-size='12' fill='#1F2937'>Complexity</text><rect x='170' y='48.0' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='48.0' width='304.0' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='61.0' font-size='11' fill='#6B7280' text-anchor='end'>0.82</text><text x='16' y='100.7' font-size='12' fill='#1F2937'>Trend</text><rect x='170' y='86.7' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='86.7' width='264.4' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='99.7' font-size='11' fill='#6B7280' text-anchor='end'>0.71</text><text x='16' y='139.3' font-size='12' fill='#1F2937'>Irregularity</text><rect x='170' y='125.3' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='125.3' width='210.4' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='138.3' font-size='11' fill='#6B7280' text-anchor='end'>0.57</text><text x='16' y='178.0' font-size='12' fill='#1F2937'>Predictability</text><rect x='170' y='164.0' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='164.0' width='205.0' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='177.0' font-size='11' fill='#6B7280' text-anchor='end'>0.55</text><text x='16' y='216.7' font-size='12' fill='#1F2937'>Rhythmicity</text><rect x='170' y='202.7' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='202.7' width='201.6' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='215.7' font-size='11' fill='#6B7280' text-anchor='end'>0.54</text><text x='16' y='255.3' font-size='12' fill='#1F2937'>Burstiness</text><rect x='170' y='241.3' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='241.3' width='80.4' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='254.3' font-size='11' fill='#6B7280' text-anchor='end'>0.22</text></svg></div><p class='muted'>The cohort profile shows that irregularity and heterogeneity are part of the background, not a preprocessing afterthought.</p></div>
     </div>
-    <div class='docs-card'>
-      <span class='pill sun'>Expected output</span>
-      <pre><code># EchoWave similarity summary
-overall similarity: ...
-top components: shape similarity, trend similarity, spectral similarity</code></pre>
+    <div class='docs-grid-2'>
+      <div class='docs-card'>
+        <span class='pill blue'>Python source</span>
+        <pre><code>from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+SRC = ROOT / &quot;src&quot;
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from echowave import compare_series, profile_dataset, starter_dataset
+
+
+payload = starter_dataset(&quot;irregular_patient_vitals&quot;)
+cohort = payload[&quot;values&quot;]
+subjects = list(cohort.subjects)
+
+left_subject = subjects[0]
+right_subject = subjects[1]
+
+left_hr = left_subject.values[0]
+right_hr = right_subject.values[0]
+left_times = left_subject.timestamps[0]
+right_times = right_subject.timestamps[0]
+
+report = compare_series(
+    left_hr,
+    right_hr,
+    left_timestamps=left_times,
+    right_timestamps=right_times,
+    left_name=&quot;patient p1 heart rate&quot;,
+    right_name=&quot;patient p2 heart rate&quot;,
+)
+profile = profile_dataset(cohort, domain=&quot;clinical&quot;)
+
+print(report.to_summary_card_markdown())
+print(profile.to_summary_card_markdown())
+</code></pre>
+      </div>
+      <div class='docs-card'>
+        <span class='pill sun'>Open assets</span>
+        <div class='asset-list'><a class='asset-link' href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_irregular_patient_similarity.py'><strong>Python source</strong><span>The exact script used for this example.</span></a><a class='asset-link' href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/notebooks/03_irregular_patient_vitals.ipynb'><strong>Notebook</strong><span>The notebook walkthrough for the clinical cohort.</span></a><a class='asset-link' href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/data/irregular_patient_vitals.csv'><strong>Starter CSV</strong><span>The raw irregular monitoring table.</span></a><a class='asset-link' href='../reports/irregular_patient_vitals_report.html'><strong>Clinical report</strong><span>The dataset-level report for this cohort.</span></a></div>
+      </div>
     </div>
     
   </section>

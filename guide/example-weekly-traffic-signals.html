@@ -2,7 +2,7 @@
 <html lang='en'>
 <head><meta charset='utf-8'/><meta name='viewport' content='width=device-width, initial-scale=1'/><link rel='preconnect' href='https://fonts.googleapis.com'>
 <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
-<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap' rel='stylesheet'><title>EchoWave docs - Documentation Home</title><style>
+<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap' rel='stylesheet'><title>EchoWave docs - Weekly traffic signals move together, but not identically</title><style>
 :root {
   --page-bg: #FFFFFF;
   --surface: #FAFAFA;
@@ -559,7 +559,7 @@ img.brand-card {
   <aside class='docs-sidebar'>
     <div class='sidebar-card'>
       <div class='sidebar-title'>Documentation</div>
-      <a class='doc-link active' href='index.html'>Docs Home</a><a class='doc-link' href='getting-started.html'>Getting Started</a><a class='doc-link' href='tutorials.html'>Tutorials</a><a class='doc-link' href='api.html'>API Reference</a><a class='doc-link' href='scenarios.html'>Scenarios</a><a class='doc-link' href='ecosystem.html'>Ecosystem</a><a class='doc-link' href='agents.html'>Agent Tools</a>
+      <a class='doc-link' href='index.html'>Docs Home</a><a class='doc-link' href='getting-started.html'>Getting Started</a><a class='doc-link active' href='tutorials.html'>Tutorials</a><a class='doc-link' href='api.html'>API Reference</a><a class='doc-link' href='scenarios.html'>Scenarios</a><a class='doc-link' href='ecosystem.html'>Ecosystem</a><a class='doc-link' href='agents.html'>Agent Tools</a>
     </div>
     <div class='sidebar-card'>
       <div class='sidebar-title'>Quick links</div>
@@ -571,38 +571,91 @@ img.brand-card {
       <div class='sidebar-title'>Maintainer</div>
       <div class='toc-note'><strong>Zipeng Wu</strong><br>The University of Birmingham<br><a href='mailto:zxw365@student.bham.ac.uk'>zxw365@student.bham.ac.uk</a></div>
     </div>
-    
+    <div class='sidebar-card'><div class='sidebar-title'>Example gallery</div><a class='doc-link' href='example-two-curves-similarity.html'>Two curves, one similarity verdict</a><a class='doc-link active' href='example-weekly-traffic-signals.html'>Weekly traffic signals move together, but not identically</a><a class='doc-link' href='example-irregular-patient-similarity.html'>Irregular patient trajectories still deserve a similarity verdict</a><a class='doc-link' href='example-github-breakout-analogs.html'>GitHub breakout analogs</a><a class='doc-link' href='example-btc-gold-under-shocks.html'>BTC vs gold under shocks</a><a class='doc-link' href='example-heatwave-grid-load.html'>Heatwave vs grid load</a></div>
   </aside>
   <section class='docs-main'>
     <div class='docs-hero'>
       <div class='eyebrow'>Documentation</div>
-      <h1>Documentation Home</h1>
-      <p class='subhead'>A docs-first entry point inspired by scikit-learn: separate pages, strong left navigation, and clear boundaries between tutorials, API reference, and ecosystem guidance.</p>
+      <h1>Weekly traffic signals move together, but not identically</h1>
+      <p class='subhead'>A product-style example showing that two business metrics can share rhythm and trend while still diverging during launch bursts.</p>
     </div>
     
     <div class='docs-grid-2'>
       <div class='docs-card'>
-        <span class='pill sun'>Docs home</span>
-        <p><strong>EchoWave separates its landing page from its documentation.</strong> The homepage is now a product entry point, while the docs area is organized like a proper technical manual with a persistent left sidebar.</p>
+        <span class='pill blue'>Beginner example</span>
         <div class='meta-line'>
-          <span class='meta-chip'><strong>Version</strong> 0.16.0</span>
-          <span class='meta-chip'><strong>Audience</strong> researchers, engineers, technical founders</span>
+          <span class='meta-chip'><strong>Mode</strong> compare_series</span>
+          <span class='meta-chip'><strong>Headline</strong> 0.95 overall similarity</span>
         </div>
+        <p>Sessions and signups do not need to be identical to be meaningfully comparable. This example shows how EchoWave surfaces shared weekly structure while still exposing burst-driven mismatch windows.</p>
+        <ul class='panel-list'><li>The overall similarity is 0.95, which is high enough to treat the two metrics as related signals.</li><li>The rolling panel makes launch-week divergence visible instead of hiding it in an average.</li><li>This is a good example of a product team comparing metrics without committing to a forecasting stack first.</li></ul>
       </div>
       <div class='docs-card'>
-        <span class='pill blue'>60-second quickstart</span>
-        <pre><code>pip install echowave
-python -c &quot;import numpy as np; from echowave import compare_series; x=np.sin(np.linspace(0,8*np.pi,128)); y=np.sin(np.linspace(0,8*np.pi,128)+0.2); print(compare_series(x,y).to_summary_card_markdown())&quot;</code></pre>
+        <span class='pill blue'>Result snapshot</span>
+        <pre><code># EchoWave similarity summary
+
+**Compared:** sessions vs signups
+
+## Headline
+
+These two inputs show **very high** similarity overall (score 0.952).
+
+sessions and signups are strongly similar overall. The best agreement appears in spectral similarity and trend similarity.
+
+## Most important similarity dimensions
+
+| plain-language label | score |
+|---|---:|
+| spectral similarity | 0.978 |
+| trend similarity | 0.974 |
+| shape similarity | 0.970 |
+| derivative similarity | 0.935 |
+
+## Recommended next actions
+
+- Plot both series after z-score normalization to show the shared shape without scale differences.
+- Run rolling or windowed similarity if you expect the relationship to change over time.
+- Use structural-profile similarity when scales, frequencies, or observation modes differ too much for raw-shape comparison.
+- Inspect spectral or seasonality-aware models because the two series share rhythm strongly.</code></pre>
       </div>
     </div>
-    <div class='docs-grid-3'>
-      <div class='docs-card'><span class='pill sun'>Getting Started</span><h3>Getting Started</h3><p>Install, zero-install paths, and the first 60 seconds.</p><a class='button ghost' href='getting-started.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Tutorials</span><h3>Tutorials</h3><p>Beginner examples, flagship demos, and starter datasets.</p><a class='button ghost' href='tutorials.html'>Open page</a></div><div class='docs-card'><span class='pill sun'>API Reference</span><h3>API Reference</h3><p>The public compare/profile surface and result objects.</p><a class='button ghost' href='api.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Scenarios</span><h3>Scenarios</h3><p>Where EchoWave fits across medicine, engineering, product, and research.</p><a class='button ghost' href='scenarios.html'>Open page</a></div><div class='docs-card'><span class='pill sun'>Ecosystem</span><h3>Ecosystem</h3><p>How EchoWave complements sktime, tsfresh, DTAIDistance, and others.</p><a class='button ghost' href='ecosystem.html'>Open page</a></div><div class='docs-card'><span class='pill blue'>Agent Tools</span><h3>Agent Tools</h3><p>Compact routing, stable schemas, and compare-first wrappers.</p><a class='button ghost' href='agents.html'>Open page</a></div>
+    <div class='example-figure-grid'>
+      <div class='docs-card'><span class='pill blue'>Sessions vs signups</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='720' height='240' viewBox='0 0 720 240' role='img' aria-label='EchoWave series preview'><title>EchoWave series preview</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Series preview</text><line x1='40' y1='24' x2='40' y2='212' stroke='#E5E7EB'/><line x1='40' y1='212' x2='700' y2='212' stroke='#E5E7EB'/><polyline points='40.0,175.3 48.0,160.3 55.9,135.6 63.9,126.6 71.8,136.1 79.8,151.4 87.7,163.8 95.7,166.2 103.6,157.2 111.6,138.1 119.5,124.1 127.5,128.0 135.4,157.2 143.4,164.7 151.3,169.9 159.3,151.7 167.2,129.4 175.2,117.2 183.1,120.8 191.1,137.2 199.0,158.7 207.0,153.1 214.9,145.8 222.9,120.0 230.8,106.3 238.8,116.6 246.7,139.3 254.7,156.5 262.7,123.3 270.6,72.3 278.6,24.0 286.5,46.7 294.5,85.3 302.4,128.2 310.4,146.0 318.3,146.2 326.3,134.5 334.2,110.8 342.2,95.6 350.1,99.3 358.1,130.2 366.0,134.9 374.0,136.4 381.9,122.8 389.9,103.5 397.8,94.7 405.8,93.9 413.7,110.9 421.7,128.0 429.6,130.9 437.6,119.0 445.5,104.2 453.5,87.8 461.4,91.7 469.4,119.1 477.3,128.4 485.3,107.7 493.3,63.8 501.2,66.4 509.2,74.3 517.1,90.8 525.1,113.0 533.0,117.1 541.0,127.4 548.9,107.9 556.9,88.9 564.8,69.8 572.8,77.6 580.7,99.7 588.7,128.3 596.6,119.5 604.6,100.7 612.5,77.9 620.5,73.6 628.4,69.9 636.4,102.4 644.3,116.1 652.3,110.1 660.2,97.8 668.2,68.0 676.1,64.5 684.1,74.8 692.0,92.8 700.0,112.3' fill='none' stroke='#2F6BFF' stroke-width='2.5'/><text x='46' y='42' font-size='11' fill='#2F6BFF'>sessions</text><polyline points='40.0,212.0 48.0,210.2 55.9,209.0 63.9,208.0 71.8,209.3 79.8,209.4 87.7,211.2 95.7,210.5 103.6,210.4 111.6,209.3 119.5,208.2 127.5,208.3 135.4,209.8 143.4,211.1 151.3,211.6 159.3,210.6 167.2,208.5 175.2,207.6 183.1,208.6 191.1,210.1 199.0,210.2 207.0,211.3 214.9,210.1 222.9,208.2 230.8,208.9 238.8,208.1 246.7,209.7 254.7,210.4 262.7,208.3 270.6,205.1 278.6,201.4 286.5,204.0 294.5,205.6 302.4,208.8 310.4,209.8 318.3,209.7 326.3,208.9 334.2,207.6 342.2,207.3 350.1,208.4 358.1,209.0 366.0,210.3 374.0,210.6 381.9,208.9 389.9,208.0 397.8,207.6 405.8,208.0 413.7,208.6 421.7,209.5 429.6,209.1 437.6,208.8 445.5,207.1 453.5,206.3 461.4,206.8 469.4,209.5 477.3,208.9 485.3,207.9 493.3,205.1 501.2,205.0 509.2,205.7 517.1,206.9 525.1,208.4 533.0,210.1 541.0,209.3 548.9,208.7 556.9,206.6 564.8,206.5 572.8,206.8 580.7,208.4 588.7,209.2 596.6,209.0 604.6,208.8 612.5,206.7 620.5,206.2 628.4,207.1 636.4,208.8 644.3,208.5 652.3,208.9 660.2,208.1 668.2,206.7 676.1,205.1 684.1,206.4 692.0,207.5 700.0,209.2' fill='none' stroke='#C7950A' stroke-width='2.5' stroke-dasharray='5 4'/><text x='120' y='42' font-size='11' fill='#C7950A'>signups</text></svg></div><p class='muted'>The shape match is visible at a glance, but the burst response is not perfectly aligned.</p></div><div class='docs-card'><span class='pill sun'>Component breakdown</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='560' height='280' viewBox='0 0 560 280' role='img' aria-label='EchoWave similarity components'><title>EchoWave similarity components</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Similarity components</text><text x='16' y='40' font-size='11' fill='#6B7280'>Overall similarity 0.95 (very high).</text><text x='16' y='62.0' font-size='12' fill='#1F2937'>spectral similarity</text><rect x='160' y='48.0' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='48.0' width='371.6' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='61.0' font-size='11' fill='#6B7280' text-anchor='end'>0.98</text><text x='16' y='104.8' font-size='12' fill='#1F2937'>trend similarity</text><rect x='160' y='90.8' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='90.8' width='369.9' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='103.8' font-size='11' fill='#6B7280' text-anchor='end'>0.97</text><text x='16' y='147.6' font-size='12' fill='#1F2937'>shape similarity</text><rect x='160' y='133.6' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='133.6' width='368.6' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='146.6' font-size='11' fill='#6B7280' text-anchor='end'>0.97</text><text x='16' y='190.4' font-size='12' fill='#1F2937'>derivative similarity</text><rect x='160' y='176.4' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='176.4' width='355.3' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='189.4' font-size='11' fill='#6B7280' text-anchor='end'>0.93</text><text x='16' y='233.2' font-size='12' fill='#1F2937'>dtw similarity</text><rect x='160' y='219.2' width='380.0' height='16' rx='8' fill='#F3F4F6'/><rect x='160' y='219.2' width='345.3' height='16' rx='8' fill='#FFC83D'/><text x='538.0' y='232.2' font-size='11' fill='#6B7280' text-anchor='end'>0.91</text></svg></div><p class='muted'>EchoWave explains which parts of the relationship are strong and which are only moderate.</p></div><div class='docs-card example-figure-wide'><span class='pill blue'>Rolling similarity</span><div class='example-preview'><svg xmlns='http://www.w3.org/2000/svg' width='720' height='240' viewBox='0 0 720 240' role='img' aria-label='Rolling similarity'><title>Rolling similarity</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Rolling similarity</text><line x1='40' y1='24' x2='40' y2='212' stroke='#E5E7EB'/><line x1='40' y1='212' x2='700' y2='212' stroke='#E5E7EB'/><line x1='40' y1='118' x2='700' y2='118' stroke='#F3F4F6' stroke-dasharray='4 4'/><polyline points='40.0,30.9 113.3,34.8 186.7,27.8 260.0,29.5 333.3,30.4 406.7,37.6 480.0,30.5 553.3,32.8 626.7,33.0 700.0,32.3' fill='none' stroke='#2F6BFF' stroke-width='2.5'/><text x='46' y='42' font-size='11' fill='#2554CC'>mean=0.96, min=0.93, max=0.98</text></svg></div><p class='muted'>Windowed similarity shows where the funnel stays coupled and where campaign bursts change the relationship.</p></div>
     </div>
-    <div class='docs-card'>
-      <span class='pill sun'>Expected output</span>
-      <pre><code># EchoWave similarity summary
-overall similarity: ...
-top components: shape similarity, trend similarity, spectral similarity</code></pre>
+    <div class='docs-grid-2'>
+      <div class='docs-card'>
+        <span class='pill blue'>Python source</span>
+        <pre><code>from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+SRC = ROOT / &quot;src&quot;
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from echowave import compare_series, rolling_similarity, starter_dataset
+
+
+payload = starter_dataset(&quot;weekly_website_traffic&quot;)
+sessions = payload[&quot;values&quot;][:, 0]
+signups = payload[&quot;values&quot;][:, 1]
+
+report = compare_series(
+    sessions,
+    signups,
+    left_name=&quot;sessions&quot;,
+    right_name=&quot;signups&quot;,
+)
+windows = rolling_similarity(sessions, signups, window=21, step=7)
+
+print(report.to_summary_card_markdown())
+print({&quot;rolling_windows&quot;: len(windows), &quot;mean_similarity&quot;: round(report.similarity_score, 3)})
+</code></pre>
+      </div>
+      <div class='docs-card'>
+        <span class='pill sun'>Open assets</span>
+        <div class='asset-list'><a class='asset-link' href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_weekly_traffic_similarity.py'><strong>Python source</strong><span>The exact script used for this example.</span></a><a class='asset-link' href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/notebooks/02_weekly_website_traffic.ipynb'><strong>Notebook</strong><span>The longer notebook walkthrough.</span></a><a class='asset-link' href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/data/weekly_website_traffic.csv'><strong>Starter CSV</strong><span>The raw traffic demo data used here.</span></a><a class='asset-link' href='../reports/weekly_website_traffic_report.html'><strong>Related report</strong><span>The dataset-level report for the same traffic data.</span></a></div>
+      </div>
     </div>
     
   </section>
