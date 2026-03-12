@@ -22,15 +22,38 @@ from .playground import project_playground_html
 from .profile import profile_dataset
 from .similarity import compare_series, rolling_similarity
 from .visuals import (
+    axis_bar_svg,
     profile_html_report,
+    profile_radar_svg,
     profile_social_card_svg,
+    rolling_similarity_svg,
+    series_overlay_svg,
     similarity_html_report,
+    similarity_components_svg,
     similarity_social_card_svg,
 )
 
 
-def _blog_page(*, title: str, deck: str, report_href: str, social_href: str, notebook_hint: str, bullets: list[str]) -> str:
+def _blog_page(
+    *,
+    title: str,
+    deck: str,
+    report_href: str,
+    social_href: str,
+    notebook_hint: str,
+    bullets: list[str],
+    visuals: list[dict[str, str]],
+    source_href: str,
+) -> str:
     bullet_html = "".join(f"<li>{item}</li>" for item in bullets)
+    visual_html = "".join(
+        "<div class='visual-card'>"
+        f"<div class='visual-label'>{item['label']}</div>"
+        f"<div class='visual-frame'>{item['svg']}</div>"
+        f"<p>{item['caption']}</p>"
+        "</div>"
+        for item in visuals
+    )
     return f"""<!doctype html>
 <html lang='en'>
 <head>
@@ -38,33 +61,65 @@ def _blog_page(*, title: str, deck: str, report_href: str, social_href: str, not
 <meta name='viewport' content='width=device-width, initial-scale=1'/>
 <title>{title} - EchoWave demo story</title>
 <style>
-:root {{ --bg:#f4f8fc; --ink:#102a43; --muted:#486581; --line:#d9e2ec; --panel:#ffffff; --brand:#0b6cff; --shadow:0 1px 2px rgba(16,42,67,.05),0 12px 24px rgba(16,42,67,.08); --max:980px; }}
+:root {{ --bg:#ffffff; --ink:#1F2937; --muted:#6B7280; --line:#E5E7EB; --panel:#ffffff; --panel-soft:#FAFAFA; --brand:#2F6BFF; --sun:#FFC83D; --shadow:0 1px 2px rgba(17,24,39,.04),0 14px 34px rgba(17,24,39,.08); --max:1024px; }}
 * {{ box-sizing:border-box; }} body {{ margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); }}
 .container {{ width:min(var(--max), calc(100vw - 28px)); margin:0 auto; padding:28px 0 42px; }}
 .card {{ background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:22px 24px; box-shadow:var(--shadow); margin-bottom:18px; }}
+.hero {{ display:grid; gap:16px; }}
+.hero-grid {{ display:grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr); gap:18px; align-items:start; }}
 .pill {{ display:inline-block; padding:4px 10px; border-radius:999px; background:#eef5ff; color:var(--brand); font-size:.88rem; font-weight:700; margin-right:8px; }}
+.pill.sun {{ background:#fff4c2; color:#a16207; }}
 a {{ color:var(--brand); text-decoration:none; }} a:hover {{ text-decoration:underline; }}
 h1 {{ margin:0 0 10px; font-size:clamp(2rem,4vw,3rem); line-height:1.05; letter-spacing:-.04em; }} h2 {{ margin:0 0 10px; font-size:1.22rem; }} p.lead {{ color:var(--muted); font-size:1.05rem; }} ul {{ margin:0; padding-left:1.2rem; }}
+.meta {{ display:grid; gap:12px; }}
+.metric {{ border:1px solid var(--line); background:var(--panel-soft); border-radius:16px; padding:14px 16px; }}
+.metric strong {{ display:block; font-size:.82rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }}
+.metric span {{ font-size:1.6rem; font-weight:800; letter-spacing:-.03em; color:var(--ink); }}
+.visual-grid {{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }}
+.visual-card {{ background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:18px; box-shadow:var(--shadow); }}
+.visual-card p {{ color:var(--muted); margin:12px 0 0; }}
+.visual-label {{ display:inline-flex; align-items:center; padding:6px 12px; border-radius:999px; background:#fff4c2; color:#a16207; font-size:.84rem; font-weight:800; margin-bottom:12px; }}
+.visual-frame {{ border:1px solid var(--line); border-radius:16px; background:linear-gradient(180deg,#fffdfa 0%,#ffffff 100%); padding:10px; overflow:hidden; }}
+.visual-frame svg {{ display:block; width:100%; height:auto; }}
+.asset-list {{ display:grid; gap:10px; }}
+.asset-list a {{ display:block; padding:12px 14px; border-radius:14px; border:1px solid var(--line); background:var(--panel-soft); font-weight:700; }}
+@media (max-width: 860px) {{ .hero-grid, .visual-grid {{ grid-template-columns:1fr; }} }}
 </style>
 </head>
 <body>
 <div class='container'>
-  <div class='card'>
-    <span class='pill'>flagship story</span><span class='pill'>EchoWave</span>
-    <h1>{title}</h1>
-    <p class='lead'>{deck}</p>
+  <div class='card hero'>
+    <div><span class='pill sun'>flagship story</span><span class='pill'>EchoWave</span></div>
+    <div class='hero-grid'>
+      <div>
+        <h1>{title}</h1>
+        <p class='lead'>{deck}</p>
+      </div>
+      <div class='meta'>
+        <div class='metric'><strong>Open assets</strong><span>Report + story + card</span></div>
+        <div class='metric'><strong>Use case</strong><span>Explainable similarity demo</span></div>
+      </div>
+    </div>
   </div>
   <div class='card'>
     <h2>Why this demo travels</h2>
     <ul>{bullet_html}</ul>
   </div>
+  <div class='visual-grid'>
+    {visual_html}
+  </div>
   <div class='card'>
     <h2>Open the assets</h2>
-    <ul>
-      <li><a href='../{report_href}'>Open the HTML report</a></li>
-      <li><a href='../{social_href}'>Open the social card</a></li>
-      <li>{notebook_hint}</li>
-    </ul>
+    <div class='asset-list'>
+      <a href='../{report_href}'>Open the HTML report</a>
+      <a href='../{social_href}'>Open the social card</a>
+      <a href='{source_href}'>Open the Python source</a>
+      <a href='#notebook'>{notebook_hint}</a>
+    </div>
+  </div>
+  <div class='card' id='notebook'>
+    <h2>Notebook hint</h2>
+    <p>{notebook_hint}</p>
   </div>
 </div>
 </body>
@@ -158,6 +213,24 @@ def project_pages_bundle(*, version: str = PACKAGE_VERSION) -> dict[str, str]:
                 "The report gives a readable similarity verdict before you reach for lower-level DTW tooling.",
                 "The same asset pack works on GitHub, LinkedIn, X, and a project homepage.",
             ],
+            visuals=[
+                {
+                    "label": "Series overlay",
+                    "svg": series_overlay_svg(github_case["target"], github_case["durable_breakout"], left_label="candidate", right_label="durable analog"),
+                    "caption": "The durable analog stays shape-aligned beyond the opening spike, so the story is visible before you read the verdict.",
+                },
+                {
+                    "label": "Component breakdown",
+                    "svg": similarity_components_svg(github_report),
+                    "caption": "The similarity is not just one score. EchoWave shows which structural dimensions make the analogy convincing.",
+                },
+                {
+                    "label": "Rolling similarity",
+                    "svg": rolling_similarity_svg(github_roll),
+                    "caption": "Windowed similarity is what separates a durable breakout from a short viral burst.",
+                },
+            ],
+            source_href="https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_github_breakout_analogs.py",
         ),
         "blog/btc_vs_gold_under_shocks.html": _blog_page(
             title="BTC vs gold under shocks",
@@ -170,6 +243,24 @@ def project_pages_bundle(*, version: str = PACKAGE_VERSION) -> dict[str, str]:
                 "The report shows where similarity is stable versus shock-dependent.",
                 "The demo demonstrates how EchoWave can explain a comparison without claiming to replace market modelling libraries.",
             ],
+            visuals=[
+                {
+                    "label": "Series overlay",
+                    "svg": series_overlay_svg(markets["btc"], markets["gold"], left_label="BTC", right_label="Gold"),
+                    "caption": "The normalized overlay makes the shared structural windows visible despite the scale mismatch.",
+                },
+                {
+                    "label": "Component breakdown",
+                    "svg": similarity_components_svg(market_report),
+                    "caption": "The verdict stays interpretable because the component view shows whether the analogy is shape-, trend-, or shock-driven.",
+                },
+                {
+                    "label": "Rolling similarity",
+                    "svg": rolling_similarity_svg(market_roll),
+                    "caption": "The rolling panel shows when the safe-haven analogy actually strengthens instead of pretending the relationship is constant.",
+                },
+            ],
+            source_href="https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_btc_gold_under_shocks.py",
         ),
         "blog/heatwave_vs_grid_load.html": _blog_page(
             title="Heatwave vs grid load",
@@ -182,6 +273,24 @@ def project_pages_bundle(*, version: str = PACKAGE_VERSION) -> dict[str, str]:
                 "The report makes structural instability legible before transfer or forecasting decisions begin.",
                 "It is a good example of how EchoWave can turn a dataset handoff into an artifact someone else can act on.",
             ],
+            visuals=[
+                {
+                    "label": "Regional loads",
+                    "svg": series_overlay_svg(energy["values"][:, 0], energy["values"][:, 1], left_label="north", right_label="south"),
+                    "caption": "The two regional load curves still share rhythm, but the heatwave response is clearly not identical.",
+                },
+                {
+                    "label": "Dataset radar",
+                    "svg": profile_radar_svg(energy_profile),
+                    "caption": "The profile radar adds context around drift, complexity, and coupling before any model handoff begins.",
+                },
+                {
+                    "label": "Top axes",
+                    "svg": axis_bar_svg(energy_profile),
+                    "caption": "The axis view turns the dataset profile into something an operations or reliability team can scan quickly.",
+                },
+            ],
+            source_href="https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_heatwave_grid_load.py",
         ),
         **project_docs_pages(version=version),
     }

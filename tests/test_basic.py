@@ -849,6 +849,18 @@ def test_example_page_contains_code_and_visual_assets() -> None:
     assert "<svg" in html
 
 
+def test_blog_pages_include_real_visuals() -> None:
+    bundle = project_pages_bundle(version="0.16.0")
+    for path in (
+        "blog/github_breakout_analogs.html",
+        "blog/btc_vs_gold_under_shocks.html",
+        "blog/heatwave_vs_grid_load.html",
+    ):
+        html = bundle[path]
+        assert "<svg" in html
+        assert "Component breakdown" in html or "Dataset radar" in html
+
+
 def test_new_repo_guides_cover_zero_install_and_pages() -> None:
     assert "uvx" in zero_install_guide()
     assert "GitHub Pages" in pages_deploy_guide()

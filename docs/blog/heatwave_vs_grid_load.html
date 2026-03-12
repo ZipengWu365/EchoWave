@@ -5,33 +5,65 @@
 <meta name='viewport' content='width=device-width, initial-scale=1'/>
 <title>Heatwave vs grid load - EchoWave demo story</title>
 <style>
-:root { --bg:#f4f8fc; --ink:#102a43; --muted:#486581; --line:#d9e2ec; --panel:#ffffff; --brand:#0b6cff; --shadow:0 1px 2px rgba(16,42,67,.05),0 12px 24px rgba(16,42,67,.08); --max:980px; }
+:root { --bg:#ffffff; --ink:#1F2937; --muted:#6B7280; --line:#E5E7EB; --panel:#ffffff; --panel-soft:#FAFAFA; --brand:#2F6BFF; --sun:#FFC83D; --shadow:0 1px 2px rgba(17,24,39,.04),0 14px 34px rgba(17,24,39,.08); --max:1024px; }
 * { box-sizing:border-box; } body { margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); }
 .container { width:min(var(--max), calc(100vw - 28px)); margin:0 auto; padding:28px 0 42px; }
 .card { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:22px 24px; box-shadow:var(--shadow); margin-bottom:18px; }
+.hero { display:grid; gap:16px; }
+.hero-grid { display:grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr); gap:18px; align-items:start; }
 .pill { display:inline-block; padding:4px 10px; border-radius:999px; background:#eef5ff; color:var(--brand); font-size:.88rem; font-weight:700; margin-right:8px; }
+.pill.sun { background:#fff4c2; color:#a16207; }
 a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
 h1 { margin:0 0 10px; font-size:clamp(2rem,4vw,3rem); line-height:1.05; letter-spacing:-.04em; } h2 { margin:0 0 10px; font-size:1.22rem; } p.lead { color:var(--muted); font-size:1.05rem; } ul { margin:0; padding-left:1.2rem; }
+.meta { display:grid; gap:12px; }
+.metric { border:1px solid var(--line); background:var(--panel-soft); border-radius:16px; padding:14px 16px; }
+.metric strong { display:block; font-size:.82rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.metric span { font-size:1.6rem; font-weight:800; letter-spacing:-.03em; color:var(--ink); }
+.visual-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.visual-card { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:18px; box-shadow:var(--shadow); }
+.visual-card p { color:var(--muted); margin:12px 0 0; }
+.visual-label { display:inline-flex; align-items:center; padding:6px 12px; border-radius:999px; background:#fff4c2; color:#a16207; font-size:.84rem; font-weight:800; margin-bottom:12px; }
+.visual-frame { border:1px solid var(--line); border-radius:16px; background:linear-gradient(180deg,#fffdfa 0%,#ffffff 100%); padding:10px; overflow:hidden; }
+.visual-frame svg { display:block; width:100%; height:auto; }
+.asset-list { display:grid; gap:10px; }
+.asset-list a { display:block; padding:12px 14px; border-radius:14px; border:1px solid var(--line); background:var(--panel-soft); font-weight:700; }
+@media (max-width: 860px) { .hero-grid, .visual-grid { grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
 <div class='container'>
-  <div class='card'>
-    <span class='pill'>flagship story</span><span class='pill'>EchoWave</span>
-    <h1>Heatwave vs grid load</h1>
-    <p class='lead'>An operations-friendly report story about drift, rhythm, and regime switching under extreme weather.</p>
+  <div class='card hero'>
+    <div><span class='pill sun'>flagship story</span><span class='pill'>EchoWave</span></div>
+    <div class='hero-grid'>
+      <div>
+        <h1>Heatwave vs grid load</h1>
+        <p class='lead'>An operations-friendly report story about drift, rhythm, and regime switching under extreme weather.</p>
+      </div>
+      <div class='meta'>
+        <div class='metric'><strong>Open assets</strong><span>Report + story + card</span></div>
+        <div class='metric'><strong>Use case</strong><span>Explainable similarity demo</span></div>
+      </div>
+    </div>
   </div>
   <div class='card'>
     <h2>Why this demo travels</h2>
     <ul><li>This demo travels well because the narrative is operational, not purely methodological.</li><li>The report makes structural instability legible before transfer or forecasting decisions begin.</li><li>It is a good example of how EchoWave can turn a dataset handoff into an artifact someone else can act on.</li></ul>
   </div>
+  <div class='visual-grid'>
+    <div class='visual-card'><div class='visual-label'>Regional loads</div><div class='visual-frame'><svg xmlns='http://www.w3.org/2000/svg' width='720' height='240' viewBox='0 0 720 240' role='img' aria-label='EchoWave series preview'><title>EchoWave series preview</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Series preview</text><line x1='40' y1='24' x2='40' y2='212' stroke='#E5E7EB'/><line x1='40' y1='212' x2='700' y2='212' stroke='#E5E7EB'/><polyline points='40.0,136.5 46.9,128.6 53.9,119.5 60.8,104.4 67.8,74.1 74.7,57.0 81.7,55.7 88.6,55.7 95.6,36.1 102.5,53.7 109.5,53.0 116.4,49.5 123.4,83.2 130.3,74.3 137.3,96.0 144.2,104.6 151.2,119.5 158.1,129.1 165.1,134.4 172.0,152.3 178.9,137.1 185.9,141.3 192.8,135.3 199.8,124.1 206.7,115.6 213.7,101.5 220.6,92.7 227.6,89.7 234.5,64.8 241.5,57.1 248.4,52.2 255.4,31.5 262.3,34.9 269.3,39.2 276.2,43.7 283.2,40.9 290.1,51.0 297.1,56.3 304.0,81.5 310.9,87.6 317.9,98.7 324.8,113.1 331.8,151.5 338.7,129.1 345.7,139.4 352.6,138.0 359.6,133.9 366.5,125.8 373.5,115.5 380.4,107.9 387.4,106.2 394.3,77.1 401.3,68.9 408.2,39.6 415.2,39.2 422.1,27.9 429.1,30.9 436.0,27.4 442.9,26.5 449.9,45.1 456.8,40.2 463.8,55.3 470.7,77.2 477.7,100.4 484.6,89.5 491.6,107.2 498.5,117.6 505.5,120.6 512.4,105.8 519.4,118.8 526.3,111.8 533.3,115.3 540.2,77.6 547.2,69.1 554.1,52.2 561.1,44.4 568.0,67.8 574.9,60.6 581.9,49.4 588.8,49.7 595.8,58.1 602.7,39.4 609.7,68.8 616.6,63.9 623.6,75.4 630.5,96.2 637.5,98.0 644.4,120.1 651.4,136.9 658.3,142.3 665.3,161.0 672.2,153.3 679.2,165.5 686.1,172.1 693.1,180.1 700.0,167.6' fill='none' stroke='#2F6BFF' stroke-width='2.5'/><text x='46' y='42' font-size='11' fill='#2F6BFF'>north</text><polyline points='40.0,146.8 46.9,143.6 53.9,131.2 60.8,99.2 67.8,111.1 74.7,92.4 81.7,81.2 88.6,64.7 95.6,72.2 102.5,71.8 109.5,84.3 116.4,70.5 123.4,79.6 130.3,102.9 137.3,110.3 144.2,136.7 151.2,142.2 158.1,136.8 165.1,156.7 172.0,143.1 178.9,173.1 185.9,159.5 192.8,161.6 199.8,146.6 206.7,140.7 213.7,132.6 220.6,121.2 227.6,71.6 234.5,85.9 241.5,91.0 248.4,69.1 255.4,50.5 262.3,57.9 269.3,41.8 276.2,49.1 283.2,66.9 290.1,80.0 297.1,97.2 304.0,108.1 310.9,129.0 317.9,118.4 324.8,126.7 331.8,161.5 338.7,167.2 345.7,175.4 352.6,167.5 359.6,182.3 366.5,157.3 373.5,125.2 380.4,127.4 387.4,103.2 394.3,101.3 401.3,68.1 408.2,67.1 415.2,59.7 422.1,24.0 429.1,43.6 436.0,49.3 442.9,37.9 449.9,44.7 456.8,42.3 463.8,69.6 470.7,65.0 477.7,75.6 484.6,99.6 491.6,101.1 498.5,116.5 505.5,91.6 512.4,118.8 519.4,113.0 526.3,111.2 533.3,94.3 540.2,77.9 547.2,55.7 554.1,51.4 561.1,30.8 568.0,109.4 574.9,93.1 581.9,52.4 588.8,62.1 595.8,76.2 602.7,82.7 609.7,84.6 616.6,84.5 623.6,95.3 630.5,115.6 637.5,134.9 644.4,125.6 651.4,148.4 658.3,168.3 665.3,177.0 672.2,186.9 679.2,212.0 686.1,184.7 693.1,191.6 700.0,184.0' fill='none' stroke='#C7950A' stroke-width='2.5' stroke-dasharray='5 4'/><text x='120' y='42' font-size='11' fill='#C7950A'>south</text></svg></div><p>The two regional load curves still share rhythm, but the heatwave response is clearly not identical.</p></div><div class='visual-card'><div class='visual-label'>Dataset radar</div><div class='visual-frame'><svg xmlns='http://www.w3.org/2000/svg' width='420' height='420' viewBox='0 0 420 420' role='img' aria-label='EchoWave axis radar'><title>EchoWave axis radar</title><rect width='100%' height='100%' fill='white'/><text x='18' y='24' font-size='16' font-weight='700' fill='#1F2937'>Axis radar</text><text x='18' y='42' font-size='11' fill='#6B7280'>Higher means the axis is more structurally dominant.</text><polygon points='210.0,185.4 226.3,189.8 238.2,201.7 242.6,218.0 238.2,234.3 226.3,246.2 210.0,250.6 193.7,246.2 181.8,234.3 177.4,218.0 181.8,201.7 193.7,189.8' fill='none' stroke='#E5E7EB' stroke-width='1'/><polygon points='210.0,152.9 242.5,161.6 266.4,185.4 275.1,218.0 266.4,250.5 242.5,274.4 210.0,283.1 177.5,274.4 153.6,250.6 144.9,218.0 153.6,185.4 177.4,161.6' fill='none' stroke='#E5E7EB' stroke-width='1'/><polygon points='210.0,120.4 258.8,133.4 294.6,169.2 307.6,218.0 294.6,266.8 258.8,302.6 210.0,315.6 161.2,302.6 125.4,266.8 112.4,218.0 125.4,169.2 161.2,133.4' fill='none' stroke='#E5E7EB' stroke-width='1'/><polygon points='210.0,87.8 275.1,105.2 322.8,152.9 340.2,218.0 322.8,283.1 275.1,330.8 210.0,348.2 144.9,330.8 97.2,283.1 79.8,218.0 97.2,152.9 144.9,105.2' fill='none' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='210.0' y2='87.8' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='275.1' y2='105.2' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='322.8' y2='152.9' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='340.2' y2='218.0' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='322.8' y2='283.1' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='275.1' y2='330.8' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='210.0' y2='348.2' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='144.9' y2='330.8' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='97.2' y2='283.1' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='79.8' y2='218.0' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='97.2' y2='152.9' stroke='#E5E7EB' stroke-width='1'/><line x1='210.0' y1='218.0' x2='144.9' y2='105.2' stroke='#E5E7EB' stroke-width='1'/><polygon points='210.0,218.0 213.0,212.9 297.4,167.5 242.1,218.0 277.4,256.9 259.3,303.4 210.0,319.3 207.2,222.8 192.4,228.2 174.9,218.0 125.3,169.1 205.9,210.9' fill='rgba(255, 200, 61, 0.24)' stroke='#2F6BFF' stroke-width='2'/><text x='210.0' y='67.8' font-size='11' fill='#6B7280' text-anchor='middle' dominant-baseline='middle'>Irregularity</text><text x='285.1' y='87.9' font-size='11' fill='#6B7280' text-anchor='start' dominant-baseline='middle'>Noise</text><text x='340.1' y='142.9' font-size='11' fill='#6B7280' text-anchor='start' dominant-baseline='middle'>Predictability</text><text x='360.2' y='218.0' font-size='11' fill='#6B7280' text-anchor='start' dominant-baseline='middle'>Drift</text><text x='340.1' y='293.1' font-size='11' fill='#6B7280' text-anchor='start' dominant-baseline='middle'>Trend</text><text x='285.1' y='348.1' font-size='11' fill='#6B7280' text-anchor='start' dominant-baseline='middle'>Rhythmicity</text><text x='210.0' y='368.2' font-size='11' fill='#6B7280' text-anchor='middle' dominant-baseline='middle'>Complexity</text><text x='134.9' y='348.1' font-size='11' fill='#6B7280' text-anchor='end' dominant-baseline='middle'>Nonlinearity</text><text x='79.9' y='293.1' font-size='11' fill='#6B7280' text-anchor='end' dominant-baseline='middle'>Burstiness</text><text x='59.8' y='218.0' font-size='11' fill='#6B7280' text-anchor='end' dominant-baseline='middle'>Regimes</text><text x='79.9' y='142.9' font-size='11' fill='#6B7280' text-anchor='end' dominant-baseline='middle'>Coupling</text><text x='134.9' y='87.9' font-size='11' fill='#6B7280' text-anchor='end' dominant-baseline='middle'>Heterogeneity</text></svg></div><p>The profile radar adds context around drift, complexity, and coupling before any model handoff begins.</p></div><div class='visual-card'><div class='visual-label'>Top axes</div><div class='visual-frame'><svg xmlns='http://www.w3.org/2000/svg' width='560' height='300' viewBox='0 0 560 300' role='img' aria-label='EchoWave top axes'><title>EchoWave top axes</title><rect width='100%' height='100%' fill='white'/><text x='16' y='24' font-size='16' font-weight='700' fill='#1F2937'>Top structure axes</text><text x='16' y='40' font-size='11' fill='#6B7280'>The axes most likely to shape modelling and communication choices.</text><text x='16' y='62.0' font-size='12' fill='#1F2937'>Complexity</text><rect x='170' y='48.0' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='48.0' width='288.0' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='61.0' font-size='11' fill='#6B7280' text-anchor='end'>0.78</text><text x='16' y='100.7' font-size='12' fill='#1F2937'>Predictability</text><rect x='170' y='86.7' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='86.7' width='286.8' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='99.7' font-size='11' fill='#6B7280' text-anchor='end'>0.78</text><text x='16' y='139.3' font-size='12' fill='#1F2937'>Rhythmicity</text><rect x='170' y='125.3' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='125.3' width='280.1' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='138.3' font-size='11' fill='#6B7280' text-anchor='end'>0.76</text><text x='16' y='178.0' font-size='12' fill='#1F2937'>Coupling</text><rect x='170' y='164.0' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='164.0' width='278.1' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='177.0' font-size='11' fill='#6B7280' text-anchor='end'>0.75</text><text x='16' y='216.7' font-size='12' fill='#1F2937'>Trend</text><rect x='170' y='202.7' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='202.7' width='221.1' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='215.7' font-size='11' fill='#6B7280' text-anchor='end'>0.60</text><text x='16' y='255.3' font-size='12' fill='#1F2937'>Regimes</text><rect x='170' y='241.3' width='370.0' height='16' rx='8' fill='#F3F4F6'/><rect x='170' y='241.3' width='99.7' height='16' rx='8' fill='#2F6BFF'/><text x='538.0' y='254.3' font-size='11' fill='#6B7280' text-anchor='end'>0.27</text></svg></div><p>The axis view turns the dataset profile into something an operations or reliability team can scan quickly.</p></div>
+  </div>
   <div class='card'>
     <h2>Open the assets</h2>
-    <ul>
-      <li><a href='../reports/energy_load_heatwave_report.html'>Open the HTML report</a></li>
-      <li><a href='../social/energy_load_card.svg'>Open the social card</a></li>
-      <li>See the matching notebook in examples/notebooks/06_energy_load_heatwave.ipynb.</li>
-    </ul>
+    <div class='asset-list'>
+      <a href='../reports/energy_load_heatwave_report.html'>Open the HTML report</a>
+      <a href='../social/energy_load_card.svg'>Open the social card</a>
+      <a href='https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_heatwave_grid_load.py'>Open the Python source</a>
+      <a href='#notebook'>See the matching notebook in examples/notebooks/06_energy_load_heatwave.ipynb.</a>
+    </div>
+  </div>
+  <div class='card' id='notebook'>
+    <h2>Notebook hint</h2>
+    <p>See the matching notebook in examples/notebooks/06_energy_load_heatwave.ipynb.</p>
   </div>
 </div>
 </body>
