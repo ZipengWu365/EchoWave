@@ -559,11 +559,11 @@ def test_hot_case_gallery_and_similarity_playbook_are_exposed() -> None:
 
 def test_project_homepage_html_contains_core_sections() -> None:
     html = project_homepage_html()
-    assert "tsontology" in html
+    assert "EchoWave" in html
     assert "OpenClaw" in html
     assert "Agent-ready by design" in html
     assert "Install" in html
-    assert "Where tsontology fits in the ecosystem" in html
+    assert "Where EchoWave fits in the ecosystem" in html
 
 
 
@@ -698,7 +698,7 @@ def test_github_readme_contains_ecosystem_positioning() -> None:
 
 def test_homepage_mentions_ecosystem_and_coverage() -> None:
     html = project_homepage_html(version="0.12.0")
-    assert "Where tsontology fits in the ecosystem" in html
+    assert "Where EchoWave fits in the ecosystem" in html
     assert "Capability coverage" in html
     assert "Agent-ready by design" in html
 

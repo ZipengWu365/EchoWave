@@ -1,9 +1,8 @@
 """Static homepage generator for EchoWave v0.16.0.
 
-The homepage is docs-first, GitHub-friendly, and ready to be dropped into a
-GitHub Pages bundle. It is intentionally closer to a scientific Python docs
-landing page than to a marketing microsite, but it now carries stronger demo
-and growth assets.
+The homepage is a bright, scientific, GitHub Pages-friendly landing page for
+the EchoWave ecosystem. It favors clarity and trust over decoration while
+keeping the product surface demo-forward.
 """
 
 from __future__ import annotations
@@ -21,8 +20,10 @@ from .copydeck import (
     ECOSYSTEM_HEADING,
     FLAGSHIP_DEMOS,
     HEADLINE,
+    HOMEPAGE_PILLS,
     INSTALL_HEADING,
     LIVE_DEMO_HEADING,
+    PACKAGE_STAGE,
     PACKAGE_VERSION,
     PAGES_HEADING,
     PRODUCT_PROMISE,
@@ -33,12 +34,10 @@ from .copydeck import (
     QUICKSTART_ONE_LINER,
     TAGLINE,
     TRUST_HEADING,
-    HOMEPAGE_PILLS,
     ZERO_INSTALL_OPTIONS,
 )
 from .datasets import list_starter_datasets, starter_dataset
-from .playground import project_playground_html
-from .launchpad import project_launchpad_html
+from .design_system import page_head
 from .positioning import coverage_matrix, ecosystem_positioning
 from .product import explain_similarity
 from .profile import profile_dataset
@@ -54,13 +53,22 @@ from .visuals import (
 )
 
 
+def _normalize_public_copy(text: str) -> str:
+    return (
+        text.replace("tsontology", DISPLAY_NAME)
+        .replace("TSontology", DISPLAY_NAME)
+        .replace("dataset-first structural profiling", "explainable structural similarity")
+        .replace("Dataset-first structural profiling", "Dataset structure and similarity context")
+    )
+
+
 def _ecosystem_rows() -> str:
     payload = ecosystem_positioning(format="json")
     rows = []
     for entry in payload["entries"][:6]:
         strongest = ", ".join(entry["strongest_for"][:3])
         rows.append(
-            f"<tr><td><strong>{escape(entry['name'])}</strong></td><td>{escape(entry['family'])}</td><td>{escape(strongest)}</td><td>{escape(entry['tsontology_relation'])}</td></tr>"
+            f"<tr><td><strong>{escape(entry['name'])}</strong></td><td>{escape(entry['family'])}</td><td>{escape(strongest)}</td><td>{escape(_normalize_public_copy(entry['tsontology_relation']))}</td></tr>"
         )
     return "\n".join(rows)
 
@@ -71,7 +79,7 @@ def _coverage_rows() -> str:
     for row in payload["rows"][:8]:
         companions = ", ".join(row["best_companions"]) if row["best_companions"] else "-"
         rows.append(
-            f"<tr><td>{escape(row['capability'])}</td><td>{escape(row['tsontology_role'])}</td><td>{escape(companions)}</td><td>{escape(row['notes'])}</td></tr>"
+            f"<tr><td>{escape(_normalize_public_copy(row['capability']))}</td><td>{escape(row['tsontology_role'])}</td><td>{escape(companions)}</td><td>{escape(_normalize_public_copy(row['notes']))}</td></tr>"
         )
     return "\n".join(rows)
 
@@ -87,9 +95,24 @@ def _flagship_cards() -> str:
     cards = []
     for item in FLAGSHIP_DEMOS:
         cards.append(
-            f"<div class='card'><span class='pill alt'>flagship</span><h3>{escape(item['title'])}</h3><p>{escape(item['story'])}</p><p class='hook'>{escape(item['social_hook'])}</p></div>"
+            "<div class='card feature-card sun'>"
+            "<span class='pill sun'>Flagship demo</span>"
+            f"<h3>{escape(item['title'])}</h3>"
+            f"<p>{escape(item['story'])}</p>"
+            f"<div class='note-box info'>{escape(item['social_hook'])}</div>"
+            "</div>"
         )
     return "\n".join(cards)
+
+
+def _zero_install_cards() -> str:
+    return "\n".join(
+        "<div class='card feature-card'>"
+        f"<span class='pill blue'>{escape(item['title'])}</span>"
+        f"<p>{escape(item['why'])}</p>"
+        "</div>"
+        for item in ZERO_INSTALL_OPTIONS
+    )
 
 
 def project_homepage_html(*, version: str = PACKAGE_VERSION) -> str:
@@ -109,183 +132,412 @@ def project_homepage_html(*, version: str = PACKAGE_VERSION) -> str:
     )
     windows = rolling_similarity(github_case["target"], github_case["durable_breakout"], window=20, step=5)
 
-    radar = profile_radar_svg(traffic_profile, width=380, height=360)
+    radar = profile_radar_svg(traffic_profile, width=420, height=380)
     bars = axis_bar_svg(traffic_profile, width=560, height=300)
     overlay = series_overlay_svg(
         github_case["target"],
         github_case["durable_breakout"],
         left_label="OpenClaw-style candidate",
         right_label="durable breakout analog",
-        width=560,
-        height=220,
+        width=620,
+        height=250,
     )
-    comp = similarity_components_svg(github_report, width=560, height=220)
-    roll_svg = rolling_similarity_svg(windows, width=560, height=220)
-    summary_preview = escape(explain_similarity(github_case["target"], github_case["durable_breakout"], left_name="OpenClaw-style candidate", right_name="durable breakout analog"))
+    comp = similarity_components_svg(github_report, width=620, height=250)
+    roll_svg = rolling_similarity_svg(windows, width=620, height=250)
+    summary_preview = escape(
+        explain_similarity(
+            github_case["target"],
+            github_case["durable_breakout"],
+            left_name="OpenClaw-style candidate",
+            right_name="durable breakout analog",
+        )
+    )
     social_left = similarity_social_card_svg(github_report, title="GitHub breakout analogs")
     social_right = profile_social_card_svg(traffic_profile, title="Website traffic structure")
     starter_rows = _starter_rows()
     ecosystem_rows = _ecosystem_rows()
     coverage_rows = _coverage_rows()
     flagship_cards = _flagship_cards()
+    zero_cards = _zero_install_cards()
     homepage_pills = "".join(f"<span class='pill'>{escape(item)}</span>" for item in HOMEPAGE_PILLS)
     quick_expected = escape("\n".join(QUICKSTART_EXPECTED_LINES))
-    playground = project_playground_html(version=version)
-    zero_cards = "".join(
-        f"<div class='card'><span class='pill'>{escape(item['title'])}</span><p>{escape(item['why'])}</p></div>" for item in ZERO_INSTALL_OPTIONS
+    trust_logos = "".join(
+        f"<span class='logo-chip'><span class='logo-dot'></span>{escape(item)}</span>"
+        for item in (
+            "MIT License",
+            f"{PACKAGE_STAGE} release",
+            "GitHub Pages",
+            "Agent tools",
+            AUTHOR_AFFILIATION,
+        )
     )
+
+    extra_css = """
+    .hero-copy { display:grid; gap:16px; }
+    .hero-visual { display:grid; gap:16px; }
+    .hero-visual-grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+    .mini-kicker { color: var(--sun-700); font-size: 0.9rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+    .problem-grid { display:grid; grid-template-columns: 0.95fr 1.05fr; gap: 20px; }
+    .cta-band { display:grid; gap:14px; padding: 22px 24px; border:1px solid rgba(255,200,61,0.46); border-radius: var(--radius-lg); background: linear-gradient(135deg, #fffdf4 0%, #ffffff 100%); box-shadow: var(--shadow-sm); }
+    .eyebrow-line { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .section-stack { display:grid; gap:20px; }
+    .report-stack { display:grid; gap:20px; }
+    .brand-links { display:flex; flex-wrap:wrap; gap:12px; }
+    .cta-row { display:flex; flex-wrap:wrap; gap:12px; margin-top: 4px; }
+    .author-band { display:grid; gap:8px; }
+    @media (max-width: 980px) {
+      .problem-grid, .hero-visual-grid { grid-template-columns: 1fr; }
+    }
+    """
 
     return f"""<!doctype html>
 <html lang='en'>
-<head>
-<meta charset='utf-8'/>
-<meta name='viewport' content='width=device-width, initial-scale=1'/>
-<title>{DISPLAY_NAME} - {TAGLINE.lower()}</title>
-<style>
-:root {{ --bg:#f4f8fc; --ink:#102a43; --muted:#486581; --line:#d9e2ec; --soft:#f7fafc; --blue:#0b6cff; --orange:#dd6b20; --card:#ffffff; --shadow:0 1px 2px rgba(16,42,67,.05),0 12px 24px rgba(16,42,67,.08); --max:1180px; --academic:#a51c30; }}
-* {{ box-sizing:border-box; }} body {{ margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; }} a {{ color:var(--blue); text-decoration:none; }} a:hover {{ text-decoration:underline; }}
-.topbar {{ position:sticky; top:0; z-index:20; backdrop-filter:saturate(180%) blur(10px); background:rgba(248,251,255,.92); border-bottom:1px solid var(--line); }}
-.container {{ width:min(var(--max), calc(100vw - 32px)); margin:0 auto; }} .topbar-inner {{ min-height:64px; display:flex; align-items:center; justify-content:space-between; gap:16px; }}
-.brand {{ display:flex; align-items:center; gap:12px; }} .brand-mark {{ width:18px; height:18px; border-radius:5px; background:linear-gradient(135deg,var(--blue),#9cc9ff); }} .brand strong {{ font-size:1.18rem; letter-spacing:-.02em; }} .brand span {{ color:var(--muted); }} .nav {{ display:flex; flex-wrap:wrap; gap:16px; font-size:.94rem; }}
-.hero {{ padding:42px 0 20px; }} .hero-grid {{ display:grid; grid-template-columns:1.08fr .92fr; gap:24px; align-items:start; }} .card {{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:20px 22px; box-shadow:var(--shadow); }} .grid2 {{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }} .grid3 {{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }} section.block {{ padding:12px 0 18px; }}
-.kicker {{ display:inline-block; font-size:.88rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--blue); margin-bottom:8px; }} h1 {{ margin:0; font-size:clamp(2.4rem,5vw,4rem); line-height:1.03; letter-spacing:-.045em; }} h2 {{ margin:0 0 8px; font-size:1.75rem; letter-spacing:-.02em; }} h3 {{ margin:0 0 8px; font-size:1.2rem; letter-spacing:-.02em; }} .subhead {{ margin:12px 0 0; font-size:1.16rem; color:var(--muted); max-width:48rem; }} .badge-row {{ display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 0; }}
-.buttons {{ display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }} .button {{ display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:10px; font-weight:600; border:1px solid var(--line); color:var(--ink); background:#fff; box-shadow:var(--shadow); }} .button.primary {{ background:var(--blue); color:#fff; border-color:var(--blue); }}
-.pill {{ display:inline-block; padding:4px 10px; border-radius:999px; background:#eef5ff; color:var(--blue); font-size:.88rem; font-weight:600; margin-right:8px; }} .pill.alt {{ background:#fff4e8; color:var(--orange); }} .pill.academic {{ background:#fce8ec; color:var(--academic); }} .hook {{ color:var(--muted); font-style:italic; }} .muted {{ color:var(--muted); }} .lead {{ margin:0 0 16px; color:var(--muted); max-width:72rem; }}
-pre {{ margin:0; padding:14px 16px; background:#f6f8fa; border:1px solid var(--line); border-radius:12px; overflow:auto; font-size:.92rem; white-space:pre-wrap; word-break:break-word; }} table {{ width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:var(--shadow); }} th,td {{ text-align:left; vertical-align:top; padding:12px 14px; border-bottom:1px solid var(--line); }} th {{ background:#f7fafc; font-size:.95rem; }} tr:last-child td {{ border-bottom:none; }} iframe.demo {{ width:100%; min-height:420px; border:1px solid var(--line); border-radius:14px; background:#fff; box-shadow:var(--shadow); }} img.hero-art {{ width:100%; border:1px solid var(--line); border-radius:14px; margin-top:16px; box-shadow:var(--shadow); background:#fff; }} img.affiliation-art {{ width:100%; max-width:460px; border:1px solid var(--line); border-radius:14px; margin-top:16px; box-shadow:var(--shadow); background:#fff; }} .author-meta {{ display:grid; gap:6px; margin-top:14px; }} .footer {{ padding:28px 0 48px; color:var(--muted); }}
-@media (max-width: 980px) {{ .hero-grid,.grid2,.grid3 {{ grid-template-columns:1fr; }} .topbar-inner {{ padding:12px 0; align-items:flex-start; }} }}
-</style>
-</head>
+{page_head(f"{DISPLAY_NAME} - {TAGLINE}", extra_css=extra_css)}
 <body>
-<header class='topbar'><div class='container topbar-inner'><div class='brand'><span class='brand-mark'></span><div><strong>{DISPLAY_NAME}</strong><span> {escape(TAGLINE)}</span></div></div><nav class='nav'><a href='start-here.html'>Start here</a><a href='#install'>{INSTALL_HEADING}</a><a href='#live-demo'>{PAGES_HEADING}</a><a href='#demos'>Flagship demos</a><a href='#ecosystem'>{ECOSYSTEM_HEADING}</a><a href='#agents'>{AGENT_HEADING}</a><a href='#benchmark'>{BENCHMARK_HEADING}</a><a href='#trust'>{TRUST_HEADING}</a></nav></div></header>
-<main class='container'>
-<!-- EchoWave was formerly published as tsontology. -->
-<section class='hero'>
-<div class='hero-grid'>
-<div>
-<span class='kicker'>Version {escape(version)} - compare-first product surface</span>
-<h1>{escape(HEADLINE)}</h1>
-<p class='subhead'>{escape(PRODUCT_PROMISE)} Use it when you need an explainable verdict, not just an opaque distance score.</p>
-<div class='badge-row'>{homepage_pills}</div>
-<div class='buttons'>
-<a class='button primary' href='#install'>Run the quickstart</a>
-<a class='button' href='start-here.html'>Start here</a><a class='button' href='playground.html'>Open static playground</a><a class='button' href='#live-demo'>See live demo options</a>
-<a class='button' href='reports/github_breakout_similarity.html'>See flagship demo</a>
-</div>
-</div>
-<div class='card'>
-<span class='pill'>What this solves</span><span class='pill academic'>Built with academic grounding</span>
-<p><strong>Many time-series comparisons fail because one score is not enough.</strong> Teams still need to know whether two curves really match, whether two datasets are structurally alike, and what part of the similarity is doing the work.</p>
-<ul>
-<li>Compare two curves with a readable verdict and component breakdown</li>
-<li>Compare two datasets when scale or observation style differs</li>
-<li>Search for analogs instead of eyeballing historical cases</li>
-<li>Ship the result as agent JSON and shareable HTML</li>
-</ul>
-<img class='hero-art' src='social/echowave_title_card.svg' alt='EchoWave title card'/>
-<img class='affiliation-art' src='social/bham_affiliation_badge.svg' alt='Zipeng Wu, The University of Birmingham'/>
-<div class='author-meta'>
-<strong>{escape(AUTHOR_NAME)}</strong>
-<span>{escape(AUTHOR_AFFILIATION)}</span>
-<a href='mailto:{escape(AUTHOR_EMAIL)}'>{escape(AUTHOR_EMAIL)}</a>
-<a href='{escape(PROJECT_REPOSITORY_URL)}'>{escape(PROJECT_REPOSITORY_URL)}</a>
-<a href='{escape(PROJECT_DOCUMENTATION_URL)}'>{escape(PROJECT_DOCUMENTATION_URL)}</a>
-</div>
-</div>
-</div>
-</section>
-<section class='block' id='install'>
-<h2>{INSTALL_HEADING}</h2>
-<p class='lead'>The first minute should be copy-pasteable and should produce a real output.</p>
-<div class='grid2'>
-<div class='card'><pre><code>{escape(QUICKSTART_INSTALL)}
-{escape(QUICKSTART_ONE_LINER)}</code></pre></div>
-<div class='card'><h3>Expected output starts like this</h3><pre><code>{quick_expected}</code></pre></div>
-</div>
-</section>
-<section class='block' id='live-demo'>
-<h2>{PAGES_HEADING}</h2><p class='lead'><strong>{LIVE_DEMO_HEADING}:</strong> for real computation without a backend, run the bundled local server.</p>
-<p class='lead'>This version ships both a static GitHub Pages showcase and a tiny local live demo server. Use Pages when you want a shareable similarity demo, and use the local demo when you want real computation on pasted arrays or starter cases.</p>
-<div class='grid3'>
-<div class='card'><span class='pill'>Start here</span><p>Use <code>start-here.html</code> as the single launch page for quickstart, local demo, environment doctor, and Pages export.</p></div>
-{zero_cards}
-</div>
-<div class='grid2' style='margin-top:20px'>
-<div class='card'><h3>Playground preview</h3><iframe class='demo' srcdoc="{escape(playground)}"></iframe></div>
-<div class='card'><h3>Zero-install paths</h3><ul><li>Open <code>docs/index.html</code> or <code>playground.html</code> locally.</li><li>Publish the included <code>docs/</code> bundle with GitHub Pages.</li><li>Use the Colab starter notebook or the documented <code>uvx</code> pattern for lightweight trials.</li><li>Export a compatibility preset before installing into a crowded scientific stack.</li></ul></div>
-</div>
-</section>
-<section class='block'>
-<h2>What explainable similarity looks like</h2>
-<p class='lead'>The goal is not just one score. It is a verdict a researcher, product manager, clinician, or agent can act on.</p>
-<div class='grid2'>
-<div class='card'>{overlay}</div>
-<div class='card'><h3>Plain-English similarity preview</h3><pre><code>{summary_preview}</code></pre></div>
-</div>
-<div class='grid2' style='margin-top:20px'>
-<div class='card'>{comp}</div>
-<div class='card'><h3>Brandable similarity card</h3>{social_left}</div>
-</div>
-<div class='grid2' style='margin-top:20px'>
-<div class='card'>{roll_svg}</div>
-<div class='card'><h3>When raw shape is not enough</h3>{radar}</div>
-</div>
-</section>
-<section class='block' id='demos'>
-<h2>Flagship demos built to travel</h2>
-<p class='lead'>The strongest social hooks in this repo are GitHub breakout analogs, BTC vs gold under shocks, and heatwave vs grid load. Each flagship demo now has a notebook, HTML report, social card, GIF, and short blog draft.</p>
-<div class='grid3'>{flagship_cards}</div>
-<div class='grid2' style='margin-top:20px'>
-<div class='card'>{bars}</div>
-<div class='card'><h3>Dataset context card</h3>{social_right}</div>
-</div>
-</section>
-<section class='block' id='benchmark'>
-<h2>{BENCHMARK_HEADING}</h2>
-<p class='lead'>The benchmark story is still modest. The bundled reproducible suite is a decision-impact benchmark, not yet a full similarity robustness or retrieval benchmark.</p>
-<div class='grid2'>
-<div class='card'><h3>What exists today</h3><ul><li>A reproducible decision-impact benchmark.</li><li>A realistic product claim: structural reports can change downstream choices.</li><li>A clear place to attach future similarity retrieval benchmarks.</li></ul></div>
-<div class='card'><h3>What is still missing</h3><ul><li>Not a publication benchmark.</li><li>Not a leaderboard.</li><li>Not yet proof that EchoWave is the best general-purpose similarity engine.</li></ul></div>
-</div>
-</section>
-<section class='block' id='ecosystem'>
-<!-- Where tsontology fits in the ecosystem -->
-<h2>{ECOSYSTEM_HEADING}</h2>
-<p class='lead'>EchoWave is not trying to replace your modelling toolkit or your DTW engine. It sits in the explainable-comparison layer: compare clearly, explain clearly, and only then reach for the rest of the stack.</p>
-<table><thead><tr><th>Package</th><th>Family</th><th>Strongest fit</th><th>How EchoWave fits</th></tr></thead><tbody>{ecosystem_rows}</tbody></table>
-</section>
-<section class='block' id='coverage'>
-<h2>{COVERAGE_HEADING}</h2>
-<p class='lead'>Primary means EchoWave is a first-class solution. Complementary means it helps but another package usually does the heavy lifting. Out of scope means hand the job to another package family.</p>
-<table><thead><tr><th>Capability</th><th>Role</th><th>Companion packages</th><th>Notes</th></tr></thead><tbody>{coverage_rows}</tbody></table>
-</section>
-<section class='block' id='agents'>
-<h2>{AGENT_HEADING}</h2>
-<p class='lead'>The outer product surface is now compare-first: <code>ts_compare</code> when you already have a pair, <code>ts_profile</code> when you need structure context first, and <code>ts_route</code> when another agent needs the smallest useful next step.</p>
-<div class='grid2'>
-<div class='card'><h3>Why this saves tokens</h3><ul><li>Start with the cheapest informative move.</li><li>Stop early when the signal is already clear.</li><li>Return a stable success/error envelope with confidence, evidence, and next actions.</li></ul></div>
-<div class='card'><h3>Caller contract in one line</h3><pre><code>ts_profile({{data_ref, input_kind, timestamps_ref, domain, budget, audience}})
+<header class='topbar'>
+  <div class='shell topbar-inner'>
+    <div class='brand'>
+      <span class='brand-mark'></span>
+      <div class='brand-copy'>
+        <strong>{DISPLAY_NAME}</strong>
+        <span>{escape(TAGLINE)}</span>
+      </div>
+    </div>
+    <nav class='nav'>
+      <a href='#problem'>Problem</a>
+      <a href='#features'>Features</a>
+      <a href='#workflow'>Workflow</a>
+      <a href='#quickstart'>{INSTALL_HEADING}</a>
+      <a href='#demos'>Demos</a>
+      <a href='#ecosystem'>{ECOSYSTEM_HEADING}</a>
+      <a href='#cta'>Get started</a>
+    </nav>
+  </div>
+</header>
+<main class='shell'>
+  <section class='hero'>
+    <div class='hero-grid'>
+      <div class='hero-copy'>
+        <div class='eyebrow'>Bright scientific design system</div>
+        <div class='hero-stage'>
+          <div class='mini-kicker'>Version {escape(version)} · Compare-first release surface</div>
+          <h1>{escape(HEADLINE)}</h1>
+          <p class='subhead'>{escape(PRODUCT_PROMISE)} It is designed for the moment when one opaque distance score is not enough for a researcher, engineer, founder, or downstream agent.</p>
+        </div>
+        <div class='badge-row'>{homepage_pills}</div>
+        <div class='button-row'>
+          <a class='button primary' href='#quickstart'>Run the 60-second quickstart</a>
+          <a class='button secondary' href='playground.html?case=openclaw_breakout_analogs'>Open static playground</a>
+          <a class='button ghost' href='start-here.html'>Start here</a>
+        </div>
+        <div class='trust-strip'>{trust_logos}</div>
+        <div class='hero-stat'>
+          <div class='stat'><span class='muted'>Core promise</span><strong>Explainable similarity</strong><span class='muted'>for series and datasets</span></div>
+          <div class='stat'><span class='muted'>Delivery surface</span><strong>HTML + JSON</strong><span class='muted'>for humans and agents</span></div>
+          <div class='stat'><span class='muted'>Distribution</span><strong>Pages-ready</strong><span class='muted'>plus local demo</span></div>
+        </div>
+      </div>
+      <div class='hero-visual'>
+        <div class='card sun feature-card'>
+          <div class='eyebrow-line'>
+            <span class='pill sun'>Sunny research brand</span>
+            <span class='pill blue'>{escape(AUTHOR_AFFILIATION)}</span>
+          </div>
+          <p><strong>EchoWave is a premium technical product surface on top of scientific time-series comparison.</strong> It stays white-background-first, readable, and trustworthy instead of leaning on dark hacker aesthetics.</p>
+          <div class='hero-visual-grid'>
+            <img class='brand-card' src='social/echowave_title_card.svg' alt='EchoWave title card'/>
+            <img class='brand-card' src='social/bham_affiliation_badge.svg' alt='Zipeng Wu at The University of Birmingham'/>
+          </div>
+          <div class='author-meta'>
+            <strong>{escape(AUTHOR_NAME)}</strong>
+            <span>{escape(AUTHOR_AFFILIATION)}</span>
+            <a href='mailto:{escape(AUTHOR_EMAIL)}'>{escape(AUTHOR_EMAIL)}</a>
+            <div class='brand-links'>
+              <a href='{escape(PROJECT_REPOSITORY_URL)}'>{escape(PROJECT_REPOSITORY_URL)}</a>
+              <a href='{escape(PROJECT_DOCUMENTATION_URL)}'>{escape(PROJECT_DOCUMENTATION_URL)}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class='section' id='problem'>
+    <div class='section-head'>
+      <div class='eyebrow'>Problem statement</div>
+      <h2>Raw distance scores are usually too weak for real collaboration</h2>
+      <p class='lead'>The product reality is simple: teams need to know whether two curves are meaningfully alike, whether two datasets are structurally similar enough to share intuition, and why the package believes that. EchoWave turns that into a readable artifact instead of a naked metric.</p>
+    </div>
+    <div class='problem-grid'>
+      <div class='card soft feature-card'>
+        <span class='pill blue'>Why people get stuck</span>
+        <ul class='panel-list'>
+          <li>A single score does not explain whether similarity comes from shape, trend, rhythm, or observation regime.</li>
+          <li>Dataset-level comparison gets lost when scale, cadence, or observation style differs.</li>
+          <li>Teams need a handoff artifact for colleagues, notebooks, or AI agents, not just a scalar.</li>
+        </ul>
+      </div>
+      <div class='card feature-card'>
+        <span class='pill sun'>What EchoWave adds</span>
+        <ul class='panel-list'>
+          <li>Series-to-series comparison with interpretable component breakdowns.</li>
+          <li>Dataset structure context that explains what makes a match convincing or fragile.</li>
+          <li>Shareable HTML and stable JSON envelopes for downstream automation.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class='section' id='features'>
+    <div class='section-head'>
+      <div class='eyebrow'>Key features</div>
+      <h2>A small product surface with strong technical hierarchy</h2>
+      <p class='lead'>This repo should scan like a premium scientific tool: one main task, a few strong surfaces, and zero clutter.</p>
+    </div>
+    <div class='grid-3'>
+      <div class='card feature-card'>
+        <span class='pill blue'>Compare series</span>
+        <h3>Readable verdicts</h3>
+        <p>Turn two curves into a similarity verdict with component-level evidence and recommended next actions.</p>
+      </div>
+      <div class='card feature-card sun'>
+        <span class='pill sun'>Compare datasets</span>
+        <h3>Structural context first</h3>
+        <p>Profile cadence, burstiness, regimes, and heterogeneity before pretending two datasets are interchangeable.</p>
+      </div>
+      <div class='card feature-card'>
+        <span class='pill blue'>Agent handoff</span>
+        <h3>Stable outer wrapper</h3>
+        <p>Use compare-first JSON envelopes in function calling, MCP wrappers, or lightweight research agents.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class='section' id='workflow'>
+    <div class='section-head'>
+      <div class='eyebrow'>Architecture diagram</div>
+      <h2>One ecosystem workflow across repos</h2>
+      <p class='lead'>The design language and the product flow are aligned: ingest a signal, compare or profile, then hand off a clean artifact to the rest of the stack.</p>
+    </div>
+    <div class='diagram'>
+      <div class='diagram-flow'>
+        <div class='logo-chip'><span class='logo-dot'></span>Signals or datasets</div>
+        <div class='diagram-arrow'>&rarr;</div>
+        <div class='logo-chip'><span class='logo-dot'></span>EchoWave similarity layer</div>
+        <div class='diagram-arrow'>&rarr;</div>
+        <div class='logo-chip'><span class='logo-dot'></span>HTML, README, or agent JSON</div>
+      </div>
+      <div class='diagram-band'>
+        <div class='diagram-card'>
+          <h3>1. Observe</h3>
+          <p>Input dense, irregular, multichannel, or event-style time series without forcing a fake one-size-fits-all workflow.</p>
+        </div>
+        <div class='diagram-card'>
+          <h3>2. Explain similarity</h3>
+          <p>Combine raw shape comparison with structural context so the verdict stays interpretable under real-world variation.</p>
+        </div>
+        <div class='diagram-card'>
+          <h3>3. Ship the artifact</h3>
+          <p>Export a shareable report, a social preview, or a compact machine-facing payload for the next step.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class='section' id='quickstart'>
+    <div class='section-head'>
+      <div class='eyebrow'>Quickstart</div>
+      <h2>The first minute should produce a real result</h2>
+      <p class='lead'>Clean onboarding matters more than clever prose. This repo now makes the first action obvious and the expected output visible.</p>
+    </div>
+    <div class='grid-2'>
+      <div class='card feature-card'>
+        <span class='pill sun'>{INSTALL_HEADING}</span>
+        <pre><code>{escape(QUICKSTART_INSTALL)}
+{escape(QUICKSTART_ONE_LINER)}</code></pre>
+      </div>
+      <div class='card feature-card'>
+        <span class='pill blue'>Expected output</span>
+        <pre><code>{quick_expected}</code></pre>
+      </div>
+    </div>
+    <div class='grid-3' style='margin-top:20px'>
+      {zero_cards}
+    </div>
+  </section>
+
+  <section class='section' id='demos'>
+    <div class='section-head'>
+      <div class='eyebrow'>Demo and screenshots</div>
+      <h2>Pages-ready visuals, not just notebook output</h2>
+      <p class='lead'>The landing page should feel like a bright research-lab product: calm layout, clear hierarchy, and just enough visual proof to make the capability memorable.</p>
+    </div>
+    <div class='grid-2'>
+      <div class='surface-frame pad'>{overlay}</div>
+      <div class='card feature-card'>
+        <span class='pill blue'>Plain-English verdict</span>
+        <pre><code>{summary_preview}</code></pre>
+      </div>
+    </div>
+    <div class='grid-2' style='margin-top:20px'>
+      <div class='surface-frame pad'>{comp}</div>
+      <div class='surface-frame pad'>{roll_svg}</div>
+    </div>
+    <div class='grid-2' style='margin-top:20px'>
+      <div class='surface-frame pad'>{social_left}</div>
+      <div class='surface-frame pad'>{social_right}</div>
+    </div>
+    <div class='grid-2' style='margin-top:20px'>
+      <div class='surface-frame pad'>{radar}</div>
+      <div class='surface-frame pad'>{bars}</div>
+    </div>
+    <div class='grid-2' style='margin-top:20px'>
+      <div class='card feature-card'>
+        <span class='pill sun'>{PAGES_HEADING}</span>
+        <p><strong>{LIVE_DEMO_HEADING}:</strong> the repo ships both a static GitHub Pages showcase and a tiny live demo server. Use the static path for linkability and the local path for real computation.</p>
+        <div class='button-row'>
+          <a class='button primary' href='playground.html?case=openclaw_breakout_analogs'>Open the playground</a>
+          <a class='button secondary' href='start-here.html'>Open start-here</a>
+        </div>
+      </div>
+      <div class='surface-frame'>
+        <iframe class='demo' src='playground.html?case=openclaw_breakout_analogs' title='EchoWave playground preview'></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section class='section'>
+    <div class='section-head'>
+      <div class='eyebrow'>Flagship showcases</div>
+      <h2>Demos built to travel across GitHub, social, and docs</h2>
+      <p class='lead'>The strongest growth assets are not generic charts. They are memorable analog questions with a direct story.</p>
+    </div>
+    <div class='grid-3'>
+      {flagship_cards}
+    </div>
+  </section>
+
+  <section class='section' id='ecosystem'>
+    <div class='section-head'>
+      <div class='eyebrow'>Ecosystem</div>
+      <h2>{ECOSYSTEM_HEADING}</h2>
+      <p class='lead'>EchoWave is not trying to replace modelling stacks or the fastest DTW engines. It owns the explainable-comparison layer in front of them.</p>
+    </div>
+    <table>
+      <thead><tr><th>Package</th><th>Family</th><th>Strongest fit</th><th>How EchoWave fits</th></tr></thead>
+      <tbody>{ecosystem_rows}</tbody>
+    </table>
+  </section>
+
+  <section class='section' id='coverage'>
+    <div class='section-head'>
+      <div class='eyebrow'>Coverage</div>
+      <h2>{COVERAGE_HEADING}</h2>
+      <p class='lead'>Be explicit about scope. Clarity builds trust faster than pretending the package does everything.</p>
+    </div>
+    <table>
+      <thead><tr><th>Capability</th><th>Role</th><th>Companion packages</th><th>Notes</th></tr></thead>
+      <tbody>{coverage_rows}</tbody>
+    </table>
+  </section>
+
+  <section class='section' id='agents'>
+    <div class='section-head'>
+      <div class='eyebrow'>Agent-ready design</div>
+      <h2>{AGENT_HEADING}</h2>
+      <p class='lead'>The outside-facing tools stay intentionally small so an agent can choose the cheapest useful step and return a stable envelope.</p>
+    </div>
+    <div class='grid-2'>
+      <div class='card feature-card'>
+        <span class='pill blue'>Tooling surface</span>
+        <pre><code>ts_profile({{data_ref, input_kind, timestamps_ref, domain, budget, audience}})
 ts_compare({{left_ref, right_ref, left_timestamps_ref, right_timestamps_ref, mode, budget}})
-ts_route({{task, available_inputs, has_reference}})</code></pre></div>
-</div>
-</section>
-<section class='block'>
-<h2>Starter datasets</h2>
-<p class='lead'>Bundled starter datasets make the repo easier to try, easier to teach, and easier to demo across disciplines.</p>
-<table><thead><tr><th>Dataset</th><th>Domain</th><th>Kind</th><th>Why it exists</th></tr></thead><tbody>{starter_rows}</tbody></table>
-</section>
-<section class='block' id='trust'>
-<h2>{TRUST_HEADING}</h2>
-<p class='lead'>A GitHub-ready project needs more than code: docs, visuals, demos, schemas, and repo basics.</p>
-<div class='grid3'>
-<div class='card'><strong>README + homepage</strong><p class='muted'>Clear first-minute value.</p></div>
-<div class='card'><strong>Pages-ready demo bundle</strong><p class='muted'>Publish the product layer as static files.</p></div>
-<div class='card'><strong>Stable agent schemas</strong><p class='muted'>Function-calling and MCP-friendly contracts.</p></div>
-<div class='card'><strong>Notebooks + starter datasets</strong><p class='muted'>Clone-and-run examples across disciplines.</p></div>
-<div class='card'><strong>Decision-impact benchmark</strong><p class='muted'>A modest but reproducible product benchmark.</p></div>
-<div class='card'><strong>Social cards + GIFs</strong><p class='muted'>Growth assets instead of pure documentation.</p></div>
-</div>
-</section>
+ts_route({{task, available_inputs, has_reference}})</code></pre>
+      </div>
+      <div class='card feature-card'>
+        <span class='pill sun'>Why this stays cheap</span>
+        <ul class='panel-list'>
+          <li>Compare first when you already have a candidate pair.</li>
+          <li>Profile only when structural context is the missing piece.</li>
+          <li>Return confidence, evidence, and next actions in one compact wrapper.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class='section' id='benchmark'>
+    <div class='section-head'>
+      <div class='eyebrow'>Benchmark reality</div>
+      <h2>{BENCHMARK_HEADING}</h2>
+      <p class='lead'>This repo now looks like a product, but the benchmark story is still deliberately modest. The shipped evidence is decision-support evidence, not a publication-grade leaderboard.</p>
+    </div>
+    <div class='grid-2'>
+      <div class='note-box info'>
+        <strong>What exists</strong>
+        <p>A reproducible decision-impact benchmark and a coherent product claim: readable similarity context can change downstream choices.</p>
+      </div>
+      <div class='note-box warn'>
+        <strong>What is still missing</strong>
+        <p>A full retrieval benchmark, stronger robustness studies, and broader public adoption proof.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class='section'>
+    <div class='section-head'>
+      <div class='eyebrow'>Starter datasets</div>
+      <h2>Cross-disciplinary entry points</h2>
+      <p class='lead'>These bundled cases make it easier for medicine, engineering, economics, and product users to find their first relevant example fast.</p>
+    </div>
+    <table>
+      <thead><tr><th>Dataset</th><th>Domain</th><th>Kind</th><th>Why it exists</th></tr></thead>
+      <tbody>{starter_rows}</tbody>
+    </table>
+  </section>
+
+  <section class='section' id='trust'>
+    <div class='section-head'>
+      <div class='eyebrow'>Trust layer</div>
+      <h2>{TRUST_HEADING}</h2>
+      <p class='lead'>Reliable open source products need more than code. They need docs, assets, demo entry points, schemas, and clean packaging surfaces.</p>
+    </div>
+    <div class='grid-3'>
+      <div class='card feature-card'><span class='pill blue'>README + Pages</span><p>One bright, consistent brand surface across docs, demos, and GitHub.</p></div>
+      <div class='card feature-card'><span class='pill sun'>Schemas</span><p>Stable function-calling and MCP descriptors for agents.</p></div>
+      <div class='card feature-card'><span class='pill blue'>Starter assets</span><p>Notebooks, datasets, title cards, and social previews ready to publish.</p></div>
+    </div>
+  </section>
+
+  <section class='section' id='cta'>
+    <div class='cta-band'>
+      <div class='section-head'>
+        <div class='eyebrow'>Final call to action</div>
+        <h2>Start with a flagship analog, then adapt the surface across your repo ecosystem</h2>
+        <p class='lead'>This landing page, the GitHub README, the Pages bundle, and the design tokens now belong to the same bright scientific brand. That consistency is what makes multi-repo discoverability and trust compound over time.</p>
+      </div>
+      <div class='cta-row'>
+        <a class='button primary' href='playground.html?case=openclaw_breakout_analogs'>Open the playground</a>
+        <a class='button secondary' href='start-here.html'>Use the start-here flow</a>
+        <a class='button ghost' href='{escape(PROJECT_REPOSITORY_URL)}'>View the repo</a>
+      </div>
+    </div>
+  </section>
 </main>
-<footer class='container footer'>Compare-first, product-oriented, and GitHub Pages-ready. Next step: push the docs bundle to a live demo URL and operate the flagship analog cases as a steady showcase stream.</footer>
+<footer class='shell footer'>
+  <div class='footer-grid'>
+    <div>
+      <strong>{DISPLAY_NAME}</strong>
+      <p class='lead'>Sunny, energetic, optimistic scientific software for explainable time-series similarity. Designed to feel like a modern research lab and a premium technical product at the same time.</p>
+    </div>
+    <div class='author-band'>
+      <span>{escape(AUTHOR_NAME)} · {escape(AUTHOR_AFFILIATION)}</span>
+      <a href='mailto:{escape(AUTHOR_EMAIL)}'>{escape(AUTHOR_EMAIL)}</a>
+      <a href='{escape(PROJECT_DOCUMENTATION_URL)}'>{escape(PROJECT_DOCUMENTATION_URL)}</a>
+    </div>
+  </div>
+</footer>
 </body>
 </html>"""
+
+
+__all__ = ["project_homepage_html"]

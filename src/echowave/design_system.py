@@ -1,37 +1,63 @@
-<!doctype html>
-<html lang='en'>
-<head><meta charset='utf-8'/><meta name='viewport' content='width=device-width, initial-scale=1'/><link rel='preconnect' href='https://fonts.googleapis.com'>
+"""Shared brand tokens and page shells for EchoWave.
+
+This module keeps the static homepage, playground, launchpad, and HTML reports
+visually aligned around one bright, research-lab-style design language.
+"""
+
+from __future__ import annotations
+
+from html import escape
+
+FONT_LINKS = """
+<link rel='preconnect' href='https://fonts.googleapis.com'>
 <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
-<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap' rel='stylesheet'><title>EchoWave - Start here</title><style>
-:root {
-  --page-bg: #FFFFFF;
-  --surface: #FAFAFA;
+<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap' rel='stylesheet'>
+""".strip()
+
+COLOR_TOKENS = {
+    "sun_500": "#FFC83D",
+    "sun_300": "#FFE27A",
+    "sun_100": "#FFF4C2",
+    "sun_700": "#C7950A",
+    "blue_600": "#2F6BFF",
+    "blue_700": "#2554CC",
+    "text_900": "#1F2937",
+    "text_600": "#6B7280",
+    "border": "#E5E7EB",
+    "card": "#FAFAFA",
+    "page": "#FFFFFF",
+}
+
+BASE_CSS = f"""
+:root {{
+  --page-bg: {COLOR_TOKENS['page']};
+  --surface: {COLOR_TOKENS['card']};
   --surface-strong: #FFFFFF;
-  --surface-sun: #FFF4C2;
+  --surface-sun: {COLOR_TOKENS['sun_100']};
   --surface-sun-strong: #FFF9E4;
-  --sun-500: #FFC83D;
-  --sun-300: #FFE27A;
-  --sun-100: #FFF4C2;
-  --sun-700: #C7950A;
-  --blue-600: #2F6BFF;
-  --blue-700: #2554CC;
-  --text-900: #1F2937;
-  --text-600: #6B7280;
-  --border: #E5E7EB;
+  --sun-500: {COLOR_TOKENS['sun_500']};
+  --sun-300: {COLOR_TOKENS['sun_300']};
+  --sun-100: {COLOR_TOKENS['sun_100']};
+  --sun-700: {COLOR_TOKENS['sun_700']};
+  --blue-600: {COLOR_TOKENS['blue_600']};
+  --blue-700: {COLOR_TOKENS['blue_700']};
+  --text-900: {COLOR_TOKENS['text_900']};
+  --text-600: {COLOR_TOKENS['text_600']};
+  --border: {COLOR_TOKENS['border']};
   --shadow-sm: 0 10px 30px rgba(31, 41, 55, 0.06);
   --shadow-md: 0 18px 50px rgba(31, 41, 55, 0.08);
   --radius-lg: 28px;
   --radius-md: 20px;
   --radius-sm: 14px;
   --max-width: 1180px;
-}
-* {
+}}
+* {{
   box-sizing: border-box;
-}
-html {
+}}
+html {{
   scroll-behavior: smooth;
-}
-body {
+}}
+body {{
   margin: 0;
   background:
     radial-gradient(circle at top right, rgba(255, 226, 122, 0.16), transparent 24%),
@@ -39,18 +65,18 @@ body {
   color: var(--text-900);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   line-height: 1.6;
-}
-a {
+}}
+a {{
   color: var(--blue-600);
   text-decoration: none;
-}
-a:hover {
+}}
+a:hover {{
   color: var(--blue-700);
-}
-code, pre {
+}}
+code, pre {{
   font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-}
-select, input, textarea {
+}}
+select, input, textarea {{
   width: 100%;
   padding: 12px 14px;
   border: 1px solid var(--border);
@@ -58,69 +84,69 @@ select, input, textarea {
   background: var(--surface-strong);
   color: var(--text-900);
   font: inherit;
-}
-.shell {
+}}
+.shell {{
   width: min(var(--max-width), calc(100vw - 32px));
   margin: 0 auto;
-}
-.topbar {
+}}
+.topbar {{
   position: sticky;
   top: 0;
   z-index: 20;
   border-bottom: 1px solid rgba(229, 231, 235, 0.94);
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px) saturate(180%);
-}
-.topbar-inner {
+}}
+.topbar-inner {{
   min-height: 72px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-}
-.brand {
+}}
+.brand {{
   display: flex;
   align-items: center;
   gap: 14px;
-}
-.brand-mark {
+}}
+.brand-mark {{
   width: 18px;
   height: 18px;
   border-radius: 6px;
   background: linear-gradient(135deg, var(--sun-500), var(--sun-300));
   box-shadow: inset 0 0 0 1px rgba(31, 41, 55, 0.06);
-}
-.brand-copy strong {
+}}
+.brand-copy strong {{
   display: block;
   font-size: 1.12rem;
   letter-spacing: -0.02em;
-}
-.brand-copy span {
+}}
+.brand-copy span {{
   color: var(--text-600);
   font-size: 0.95rem;
-}
-.nav {
+}}
+.nav {{
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   font-size: 0.95rem;
-}
-.nav a {
+}}
+.nav a {{
   color: var(--text-600);
   font-weight: 500;
-}
-.nav a:hover {
+}}
+.nav a:hover {{
   color: var(--text-900);
-}
-.section {
+}}
+.section {{
   padding: 26px 0 18px;
-}
-.section-head {
+}}
+.section-head {{
   display: grid;
   gap: 8px;
   margin-bottom: 18px;
-}
-.eyebrow {
+}}
+.eyebrow {{
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -134,57 +160,57 @@ select, input, textarea {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-.hero {
+}}
+.hero {{
   padding: 42px 0 18px;
-}
-.hero-grid, .grid-2, .grid-3 {
+}}
+.hero-grid, .grid-2, .grid-3 {{
   display: grid;
   gap: 20px;
-}
-.hero-grid {
+}}
+.hero-grid {{
   grid-template-columns: 1.1fr 0.9fr;
   align-items: start;
-}
-.grid-2 {
+}}
+.grid-2 {{
   grid-template-columns: 1fr 1fr;
-}
-.grid-3 {
+}}
+.grid-3 {{
   grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-.card {
+}}
+.card {{
   background: var(--surface-strong);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 22px 24px;
   box-shadow: var(--shadow-sm);
-}
-.card.sun {
+}}
+.card.sun {{
   background: linear-gradient(180deg, #fffdfa 0%, var(--surface-sun-strong) 100%);
-}
-.card.soft {
+}}
+.card.soft {{
   background: var(--surface);
-}
-.feature-card {
+}}
+.feature-card {{
   display: grid;
   gap: 10px;
-}
+}}
 .feature-card p,
-.card p {
+.card p {{
   margin: 0;
-}
-.badge-row {
+}}
+.badge-row {{
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-}
-.trust-strip {
+}}
+.trust-strip {{
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 18px;
-}
-.logo-chip {
+}}
+.logo-chip {{
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -196,14 +222,14 @@ select, input, textarea {
   color: var(--text-600);
   font-size: 0.86rem;
   font-weight: 700;
-}
-.logo-dot {
+}}
+.logo-dot {{
   width: 9px;
   height: 9px;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--sun-500), var(--blue-600));
-}
-.pill {
+}}
+.pill {{
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -214,24 +240,24 @@ select, input, textarea {
   color: var(--text-600);
   font-size: 0.86rem;
   font-weight: 700;
-}
-.pill.sun {
+}}
+.pill.sun {{
   border-color: rgba(255, 200, 61, 0.42);
   background: var(--surface-sun);
   color: var(--sun-700);
-}
-.pill.blue {
+}}
+.pill.blue {{
   border-color: rgba(47, 107, 255, 0.18);
   background: rgba(47, 107, 255, 0.08);
   color: var(--blue-700);
-}
-.button-row {
+}}
+.button-row {{
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 18px;
-}
-.button {
+}}
+.button {{
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -244,88 +270,88 @@ select, input, textarea {
   color: var(--text-900);
   font-weight: 700;
   box-shadow: var(--shadow-sm);
-}
-.button:hover {
+}}
+.button:hover {{
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
-}
-.button.primary {
+}}
+.button.primary {{
   border-color: rgba(255, 200, 61, 0.48);
   background: linear-gradient(180deg, #ffd65f 0%, var(--sun-500) 100%);
   color: var(--text-900);
-}
-.button.secondary {
+}}
+.button.secondary {{
   border-color: rgba(47, 107, 255, 0.18);
   background: rgba(47, 107, 255, 0.08);
   color: var(--blue-700);
-}
-.button.ghost {
+}}
+.button.ghost {{
   background: transparent;
   box-shadow: none;
-}
-.button.text {
+}}
+.button.text {{
   padding: 0;
   min-height: 0;
   border: 0;
   background: transparent;
   box-shadow: none;
   color: var(--blue-700);
-}
-h1, h2, h3 {
+}}
+h1, h2, h3 {{
   margin: 0;
   letter-spacing: -0.03em;
-}
-h1 {
+}}
+h1 {{
   font-size: clamp(2.6rem, 5vw, 4.5rem);
   line-height: 0.98;
-}
-h2 {
+}}
+h2 {{
   font-size: clamp(1.45rem, 2.4vw, 2.1rem);
-}
-h3 {
+}}
+h3 {{
   font-size: 1.08rem;
-}
-.subhead, .lead, .muted {
+}}
+.subhead, .lead, .muted {{
   color: var(--text-600);
-}
-.subhead {
+}}
+.subhead {{
   max-width: 46rem;
   font-size: 1.12rem;
-}
-.lead {
+}}
+.lead {{
   margin: 0;
   max-width: 68rem;
-}
-.hero-stat {
+}}
+.hero-stat {{
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-top: 18px;
-}
-.hero-stage {
+}}
+.hero-stage {{
   display: grid;
   gap: 18px;
-}
-.stat {
+}}
+.stat {{
   border: 1px solid rgba(255, 200, 61, 0.28);
   border-radius: var(--radius-sm);
   background: rgba(255, 244, 194, 0.55);
   padding: 12px 14px;
-}
-.stat strong {
+}}
+.stat strong {{
   display: block;
   font-size: 1.2rem;
-}
-.panel-list {
+}}
+.panel-list {{
   margin: 0;
   padding-left: 1.1rem;
-}
-.workflow {
+}}
+.workflow {{
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
-}
-.step {
+}}
+.step {{
   position: relative;
   display: grid;
   gap: 10px;
@@ -333,8 +359,8 @@ h3 {
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--surface-strong);
-}
-.step-number {
+}}
+.step-number {{
   width: 34px;
   height: 34px;
   display: inline-flex;
@@ -344,8 +370,8 @@ h3 {
   background: var(--sun-500);
   color: var(--text-900);
   font-weight: 800;
-}
-.code-block, pre {
+}}
+.code-block, pre {{
   margin: 0;
   padding: 16px;
   border-radius: var(--radius-sm);
@@ -356,17 +382,17 @@ h3 {
   white-space: pre-wrap;
   word-break: break-word;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
-}
-.surface-frame {
+}}
+.surface-frame {{
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
-}
-.surface-frame.pad {
+}}
+.surface-frame.pad {{
   padding: 16px;
-}
-table {
+}}
+table {{
   width: 100%;
   border-collapse: collapse;
   border: 1px solid var(--border);
@@ -374,207 +400,170 @@ table {
   overflow: hidden;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
-}
-th, td {
+}}
+th, td {{
   padding: 12px 14px;
   text-align: left;
   vertical-align: top;
   border-bottom: 1px solid var(--border);
-}
-th {
+}}
+th {{
   background: #fffdf6;
   color: var(--text-600);
   font-size: 0.92rem;
-}
-tr:last-child td {
+}}
+tr:last-child td {{
   border-bottom: none;
-}
-iframe.demo {
+}}
+iframe.demo {{
   width: 100%;
   min-height: 460px;
   border: 0;
   border-radius: var(--radius-md);
   background: var(--surface-strong);
-}
-img.brand-card {
+}}
+img.brand-card {{
   width: 100%;
   max-width: 460px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
-}
-.footer {
+}}
+.footer {{
   padding: 28px 0 54px;
   color: var(--text-600);
-}
-.footer-grid {
+}}
+.footer-grid {{
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 18px;
   align-items: start;
-}
-.diagram {
+}}
+.diagram {{
   display: grid;
   gap: 14px;
-}
-.diagram-flow {
+}}
+.diagram-flow {{
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-}
-.diagram-arrow {
+}}
+.diagram-arrow {{
   color: var(--blue-700);
   font-weight: 800;
-}
-.diagram-band {
+}}
+.diagram-band {{
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-}
-.diagram-card {
+}}
+.diagram-card {{
   padding: 18px;
   border: 1px dashed rgba(47, 107, 255, 0.22);
   border-radius: var(--radius-sm);
   background: linear-gradient(180deg, rgba(255, 244, 194, 0.38) 0%, #ffffff 100%);
-}
-.note-box {
+}}
+.note-box {{
   padding: 14px 16px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--surface);
-}
-.note-box.info {
+}}
+.note-box.info {{
   border-color: rgba(47, 107, 255, 0.18);
   background: rgba(47, 107, 255, 0.05);
-}
-.note-box.warn {
+}}
+.note-box.warn {{
   border-color: rgba(255, 200, 61, 0.45);
   background: rgba(255, 244, 194, 0.66);
-}
-.author-meta {
+}}
+.author-meta {{
   display: grid;
   gap: 6px;
   margin-top: 14px;
-}
-.callout {
+}}
+.callout {{
   padding: 18px;
   border-radius: var(--radius-md);
   border: 1px solid rgba(255, 200, 61, 0.42);
   background: linear-gradient(180deg, #fff9e4 0%, #ffffff 100%);
   box-shadow: var(--shadow-sm);
-}
-@media (max-width: 980px) {
-  .topbar-inner {
+}}
+@media (max-width: 980px) {{
+  .topbar-inner {{
     padding: 12px 0;
     align-items: flex-start;
-  }
-  .hero-grid, .grid-2, .grid-3, .workflow, .diagram-band, .hero-stat, .footer-grid {
+  }}
+  .hero-grid, .grid-2, .grid-3, .workflow, .diagram-band, .hero-stat, .footer-grid {{
     grid-template-columns: 1fr;
-  }
-}
+  }}
+}}
+"""
 
-    .launch-grid { display:grid; gap:20px; }
-    .command-grid { display:grid; grid-template-columns: 1fr 1fr; gap:20px; }
-    @media (max-width: 980px) {
-      .command-grid { grid-template-columns: 1fr; }
-    }
-    </style></head>
-<body>
-<header class='topbar'>
-  <div class='shell topbar-inner'>
-    <div class='brand'>
-      <span class='brand-mark'></span>
-      <div class='brand-copy'>
-        <strong>EchoWave</strong>
-        <span>Explainable time-series similarity for humans and agents.</span>
-      </div>
-    </div>
-    <nav class='nav'>
-      <a href='index.html'>Homepage</a>
-      <a href='playground.html'>Playground</a>
-      <a href='reports/github_breakout_similarity.html'>Flagship report</a>
-    </nav>
-  </div>
-</header>
-<main class='shell section launch-grid'>
-  <section class='hero'>
-    <div class='hero-grid'>
-      <div class='card sun feature-card'>
-        <div class='eyebrow'>Variant B · Productized open source</div>
-        <h1>Start here</h1>
-        <p class='subhead'>Compare time series and datasets with explainable structural similarity. This page compresses the repo into a small set of first moves: static preview, local live demo, quickstart, environment doctor, and Pages export.</p>
-        <div class='button-row'>
-          <a class='button primary' href='playground.html'>Open static playground</a>
-          <a class='button secondary' href='local_demo.html'>View local demo surface</a>
-          <a class='button ghost' href='index.html'>Open homepage</a>
-        </div>
-      </div>
-      <div class='card feature-card'>
-        <span class='pill blue'>Local live demo</span>
-        <ul class='panel-list'>
-          <li>Use the playground if you want zero-install proof first.</li>
-          <li>Use the live demo if you want real computation on pasted arrays.</li>
-          <li>Use the quickstart if you already have Python ready.</li>
-          <li>Use the doctor and compatibility preset when your environment is crowded.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
 
-  <section class='command-grid'>
-    <div class='card feature-card'>
-      <span class='pill sun'>One-line quickstart</span>
-      <pre><code>pip install echowave
-python -c &quot;import numpy as np; from echowave import compare_series; x=np.sin(np.linspace(0,8*np.pi,128)); y=np.sin(np.linspace(0,8*np.pi,128)+0.2); print(compare_series(x,y).to_summary_card_markdown())&quot;</code></pre>
-    </div>
-    <div class='card feature-card'>
-      <span class='pill blue'>Environment doctor</span>
-      <pre><code>echowave --guide doctor
-# or
-python -m echowave.cli --guide doctor
-# legacy alias
-python -m tsontology.cli --guide doctor</code></pre>
-      <p>Use this when you suspect encoding issues, mixed scientific-stack packages, or resolver noise.</p>
-    </div>
-  </section>
+def page_head(title: str, *, extra_css: str = "") -> str:
+    return (
+        "<head>"
+        "<meta charset='utf-8'/>"
+        "<meta name='viewport' content='width=device-width, initial-scale=1'/>"
+        f"{FONT_LINKS}"
+        f"<title>{escape(title)}</title>"
+        f"<style>{BASE_CSS}{extra_css}</style>"
+        "</head>"
+    )
 
-  <section class='grid-3'>
-    <div class='card feature-card'><span class='pill blue'>Static playground</span><p>Preview similarity reports, visuals, and flagship cases without installing Python or starting a server.</p></div><div class='card feature-card'><span class='pill blue'>Colab quickstart</span><p>Open a starter notebook in a hosted notebook environment.</p></div><div class='card feature-card'><span class='pill blue'>uvx CLI</span><p>Run the CLI in an isolated ephemeral environment when packaging allows it.</p></div><div class='card feature-card'><span class='pill blue'>Local demo server</span><p>Run a tiny local web app that turns pasted values into similarity verdicts on your own machine.</p></div>
-  </section>
 
-  <section class='command-grid'>
-    <div class='card feature-card'>
-      <span class='pill sun'>Local live demo</span>
-      <pre><code>echowave-demo --open-browser
-# legacy alias
-tsontology-demo --open-browser
-# or
-python -m echowave.demo_server --open-browser</code></pre>
-    </div>
-    <div class='card feature-card'>
-      <span class='pill blue'>Compatibility preset</span>
-      <pre><code>echowave --write-constraints constraints/mixed-scientific-stack.txt `
-  --constraint-profile mixed-scientific-stack
-pip install -c constraints/mixed-scientific-stack.txt echowave</code></pre>
-    </div>
-  </section>
-
-  <section class='command-grid'>
-    <div class='card feature-card'>
-      <span class='pill blue'>GitHub Pages export</span>
-      <pre><code>echowave --export-pages docs
-# then publish docs/ with GitHub Pages</code></pre>
-    </div>
-    <div class='callout'>
-      <strong>Why this page exists</strong>
-      <p>Open-source adoption improves when the first decision is easy. This launchpad reduces the repo to a small number of explicit next steps instead of making users decode the entire codebase before they can try it.</p>
-    </div>
-  </section>
-</main>
-<footer class='shell footer'>
-  Productized open-source entry point for EchoWave. White-background-first, optimistic, and designed for fast technical comprehension.
-</footer>
-</body>
-</html>
+def report_shell_css(accent: str) -> str:
+    return f"""
+    :root {{
+      --accent: {accent};
+    }}
+    body {{
+      background:
+        radial-gradient(circle at top right, rgba(255, 226, 122, 0.14), transparent 22%),
+        linear-gradient(180deg, #fffef9 0%, #ffffff 14%, #ffffff 100%);
+    }}
+    .report-header {{
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px) saturate(180%);
+    }}
+    .report-header-inner {{
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }}
+    .brand-mark {{
+      background: linear-gradient(135deg, var(--sun-500), var(--sun-300));
+    }}
+    .report-grid {{
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+    }}
+    .metric-chip {{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(47, 107, 255, 0.08);
+      color: var(--blue-700);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }}
+    @media (max-width: 920px) {{
+      .report-grid {{
+        grid-template-columns: 1fr;
+      }}
+      .report-header-inner {{
+        padding: 14px 18px;
+      }}
+    }}
+    """

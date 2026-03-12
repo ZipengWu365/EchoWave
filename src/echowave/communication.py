@@ -192,7 +192,7 @@ def summary_card_dict(profile: Any, *, audience: str = "general") -> dict[str, A
         for axis, score in _top_filtered_axes(profile.axes, _RISK_AXES, n=4)
     ]
     return {
-        "package": "tsontology",
+        "package": "echowave",
         "package_version": getattr(profile, "package_version", "unknown"),
         "schema_version": getattr(profile, "schema_version", "unknown"),
         "audience": audience,
@@ -284,7 +284,7 @@ def format_narrative_report(profile: Any, *, audience: str = "general") -> str:
     top_risks = _top_filtered_axes(profile.axes, _RISK_AXES, n=3)
     top_ops = _top_filtered_axes(profile.axes, _OPPORTUNITY_AXES, n=3)
     lines = [
-        "# tsontology narrative report",
+        "# EchoWave narrative report",
         "",
         f"**audience:** {audience}  ",
         f"**domain:** {profile.metadata.get('domain', 'generic')}  ",

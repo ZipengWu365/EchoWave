@@ -4,9 +4,9 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/echowave?style=flat-square)](https://pypi.org/project/echowave/)
 [![Python versions](https://img.shields.io/pypi/pyversions/echowave?style=flat-square)](https://pypi.org/project/echowave/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-0b6cff?style=flat-square)](LICENSE)
-[![Status: Beta](https://img.shields.io/badge/status-beta-dd6b20?style=flat-square)](https://github.com/ZipengWu365/EchoWave)
-[![Docs: GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-0a7f5a?style=flat-square)](https://zipengwu365.github.io/EchoWave/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-ffc83d?style=flat-square)](LICENSE)
+[![Status: Beta](https://img.shields.io/badge/status-beta-2f6bff?style=flat-square)](https://github.com/ZipengWu365/EchoWave)
+[![Docs: GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-2f6bff?style=flat-square)](https://zipengwu365.github.io/EchoWave/)
 
 EchoWave compares time series and time-series datasets, explains why they match or differ, and emits compact JSON plus shareable HTML reports.
 

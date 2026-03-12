@@ -16,6 +16,7 @@ from typing import Any, Iterable, Mapping
 import numpy as np
 
 from .communication import summary_card_dict
+from .design_system import COLOR_TOKENS, page_head, report_shell_css
 from .schema import AXIS_DESCRIPTIONS
 
 _AXIS_LABELS = {
@@ -32,6 +33,14 @@ _AXIS_LABELS = {
     "coupling_networkedness": "Coupling",
     "heterogeneity": "Heterogeneity",
 }
+
+_SUN_FILL = "rgba(255, 200, 61, 0.24)"
+_SUN_STROKE = COLOR_TOKENS["sun_700"]
+_BLUE = COLOR_TOKENS["blue_600"]
+_BLUE_DARK = COLOR_TOKENS["blue_700"]
+_TEXT = COLOR_TOKENS["text_900"]
+_MUTED = COLOR_TOKENS["text_600"]
+_BORDER = COLOR_TOKENS["border"]
 
 
 def _level(score: float) -> str:
@@ -84,14 +93,14 @@ def profile_radar_svg(profile: Any, *, width: int = 420, height: int = 420) -> s
     grid = []
     for level in (0.25, 0.5, 0.75, 1.0):
         pts = _polygon_points([level] * len(axes), cx=cx, cy=cy, radius=radius)
-        grid.append(f"<polygon points='{pts}' fill='none' stroke='#d9e2ec' stroke-width='1'/>")
+        grid.append(f"<polygon points='{pts}' fill='none' stroke='{_BORDER}' stroke-width='1'/>")
     spokes = []
     labels = []
     for i, axis in enumerate(axes):
         angle = -pi / 2 + 2 * pi * i / len(axes)
         x = cx + radius * cos(angle)
         y = cy + radius * sin(angle)
-        spokes.append(f"<line x1='{cx:.1f}' y1='{cy:.1f}' x2='{x:.1f}' y2='{y:.1f}' stroke='#d9e2ec' stroke-width='1'/>")
+        spokes.append(f"<line x1='{cx:.1f}' y1='{cy:.1f}' x2='{x:.1f}' y2='{y:.1f}' stroke='{_BORDER}' stroke-width='1'/>")
         lx = cx + (radius + 20) * cos(angle)
         ly = cy + (radius + 20) * sin(angle)
         anchor = 'middle'
@@ -100,16 +109,16 @@ def profile_radar_svg(profile: Any, *, width: int = 420, height: int = 420) -> s
         elif lx > cx + 18:
             anchor = 'start'
         labels.append(
-            f"<text x='{lx:.1f}' y='{ly:.1f}' font-size='11' fill='#334e68' text-anchor='{anchor}' dominant-baseline='middle'>{escape(_nice_label(axis))}</text>"
+            f"<text x='{lx:.1f}' y='{ly:.1f}' font-size='11' fill='{_MUTED}' text-anchor='{anchor}' dominant-baseline='middle'>{escape(_nice_label(axis))}</text>"
         )
     profile_pts = _polygon_points(values, cx=cx, cy=cy, radius=radius)
     body = (
         "<rect width='100%' height='100%' fill='white'/>"
-        "<text x='18' y='24' font-size='16' font-weight='700' fill='#102a43'>Axis radar</text>"
-        "<text x='18' y='42' font-size='11' fill='#486581'>Higher means the axis is more structurally dominant.</text>"
+        f"<text x='18' y='24' font-size='16' font-weight='700' fill='{_TEXT}'>Axis radar</text>"
+        f"<text x='18' y='42' font-size='11' fill='{_MUTED}'>Higher means the axis is more structurally dominant.</text>"
         + "".join(grid)
         + "".join(spokes)
-        + f"<polygon points='{profile_pts}' fill='rgba(11,108,255,0.18)' stroke='#0b6cff' stroke-width='2'/>"
+        + f"<polygon points='{profile_pts}' fill='{_SUN_FILL}' stroke='{_BLUE}' stroke-width='2'/>"
         + "".join(labels)
     )
     return _svg_wrap(body, width=width, height=height, title="EchoWave axis radar")
@@ -128,14 +137,14 @@ def axis_bar_svg(profile: Any, *, width: int = 560, height: int = 300, top_n: in
     for idx, (axis, score) in enumerate(items):
         y = top + idx * step
         filled = bar_w * float(np.clip(score, 0.0, 1.0))
-        rows.append(f"<text x='16' y='{y + 14:.1f}' font-size='12' fill='#102a43'>{escape(_nice_label(axis))}</text>")
-        rows.append(f"<rect x='{left}' y='{y:.1f}' width='{bar_w:.1f}' height='16' rx='8' fill='#edf2f7'/>")
-        rows.append(f"<rect x='{left}' y='{y:.1f}' width='{filled:.1f}' height='16' rx='8' fill='#0b6cff'/>")
-        rows.append(f"<text x='{right - 2:.1f}' y='{y + 13:.1f}' font-size='11' fill='#334e68' text-anchor='end'>{score:.2f}</text>")
+        rows.append(f"<text x='16' y='{y + 14:.1f}' font-size='12' fill='{_TEXT}'>{escape(_nice_label(axis))}</text>")
+        rows.append(f"<rect x='{left}' y='{y:.1f}' width='{bar_w:.1f}' height='16' rx='8' fill='#F3F4F6'/>")
+        rows.append(f"<rect x='{left}' y='{y:.1f}' width='{filled:.1f}' height='16' rx='8' fill='{_BLUE}'/>")
+        rows.append(f"<text x='{right - 2:.1f}' y='{y + 13:.1f}' font-size='11' fill='{_MUTED}' text-anchor='end'>{score:.2f}</text>")
     body = (
         "<rect width='100%' height='100%' fill='white'/>"
-        "<text x='16' y='24' font-size='16' font-weight='700' fill='#102a43'>Top structure axes</text>"
-        "<text x='16' y='40' font-size='11' fill='#486581'>The axes most likely to shape modelling and communication choices.</text>"
+        f"<text x='16' y='24' font-size='16' font-weight='700' fill='{_TEXT}'>Top structure axes</text>"
+        f"<text x='16' y='40' font-size='11' fill='{_MUTED}'>The axes most likely to shape modelling and communication choices.</text>"
         + "".join(rows)
     )
     return _svg_wrap(body, width=width, height=height, title="EchoWave top axes")
@@ -154,14 +163,14 @@ def similarity_components_svg(report: Any, *, width: int = 560, height: int = 28
     for idx, (name, score) in enumerate(items):
         y = top + idx * step
         filled = bar_w * float(np.clip(score, 0.0, 1.0))
-        rows.append(f"<text x='16' y='{y + 14:.1f}' font-size='12' fill='#102a43'>{escape(name.replace('_', ' '))}</text>")
-        rows.append(f"<rect x='{left}' y='{y:.1f}' width='{bar_w:.1f}' height='16' rx='8' fill='#edf2f7'/>")
-        rows.append(f"<rect x='{left}' y='{y:.1f}' width='{filled:.1f}' height='16' rx='8' fill='#dd6b20'/>")
-        rows.append(f"<text x='{right - 2:.1f}' y='{y + 13:.1f}' font-size='11' fill='#334e68' text-anchor='end'>{score:.2f}</text>")
+        rows.append(f"<text x='16' y='{y + 14:.1f}' font-size='12' fill='{_TEXT}'>{escape(name.replace('_', ' '))}</text>")
+        rows.append(f"<rect x='{left}' y='{y:.1f}' width='{bar_w:.1f}' height='16' rx='8' fill='#F3F4F6'/>")
+        rows.append(f"<rect x='{left}' y='{y:.1f}' width='{filled:.1f}' height='16' rx='8' fill='{COLOR_TOKENS['sun_500']}'/>")
+        rows.append(f"<text x='{right - 2:.1f}' y='{y + 13:.1f}' font-size='11' fill='{_MUTED}' text-anchor='end'>{score:.2f}</text>")
     body = (
         "<rect width='100%' height='100%' fill='white'/>"
-        "<text x='16' y='24' font-size='16' font-weight='700' fill='#102a43'>Similarity components</text>"
-        f"<text x='16' y='40' font-size='11' fill='#486581'>Overall similarity {report.similarity_score:.2f} ({escape(report.qualitative_label)}).</text>"
+        f"<text x='16' y='24' font-size='16' font-weight='700' fill='{_TEXT}'>Similarity components</text>"
+        f"<text x='16' y='40' font-size='11' fill='{_MUTED}'>Overall similarity {report.similarity_score:.2f} ({escape(report.qualitative_label)}).</text>"
         + "".join(rows)
     )
     return _svg_wrap(body, width=width, height=height, title="EchoWave similarity components")
@@ -189,13 +198,13 @@ def series_overlay_svg(left: Any, right: Any | None = None, *, width: int = 720,
         ys = height - 28 - ((values - ymin) / (ymax - ymin)) * (height - 52)
         pts = " ".join(f"{x:.1f},{y:.1f}" for x, y in zip(xs, ys))
         return pts
-    body = ["<rect width='100%' height='100%' fill='white'/>", "<text x='16' y='24' font-size='16' font-weight='700' fill='#102a43'>Series preview</text>"]
-    body.append("<line x1='40' y1='24' x2='40' y2='212' stroke='#d9e2ec'/><line x1='40' y1='212' x2='700' y2='212' stroke='#d9e2ec'/>")
-    body.append(f"<polyline points='{_path(l)}' fill='none' stroke='#0b6cff' stroke-width='2.5'/>")
-    body.append(f"<text x='46' y='42' font-size='11' fill='#0b6cff'>{escape(left_label)}</text>")
+    body = ["<rect width='100%' height='100%' fill='white'/>", f"<text x='16' y='24' font-size='16' font-weight='700' fill='{_TEXT}'>Series preview</text>"]
+    body.append(f"<line x1='40' y1='24' x2='40' y2='212' stroke='{_BORDER}'/><line x1='40' y1='212' x2='700' y2='212' stroke='{_BORDER}'/>")
+    body.append(f"<polyline points='{_path(l)}' fill='none' stroke='{_BLUE}' stroke-width='2.5'/>")
+    body.append(f"<text x='46' y='42' font-size='11' fill='{_BLUE}'>{escape(left_label)}</text>")
     if r is not None:
-        body.append(f"<polyline points='{_path(r)}' fill='none' stroke='#dd6b20' stroke-width='2.5' stroke-dasharray='5 4'/>")
-        body.append(f"<text x='120' y='42' font-size='11' fill='#dd6b20'>{escape(right_label)}</text>")
+        body.append(f"<polyline points='{_path(r)}' fill='none' stroke='{_SUN_STROKE}' stroke-width='2.5' stroke-dasharray='5 4'/>")
+        body.append(f"<text x='120' y='42' font-size='11' fill='{_SUN_STROKE}'>{escape(right_label)}</text>")
     return _svg_wrap("".join(body), width=width, height=height, title="EchoWave series preview")
 
 
@@ -211,11 +220,11 @@ def rolling_similarity_svg(windows: Iterable[Mapping[str, Any]], *, width: int =
     pts = " ".join(f"{x:.1f},{y:.1f}" for x, y in zip(xs, ys))
     body = (
         "<rect width='100%' height='100%' fill='white'/>"
-        "<text x='16' y='24' font-size='16' font-weight='700' fill='#102a43'>Rolling similarity</text>"
-        "<line x1='40' y1='24' x2='40' y2='212' stroke='#d9e2ec'/><line x1='40' y1='212' x2='700' y2='212' stroke='#d9e2ec'/>"
-        "<line x1='40' y1='118' x2='700' y2='118' stroke='#eef2f6' stroke-dasharray='4 4'/>"
-        f"<polyline points='{pts}' fill='none' stroke='#177245' stroke-width='2.5'/>"
-        f"<text x='46' y='42' font-size='11' fill='#177245'>mean={float(np.mean(arr)):.2f}, min={float(np.min(arr)):.2f}, max={float(np.max(arr)):.2f}</text>"
+        f"<text x='16' y='24' font-size='16' font-weight='700' fill='{_TEXT}'>Rolling similarity</text>"
+        f"<line x1='40' y1='24' x2='40' y2='212' stroke='{_BORDER}'/><line x1='40' y1='212' x2='700' y2='212' stroke='{_BORDER}'/>"
+        "<line x1='40' y1='118' x2='700' y2='118' stroke='#F3F4F6' stroke-dasharray='4 4'/>"
+        f"<polyline points='{pts}' fill='none' stroke='{_BLUE}' stroke-width='2.5'/>"
+        f"<text x='46' y='42' font-size='11' fill='{_BLUE_DARK}'>mean={float(np.mean(arr)):.2f}, min={float(np.min(arr)):.2f}, max={float(np.max(arr)):.2f}</text>"
     )
     return _svg_wrap(body, width=width, height=height, title="Rolling similarity")
 
@@ -223,40 +232,10 @@ def rolling_similarity_svg(windows: Iterable[Mapping[str, Any]], *, width: int =
 def _brand_shell(*, title: str, body: str, accent: str = "#0b6cff") -> str:
     return f"""<!doctype html>
 <html lang='en'>
-<head>
-<meta charset='utf-8'/>
-<meta name='viewport' content='width=device-width, initial-scale=1'/>
-<title>{escape(title)}</title>
-<style>
-:root {{ --ink:#102a43; --muted:#486581; --line:#d9e2ec; --panel:#ffffff; --soft:#f7fafc; --brand:{accent}; --orange:#dd6b20; --green:#177245; --bg:#f3f7fb; --shadow:0 1px 2px rgba(16,42,67,.05),0 12px 24px rgba(16,42,67,.08); }}
-* {{ box-sizing:border-box; }} body {{ margin:0; padding:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.55; }}
-a {{ color:var(--brand); text-decoration:none; }}
-.header {{ background:linear-gradient(180deg,#0f2740,#17344d); color:#fff; border-bottom:1px solid rgba(255,255,255,.08); }}
-.header-inner {{ max-width:1180px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }}
-.brand {{ display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:-.02em; }}
-.brand-mark {{ width:22px; height:22px; border-radius:6px; background:linear-gradient(135deg,var(--brand),#8bc4ff); box-shadow:inset 0 0 0 1px rgba(255,255,255,.18); }}
-.brand small {{ display:block; font-weight:500; color:#cfe2ff; }}
-.container {{ max-width:1180px; margin:0 auto; padding:28px 24px 36px; }}
-.card {{ background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:20px 22px; box-shadow:var(--shadow); }}
-.hero {{ display:grid; grid-template-columns:1.1fr .9fr; gap:20px; }}
-.grid {{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px; }}
-.facts {{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px; }}
-.fact {{ background:var(--soft); border:1px solid var(--line); border-radius:12px; padding:12px; }}
-.fact strong {{ display:block; font-size:1.2rem; }}
-.pill {{ display:inline-block; padding:4px 10px; border-radius:999px; background:#eef5ff; color:var(--brand); font-size:.88rem; font-weight:600; margin-right:8px; }}
-.pill.alt {{ background:#fff4e8; color:#dd6b20; }}
-.muted {{ color:var(--muted); }}
-.score {{ font-size:2.6rem; line-height:1; font-weight:800; letter-spacing:-.04em; }}
-h1,h2,h3 {{ margin:0 0 10px; }} h1 {{ font-size:2.2rem; letter-spacing:-.03em; }} h2 {{ font-size:1.25rem; }}
-p.lead {{ color:var(--muted); font-size:1.05rem; margin:8px 0 0; }}
-table {{ width:100%; border-collapse:collapse; }} th,td {{ text-align:left; padding:10px 8px; border-bottom:1px solid var(--line); vertical-align:top; }} th {{ font-size:.92rem; color:var(--muted); }} ul {{ margin:0; padding-left:1.1rem; }} pre {{ background:#f7fafc; border:1px solid var(--line); border-radius:12px; padding:14px; overflow:auto; font-size:.88rem; white-space:pre-wrap; word-break:break-word; }}
-.signature {{ margin-top:18px; padding-top:14px; border-top:1px dashed var(--line); color:var(--muted); font-size:.92rem; }}
-@media (max-width: 920px) {{ .hero,.grid,.facts {{ grid-template-columns:1fr; }} body {{ padding:0; }} .container {{ padding:18px; }} }}
-</style>
-</head>
+{page_head(title, extra_css=report_shell_css(accent))}
 <body>
-<header class='header'><div class='header-inner'><div class='brand'><span class='brand-mark'></span><div><div>EchoWave</div><small>explainable time-series similarity for humans and agents</small></div></div><div><span class='pill'>explainable similarity</span></div></div></header>
-<div class='container'>{body}</div>
+<header class='report-header'><div class='report-header-inner'><div class='brand'><span class='brand-mark'></span><div class='brand-copy'><strong>EchoWave</strong><span>Explainable time-series similarity for humans and agents.</span></div></div><div class='pill sun'>Scientific report surface</div></div></header>
+<div class='shell' style='padding:28px 0 40px'>{body}</div>
 </body>
 </html>"""
 
@@ -279,7 +258,7 @@ def profile_html_report(profile: Any, *, title: str | None = None, audience: str
     body = f"""
   <section class='hero'>
     <div class='card'>
-      <span class='pill'>EchoWave</span><span class='pill'>{escape(str(card['domain']))}</span><span class='pill'>{escape(str(card['observation_mode']))}</span>
+      <span class='pill sun'>EchoWave</span><span class='pill'>{escape(str(card['domain']))}</span><span class='pill blue'>{escape(str(card['observation_mode']))}</span>
       <h1>{escape(card['executive_summary'])}</h1>
       <p class='lead'>Generate plain-English structural context you can compare, share, and hand off.</p>
       <div class='facts'>
@@ -312,7 +291,7 @@ def profile_html_report(profile: Any, *, title: str | None = None, audience: str
     <div class='card'><h2>Compact agent context</h2><pre>{compact}</pre></div>
   </section>
 """
-    return _brand_shell(title=subtitle, body=body, accent="#0b6cff")
+    return _brand_shell(title=subtitle, body=body, accent=_BLUE)
 
 
 
@@ -329,7 +308,7 @@ def similarity_html_report(report: Any, *, title: str | None = None, left_series
     body = f"""
   <section class='hero'>
     <div class='card'>
-      <span class='pill alt'>similarity</span><span class='pill'>{escape(report.mode)}</span>
+      <span class='pill sun'>similarity</span><span class='pill blue'>{escape(report.mode)}</span>
       <h1>{escape(report.interpretation)}</h1>
       <p class='muted'>Overall similarity score.</p>
       <div class='score'>{report.similarity_score:.2f}</div>
@@ -347,7 +326,7 @@ def similarity_html_report(report: Any, *, title: str | None = None, left_series
     <div class='card'><h2>Compact agent context</h2><pre>{compact}</pre></div>
   </section>
 """
-    return _brand_shell(title=title_text, body=body, accent="#dd6b20")
+    return _brand_shell(title=title_text, body=body, accent=COLOR_TOKENS["sun_500"])
 
 
 def _social_card_shell(*, title: str, subtitle: str, bullets: list[str], accent: str, width: int = 1200, height: int = 630) -> str:
@@ -355,15 +334,15 @@ def _social_card_shell(*, title: str, subtitle: str, bullets: list[str], accent:
         f"<text x='70' y='{225 + 58*i}' font-size='30' fill='#17324d'>&#8226; {escape(item)}</text>" for i, item in enumerate(bullets[:4])
     )
     return _svg_wrap(
-        f"<defs><linearGradient id='bg' x1='0' x2='1' y1='0' y2='1'><stop offset='0%' stop-color='#f7fbff'/><stop offset='100%' stop-color='#eaf2ff'/></linearGradient></defs>"
+        f"<defs><linearGradient id='bg' x1='0' x2='1' y1='0' y2='1'><stop offset='0%' stop-color='#fffef9'/><stop offset='100%' stop-color='{COLOR_TOKENS['sun_100']}'/></linearGradient></defs>"
         f"<rect width='100%' height='100%' fill='url(#bg)'/>"
-        f"<rect x='40' y='38' width='{width-80}' height='{height-76}' rx='32' fill='white' stroke='#d9e2ec'/>"
+        f"<rect x='40' y='38' width='{width-80}' height='{height-76}' rx='32' fill='white' stroke='{_BORDER}'/>"
         f"<rect x='40' y='38' width='14' height='{height-76}' rx='7' fill='{accent}'/>"
-        f"<text x='84' y='108' font-size='34' font-weight='700' fill='#102a43'>EchoWave</text>"
-        f"<text x='84' y='152' font-size='54' font-weight='800' fill='#102a43'>{escape(title)}</text>"
-        f"<text x='84' y='192' font-size='28' fill='#486581'>{escape(subtitle)}</text>"
+        f"<text x='84' y='108' font-size='34' font-weight='700' fill='{_TEXT}'>EchoWave</text>"
+        f"<text x='84' y='152' font-size='54' font-weight='800' fill='{_TEXT}'>{escape(title)}</text>"
+        f"<text x='84' y='192' font-size='28' fill='{_MUTED}'>{escape(subtitle)}</text>"
         f"{bullets_svg}"
-        f"<text x='84' y='{height-74}' font-size='24' fill='#486581'>explainable time-series similarity for humans and agents</text>",
+        f"<text x='84' y='{height-74}' font-size='24' fill='{_MUTED}'>explainable time-series similarity for humans and agents</text>",
         width=width,
         height=height,
         title=f"EchoWave social card - {title}",
@@ -377,7 +356,7 @@ def profile_social_card_svg(profile: Any, *, title: str | None = None) -> str:
         title=title or "Plain-English structural report",
         subtitle=f"{card['domain']} | reliability {card['dataset_facts']['reliability']['score']:.2f}",
         bullets=[f"Top axis: {b}" for b in bullets] + ["Structural context for better matching"],
-        accent="#0b6cff",
+        accent=COLOR_TOKENS["sun_500"],
     )
 
 
@@ -388,6 +367,6 @@ def similarity_social_card_svg(report: Any, *, title: str | None = None) -> str:
         title=title or "Similarity verdict",
         subtitle=f"{report.left_name} vs {report.right_name}",
         bullets=bullets,
-        accent="#dd6b20",
+        accent=_BLUE,
     )
 

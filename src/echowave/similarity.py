@@ -58,7 +58,7 @@ class SimilarityReport:
 
     def to_markdown(self) -> str:
         lines = [
-            "# tsontology similarity report",
+            "# EchoWave similarity report",
             "",
             f"**left:** {self.left_name}  ",
             f"**right:** {self.right_name}  ",
@@ -118,7 +118,7 @@ class SimilarityReport:
 
     def to_narrative_report(self) -> str:
         lines = [
-            "# tsontology similarity narrative",
+            "# EchoWave similarity narrative",
             "",
             "## What was compared",
             "",

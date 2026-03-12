@@ -170,10 +170,10 @@ DOCTOR_HEADING = "Environment doctor"
 README_BADGES = (
     f"[![PyPI version](https://img.shields.io/pypi/v/{PACKAGE_NAME}?style=flat-square)]({PROJECT_PYPI_URL})",
     f"[![Python versions](https://img.shields.io/pypi/pyversions/{PACKAGE_NAME}?style=flat-square)]({PROJECT_PYPI_URL})",
-    "[![License: MIT](https://img.shields.io/badge/license-MIT-0b6cff?style=flat-square)](LICENSE)",
-    f"[![Status: {PACKAGE_STAGE}](https://img.shields.io/badge/status-{PACKAGE_STAGE.lower()}-dd6b20?style=flat-square)]({PROJECT_REPOSITORY_URL})",
-    f"[![Docs: GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-0a7f5a?style=flat-square)]({PROJECT_DOCUMENTATION_URL})",
-    f"[![Author: {AUTHOR_NAME}](https://img.shields.io/badge/author-Zipeng%20Wu-102a43?style=flat-square)]({PROJECT_REPOSITORY_URL})",
+    "[![License: MIT](https://img.shields.io/badge/license-MIT-ffc83d?style=flat-square)](LICENSE)",
+    f"[![Status: {PACKAGE_STAGE}](https://img.shields.io/badge/status-{PACKAGE_STAGE.lower()}-2f6bff?style=flat-square)]({PROJECT_REPOSITORY_URL})",
+    f"[![Docs: GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-2f6bff?style=flat-square)]({PROJECT_DOCUMENTATION_URL})",
+    f"[![Author: {AUTHOR_NAME}](https://img.shields.io/badge/author-Zipeng%20Wu-1f2937?style=flat-square)]({PROJECT_REPOSITORY_URL})",
     f"[![Affiliation: The University of Birmingham](https://img.shields.io/badge/The%20University%20of%20Birmingham-academic-a51c30?style=flat-square)]({UNIVERSITY_URL})",
 )
 

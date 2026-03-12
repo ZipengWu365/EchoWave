@@ -4,10 +4,10 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/echowave?style=flat-square)](https://pypi.org/project/echowave/)
 [![Python versions](https://img.shields.io/pypi/pyversions/echowave?style=flat-square)](https://pypi.org/project/echowave/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-0b6cff?style=flat-square)](LICENSE)
-[![Status: Beta](https://img.shields.io/badge/status-beta-dd6b20?style=flat-square)](https://github.com/ZipengWu365/EchoWave)
-[![Docs: GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-0a7f5a?style=flat-square)](https://zipengwu365.github.io/EchoWave/)
-[![Author: Zipeng Wu](https://img.shields.io/badge/author-Zipeng%20Wu-102a43?style=flat-square)](https://github.com/ZipengWu365/EchoWave)
+[![License: MIT](https://img.shields.io/badge/license-MIT-ffc83d?style=flat-square)](LICENSE)
+[![Status: Beta](https://img.shields.io/badge/status-beta-2f6bff?style=flat-square)](https://github.com/ZipengWu365/EchoWave)
+[![Docs: GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-2f6bff?style=flat-square)](https://zipengwu365.github.io/EchoWave/)
+[![Author: Zipeng Wu](https://img.shields.io/badge/author-Zipeng%20Wu-1f2937?style=flat-square)](https://github.com/ZipengWu365/EchoWave)
 [![Affiliation: The University of Birmingham](https://img.shields.io/badge/The%20University%20of%20Birmingham-academic-a51c30?style=flat-square)](https://www.birmingham.ac.uk/)
 
 ![Quickstart preview](assets/quickstart.gif)

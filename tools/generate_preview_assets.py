@@ -24,6 +24,18 @@ from echowave.datasets import starter_dataset
 from echowave.profile import profile_dataset
 from echowave.similarity import compare_series, rolling_similarity
 
+PAGE = "#FFFFFF"
+PAGE_SOFT = "#FFFDF4"
+CARD = "#FAFAFA"
+BORDER = "#E5E7EB"
+TEXT = "#1F2937"
+MUTED = "#6B7280"
+SUN = "#FFC83D"
+SUN_SOFT = "#FFE27A"
+SUN_DEEP = "#C7950A"
+BLUE = "#2F6BFF"
+BLUE_DEEP = "#2554CC"
+
 
 def _font(size: int, *, mono: bool = False) -> ImageFont.FreeTypeFont:
     family = "DejaVu Sans Mono" if mono else "DejaVu Sans"
@@ -32,9 +44,9 @@ def _font(size: int, *, mono: bool = False) -> ImageFont.FreeTypeFont:
 
 
 def _card_canvas(width: int, height: int, *, accent: str) -> tuple[Image.Image, ImageDraw.ImageDraw]:
-    image = Image.new("RGB", (width, height), "#edf2f7")
+    image = Image.new("RGB", (width, height), PAGE_SOFT)
     draw = ImageDraw.Draw(image)
-    draw.rounded_rectangle((28, 28, width - 28, height - 28), radius=28, fill="white", outline="#d9e2ec", width=2)
+    draw.rounded_rectangle((28, 28, width - 28, height - 28), radius=28, fill=PAGE, outline=BORDER, width=2)
     draw.rounded_rectangle((28, 28, 48, height - 28), radius=10, fill=accent)
     return image, draw
 
@@ -58,9 +70,9 @@ def _render_text_card(*, title: str, subtitle: str, body: str, accent: str, mono
     title_font = _font(34)
     subtitle_font = _font(20)
     body_font = _font(22, mono=mono)
-    draw.text((72, 72), title, font=title_font, fill="#102a43")
-    draw.text((72, 126), subtitle, font=subtitle_font, fill="#486581")
-    _draw_wrapped(draw, body, x=72, y=190, width=size[0] - 144, font=body_font, fill="#334e68")
+    draw.text((72, 72), title, font=title_font, fill=TEXT)
+    draw.text((72, 126), subtitle, font=subtitle_font, fill=MUTED)
+    _draw_wrapped(draw, body, x=72, y=190, width=size[0] - 144, font=body_font, fill=TEXT)
     return image
 
 
@@ -86,8 +98,8 @@ def _save_profile_radar(path: Path) -> None:
 
     def _build(fig):
         ax = fig.add_subplot(111, polar=True)
-        ax.plot(angles, values, linewidth=2.8, color="#0b6cff")
-        ax.fill(angles, values, color="#0b6cff", alpha=0.18)
+        ax.plot(angles, values, linewidth=2.8, color=BLUE)
+        ax.fill(angles, values, color=SUN, alpha=0.22)
         ax.set_ylim(0, 1.0)
         ax.set_title("Dataset profile context", fontsize=18, pad=26)
         ax.set_xticks(angles[:-1])
@@ -109,7 +121,7 @@ def _save_profile_radar(path: Path) -> None:
             fontsize=9,
         )
         ax.set_yticklabels([])
-        ax.grid(color="#bcccdc")
+        ax.grid(color=BORDER)
 
     _save_figure(path, _build)
 
@@ -121,7 +133,7 @@ def _save_rolling_similarity(path: Path) -> None:
 
     def _build(fig):
         ax = fig.add_subplot(111)
-        ax.plot(range(len(scores)), scores, color="#177245", linewidth=2.8)
+        ax.plot(range(len(scores)), scores, color=BLUE, linewidth=2.8)
         ax.set_ylim(0.0, 1.0)
         ax.set_title("Rolling similarity over time", fontsize=18)
         ax.set_xlabel("window")
@@ -137,8 +149,8 @@ def _save_github_preview(path: Path) -> None:
 
     def _build(fig):
         ax = fig.add_subplot(111)
-        ax.plot(github["target"], label="candidate", linewidth=2.6, color="#0b6cff")
-        ax.plot(github["durable_breakout"], label="durable analog", linewidth=2.6, color="#dd6b20")
+        ax.plot(github["target"], label="candidate", linewidth=2.6, color=BLUE)
+        ax.plot(github["durable_breakout"], label="durable analog", linewidth=2.6, color=SUN_DEEP)
         ax.set_title(f"GitHub breakout analog search (similarity {report.similarity_score:.2f})", fontsize=18)
         ax.set_xlabel("time")
         ax.set_ylabel("value")
@@ -153,9 +165,9 @@ def _save_markets_preview(path: Path) -> None:
 
     def _build(fig):
         ax = fig.add_subplot(111)
-        ax.plot(markets["btc"], label="BTC", linewidth=2.5, color="#0b6cff")
-        ax.plot(markets["gold"], label="Gold", linewidth=2.5, color="#dd6b20")
-        ax.plot(markets["oil"], label="Oil", linewidth=2.5, color="#2f9e44")
+        ax.plot(markets["btc"], label="BTC", linewidth=2.5, color=BLUE)
+        ax.plot(markets["gold"], label="Gold", linewidth=2.5, color=SUN_DEEP)
+        ax.plot(markets["oil"], label="Oil", linewidth=2.5, color=BLUE_DEEP)
         ax.set_title("BTC / Gold / Oil comparison", fontsize=18)
         ax.set_xlabel("time")
         ax.set_ylabel("value")
@@ -183,7 +195,7 @@ def _save_summary_preview(path: Path) -> None:
         title="EchoWave similarity card preview",
         subtitle="A compare-first quicklook for humans and agents",
         body="\n".join(lines),
-        accent="#dd6b20",
+        accent=SUN,
         mono=True,
         size=(1280, 760),
     )
@@ -204,7 +216,7 @@ def _save_title_card(path: Path) -> None:
         title="EchoWave release surface",
         subtitle="v0.16.0 formal release draft",
         body=body,
-        accent="#0b6cff",
+        accent=BLUE,
         mono=False,
         size=(1280, 720),
     )
@@ -228,7 +240,7 @@ def _save_quickstart_gif(path: Path) -> None:
                 "y=np.sin(np.linspace(0,8*np.pi,128)+0.2); "
                 "print(compare_series(x,y).to_summary_card_markdown())\""
             ),
-            accent="#0b6cff",
+            accent=BLUE,
             mono=True,
         ),
         _render_text_card(
@@ -241,7 +253,7 @@ def _save_quickstart_gif(path: Path) -> None:
                 f"top components: {', '.join(name.replace('_', ' ') for name in list(report.component_scores)[:3])}\n"
                 f"why: {report.interpretation}"
             ),
-            accent="#dd6b20",
+            accent=SUN,
             mono=True,
         ),
         _render_text_card(
@@ -254,7 +266,7 @@ def _save_quickstart_gif(path: Path) -> None:
                 "print(payload['verdict'])\n\n"
                 f"confidence: {report.qualitative_label}"
             ),
-            accent="#177245",
+            accent=BLUE_DEEP,
             mono=True,
         ),
     ]
@@ -268,14 +280,14 @@ def _social_card_png(*, title: str, subtitle: str, bullets: list[str], accent: s
     hero_font = _font(54)
     subtitle_font = _font(25)
     bullet_font = _font(28)
-    draw.text((84, 76), "EchoWave", font=title_font, fill="#102a43")
-    draw.text((84, 140), title, font=hero_font, fill="#102a43")
-    draw.text((84, 204), subtitle, font=subtitle_font, fill="#486581")
+    draw.text((84, 76), "EchoWave", font=title_font, fill=TEXT)
+    draw.text((84, 140), title, font=hero_font, fill=TEXT)
+    draw.text((84, 204), subtitle, font=subtitle_font, fill=MUTED)
     y = 278
     for bullet in bullets[:4]:
-        draw.text((84, y), f"- {bullet}", font=bullet_font, fill="#17324d")
+        draw.text((84, y), f"- {bullet}", font=bullet_font, fill=TEXT)
         y += 64
-    draw.text((84, 548), "explainable time-series similarity for humans and agents", font=_font(22), fill="#486581")
+    draw.text((84, 548), "explainable time-series similarity for humans and agents", font=_font(22), fill=MUTED)
     return image
 
 
@@ -306,7 +318,7 @@ def _write_demo_pack_bitmaps(root: Path) -> None:
                 f"dtw similarity: {github_report.component_scores['dtw_similarity']:.2f}",
                 "ask whether growth is durable or just viral",
             ],
-            "accent": "#dd6b20",
+            "accent": SUN,
         },
         "btc_vs_gold_under_shocks": {
             "title": "BTC vs Gold under shocks",
@@ -317,7 +329,7 @@ def _write_demo_pack_bitmaps(root: Path) -> None:
                 f"spectral similarity: {market_report.component_scores['spectral_similarity']:.2f}",
                 "show how analogies shift under stress",
             ],
-            "accent": "#dd6b20",
+            "accent": SUN,
         },
         "heatwave_vs_grid_load": {
             "title": "Heatwave vs grid load",
@@ -328,7 +340,7 @@ def _write_demo_pack_bitmaps(root: Path) -> None:
                 f"reliability: {energy_card['dataset_facts']['reliability']['score']:.2f}",
                 "use profile context to explain similarity",
             ],
-            "accent": "#0b6cff",
+            "accent": BLUE,
         },
     }
 
