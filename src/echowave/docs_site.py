@@ -74,33 +74,36 @@ def _doc_shell(*, page_key: str, title: str, lead: str, body: str) -> str:
         active = " active" if key == page_key else ""
         sidebar.append(f"<a class='doc-link{active}' href='{href}'>{escape(label)}</a>")
     extra_css = """
-    .docs-wrap { display:grid; grid-template-columns: 280px minmax(0, 1fr); gap: 24px; padding: 28px 0 40px; }
-    .docs-sidebar { position: sticky; top: 94px; align-self: start; display:grid; gap:18px; }
-    .sidebar-card { background: var(--surface-strong); border:1px solid var(--border); border-radius: var(--radius-md); padding: 18px; box-shadow: var(--shadow-sm); }
+    .docs-wrap { display:grid; grid-template-columns: 240px minmax(0, 1fr); gap: 18px; padding: 24px 0 36px; }
+    .docs-sidebar { position: sticky; top: 88px; align-self: start; display:grid; gap:14px; min-width: 0; }
+    .sidebar-card { background: var(--surface-strong); border:1px solid var(--border); border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow-sm); overflow: hidden; }
     .sidebar-title { margin:0 0 10px; font-size: 0.86rem; color: var(--text-600); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-    .doc-link { display:block; padding: 10px 12px; border-radius: 12px; color: var(--text-600); font-weight: 600; }
+    .doc-link { display:block; padding: 10px 12px; border-radius: 12px; color: var(--text-600); font-weight: 600; word-break: break-word; }
     .doc-link:hover { background: rgba(47,107,255,0.06); color: var(--text-900); }
     .doc-link.active { background: rgba(255, 244, 194, 0.78); color: var(--text-900); border:1px solid rgba(255,200,61,0.38); }
     .docs-main { display:grid; gap: 24px; min-width: 0; }
     .docs-hero { display:grid; gap: 12px; }
     .docs-hero h1 { font-size: clamp(2.1rem, 4vw, 3.3rem); line-height: 1.02; }
-    .docs-card { background: var(--surface-strong); border:1px solid var(--border); border-radius: var(--radius-md); padding: 22px 24px; box-shadow: var(--shadow-sm); display:grid; gap: 12px; }
+    .docs-card { background: var(--surface-strong); border:1px solid var(--border); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); display:grid; gap: 12px; min-width: 0; overflow: hidden; }
     .docs-grid-2, .docs-grid-3 { display:grid; gap: 20px; }
     .docs-grid-2 { grid-template-columns: 1fr 1fr; }
     .docs-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .meta-line { display:flex; flex-wrap:wrap; gap: 10px; }
-    .meta-chip { display:inline-flex; align-items:center; gap:6px; padding: 6px 10px; border-radius: 999px; background: var(--surface); border:1px solid var(--border); color: var(--text-600); font-size: 0.84rem; font-weight: 700; }
+    .meta-line { display:flex; flex-wrap:wrap; gap: 10px; min-width: 0; }
+    .meta-chip { display:inline-flex; align-items:center; gap:6px; padding: 6px 10px; border-radius: 999px; background: var(--surface); border:1px solid var(--border); color: var(--text-600); font-size: 0.84rem; font-weight: 700; min-width: 0; }
     .meta-chip strong { color: var(--text-900); }
     .entry-stack { display:grid; gap: 16px; }
     .entry { border-top: 1px solid var(--border); padding-top: 16px; }
     .entry:first-child { border-top: 0; padding-top: 0; }
     .entry h3 { font-size: 1.1rem; }
-    .inline-code { font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; background: #fffef8; border:1px solid var(--border); padding: 2px 6px; border-radius: 8px; }
-    .small-table { width:100%; border-collapse:collapse; }
+    .inline-code { display: inline-block; max-width: 100%; overflow-x: auto; vertical-align: bottom; white-space: nowrap; font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; background: #fffef8; border:1px solid var(--border); padding: 2px 6px; border-radius: 8px; }
+    .small-table { width:100%; border-collapse:collapse; display:block; overflow-x:auto; }
     .small-table th, .small-table td { padding: 11px 12px; text-align:left; border-bottom:1px solid var(--border); vertical-align: top; }
     .small-table th { background: #fffdf6; color: var(--text-600); font-size: 0.9rem; }
     .small-table tr:last-child td { border-bottom: 0; }
     .toc-note { font-size: 0.92rem; color: var(--text-600); }
+    @media (max-width: 1180px) {
+      .docs-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
     @media (max-width: 980px) {
       .docs-wrap { grid-template-columns: 1fr; }
       .docs-sidebar { position: static; }

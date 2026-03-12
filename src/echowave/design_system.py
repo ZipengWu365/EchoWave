@@ -49,7 +49,7 @@ BASE_CSS = f"""
   --radius-lg: 28px;
   --radius-md: 20px;
   --radius-sm: 14px;
-  --max-width: 1180px;
+  --max-width: 980px;
 }}
 * {{
   box-sizing: border-box;
@@ -65,6 +65,7 @@ body {{
   color: var(--text-900);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   line-height: 1.6;
+  overflow-x: hidden;
 }}
 a {{
   color: var(--blue-600);
@@ -86,8 +87,12 @@ select, input, textarea {{
   font: inherit;
 }}
 .shell {{
-  width: min(var(--max-width), calc(100vw - 32px));
+  width: min(var(--max-width), calc(100vw - 20px));
   margin: 0 auto;
+}}
+svg, img {{
+  max-width: 100%;
+  height: auto;
 }}
 .topbar {{
   position: sticky;
@@ -184,6 +189,8 @@ select, input, textarea {{
   border-radius: var(--radius-md);
   padding: 22px 24px;
   box-shadow: var(--shadow-sm);
+  min-width: 0;
+  overflow: hidden;
 }}
 .card.sun {{
   background: linear-gradient(180deg, #fffdfa 0%, var(--surface-sun-strong) 100%);
@@ -388,6 +395,8 @@ h3 {{
   border-radius: var(--radius-md);
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
+  min-width: 0;
+  overflow: hidden;
 }}
 .surface-frame.pad {{
   padding: 16px;
@@ -400,6 +409,8 @@ table {{
   overflow: hidden;
   background: var(--surface-strong);
   box-shadow: var(--shadow-sm);
+  display: block;
+  overflow-x: auto;
 }}
 th, td {{
   padding: 12px 14px;
@@ -531,7 +542,7 @@ def report_shell_css(accent: str) -> str:
       backdrop-filter: blur(10px) saturate(180%);
     }}
     .report-header-inner {{
-      max-width: 1180px;
+      max-width: var(--max-width);
       margin: 0 auto;
       padding: 16px 24px;
       display: flex;
