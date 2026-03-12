@@ -228,7 +228,7 @@ def format_summary_card_json(profile: Any, *, audience: str = "general", indent:
 def format_summary_card_markdown(profile: Any, *, audience: str = "general") -> str:
     card = summary_card_dict(profile, audience=audience)
     lines = [
-        "# tsontology summary card",
+        "# EchoWave summary card",
         "",
         f"**audience:** {card['audience']}  ",
         f"**domain:** {card['domain']}  ",

@@ -507,7 +507,7 @@ def test_cli_can_print_case_gallery_and_summary_card(tmp_path: Path) -> None:
 
     card_cmd = [sys.executable, "-m", "tsontology.cli", str(arr_path), "--format", "summary-card", "--domain", "traffic"]
     card_out = subprocess.run(card_cmd, capture_output=True, text=True, check=True, env=_subprocess_env())
-    assert "tsontology summary card" in card_out.stdout
+    assert "EchoWave summary card" in card_out.stdout
 
 
 def test_compare_series_scores_sine_higher_than_noise() -> None:
@@ -577,7 +577,7 @@ def test_cli_can_compare_two_arrays(tmp_path: Path) -> None:
 
     cmd = [sys.executable, "-m", "tsontology.cli", str(left_path), "--reference", str(right_path), "--format", "similarity-summary"]
     completed = subprocess.run(cmd, capture_output=True, text=True, check=True, env=_subprocess_env())
-    assert "tsontology similarity summary" in completed.stdout
+    assert "EchoWave similarity summary" in completed.stdout
 
 
 
@@ -706,7 +706,7 @@ def test_homepage_mentions_ecosystem_and_coverage() -> None:
 def test_explain_dataset_returns_plain_summary_card() -> None:
     x = np.sin(np.linspace(0, 8 * np.pi, 128))
     text = explain_dataset(x)
-    assert text.startswith("# tsontology summary card")
+    assert text.startswith("# EchoWave summary card")
     assert "overall reliability" in text.lower()
 
 

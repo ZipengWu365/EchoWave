@@ -92,7 +92,7 @@ class SimilarityReport:
 
     def to_summary_card_markdown(self) -> str:
         lines = [
-            "# tsontology similarity summary",
+            "# EchoWave similarity summary",
             "",
             f"**Compared:** {self.left_name} vs {self.right_name}",
             "",
