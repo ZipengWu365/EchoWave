@@ -1,0 +1,111 @@
+{
+  "schema_version": "2.0.0",
+  "tool": "ts_compare",
+  "ok": true,
+  "input_contract": {
+    "accepted_input_kinds": [
+      "array",
+      "dataframe_like",
+      "table",
+      "typed_wrapper",
+      "path_or_uri",
+      "irregular",
+      "event_stream"
+    ],
+    "requested_input_kind": "auto",
+    "resolved_input_kind": "array",
+    "resolved_reference_kind": "array",
+    "has_timestamps": false,
+    "has_reference_timestamps": false,
+    "mode": "auto",
+    "budget": "lean",
+    "domain": null,
+    "audience": null,
+    "available_inputs": null
+  },
+  "error": null,
+  "headline": "left and right are strongly similar overall. The best agreement appears in trend similarity and shape similarity.",
+  "verdict": "left and right are strongly similar overall. The best agreement appears in trend similarity and shape similarity.",
+  "overall_similarity": 0.9920375389347644,
+  "qualitative_label": "very high",
+  "top_components": [
+    {
+      "name": "trend_similarity",
+      "score": 0.9997700043143813,
+      "level": "very high"
+    },
+    {
+      "name": "shape_similarity",
+      "score": 0.9997529842349095,
+      "level": "very high"
+    },
+    {
+      "name": "dtw_similarity",
+      "score": 0.9966164431011941,
+      "level": "very high"
+    }
+  ],
+  "stop_here": true,
+  "confidence": "high",
+  "limitations": [
+    "Similarity is a summary and can hide local mismatches."
+  ],
+  "evidence": {
+    "series_similarity": 0.9920375389347644,
+    "qualitative_label": "very high",
+    "top_component_scores": [
+      {
+        "name": "trend_similarity",
+        "score": 0.9997700043143813,
+        "level": "very high"
+      },
+      {
+        "name": "shape_similarity",
+        "score": 0.9997529842349095,
+        "level": "very high"
+      },
+      {
+        "name": "dtw_similarity",
+        "score": 0.9966164431011941,
+        "level": "very high"
+      }
+    ],
+    "left_length": 120,
+    "right_length": 120
+  },
+  "recommended_next_step": "Plot both series after z-score normalization to show the shared shape without scale differences.",
+  "next_actions": [
+    "Plot both series after z-score normalization to show the shared shape without scale differences.",
+    "Run rolling or windowed similarity if you expect the relationship to change over time."
+  ],
+  "compact_context": {
+    "type": "similarity",
+    "headline": "left and right are strongly similar overall. The best agreement appears in trend similarity and shape similarity.",
+    "overall_similarity": 0.9920375389347644,
+    "qualitative_label": "very high",
+    "top_components": [
+      {
+        "name": "trend_similarity",
+        "score": 0.9997700043143813,
+        "level": "very high"
+      },
+      {
+        "name": "shape_similarity",
+        "score": 0.9997529842349095,
+        "level": "very high"
+      },
+      {
+        "name": "dtw_similarity",
+        "score": 0.9966164431011941,
+        "level": "very high"
+      }
+    ],
+    "profile_similarity": null,
+    "rolling_summary": null,
+    "suggestions": [
+      "Plot both series after z-score normalization to show the shared shape without scale differences.",
+      "Run rolling or windowed similarity if you expect the relationship to change over time."
+    ],
+    "notes": []
+  }
+}

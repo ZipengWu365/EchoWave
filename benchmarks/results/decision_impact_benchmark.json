@@ -1,0 +1,1409 @@
+{
+  "benchmark": "decision_impact_benchmark",
+  "suite": "synthetic interpretable families",
+  "seeds_per_family": 30,
+  "n_cases": 150,
+  "fixed_policy": "last_value",
+  "summary": {
+    "decision_changed_rate": 0.9133333333333333,
+    "win_rate_when_changed": 0.8686131386861314,
+    "overall_win_rate": 0.7933333333333333,
+    "mean_improvement": 0.7715030135475281,
+    "median_improvement": 0.8947485272035873
+  },
+  "family_summary": {
+    "seasonal": {
+      "n": 30,
+      "decision_changed_rate": 1.0,
+      "win_rate": 1.0,
+      "mean_improvement": 1.4280370378794154,
+      "median_improvement": 1.4057721240794163,
+      "most_common_routed_model": "seasonal_naive"
+    },
+    "trend": {
+      "n": 30,
+      "decision_changed_rate": 1.0,
+      "win_rate": 1.0,
+      "mean_improvement": 0.9786090379835888,
+      "median_improvement": 0.9499818943782414,
+      "most_common_routed_model": "drift"
+    },
+    "trend_plus_seasonal": {
+      "n": 30,
+      "decision_changed_rate": 1.0,
+      "win_rate": 1.0,
+      "mean_improvement": 1.296942447103233,
+      "median_improvement": 1.2003843381879666,
+      "most_common_routed_model": "seasonal_naive"
+    },
+    "bursty": {
+      "n": 30,
+      "decision_changed_rate": 1.0,
+      "win_rate": 0.5666666666666667,
+      "mean_improvement": -0.0007443454528079984,
+      "median_improvement": 0.002225626393416974,
+      "most_common_routed_model": "moving_average"
+    },
+    "flat_noisy": {
+      "n": 30,
+      "decision_changed_rate": 0.5666666666666667,
+      "win_rate": 0.4,
+      "mean_improvement": 0.1546708902242125,
+      "median_improvement": 0.0,
+      "most_common_routed_model": "moving_average"
+    }
+  },
+  "results": [
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.40026741609412153,
+      "fixed_mae": 1.6857445976948586,
+      "improvement": 1.285477181600737,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.30404197198957306,
+      "fixed_mae": 2.202866755129922,
+      "improvement": 1.8988247831403489,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.35905298976530436,
+      "fixed_mae": 1.5528040667213545,
+      "improvement": 1.1937510769560502,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.497413842638932,
+      "fixed_mae": 2.244229023396072,
+      "improvement": 1.74681518075714,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5269080624768041,
+      "fixed_mae": 1.8434971298076668,
+      "improvement": 1.3165890673308627,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.411494341971066,
+      "fixed_mae": 1.6891654908397946,
+      "improvement": 1.2776711488687287,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.3000115763092855,
+      "fixed_mae": 2.2290079702260766,
+      "improvement": 1.9289963939167911,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.4360025166965766,
+      "fixed_mae": 1.5953671295468304,
+      "improvement": 1.1593646128502537,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.29363251165272813,
+      "fixed_mae": 1.8106478103402537,
+      "improvement": 1.5170152986875256,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.41964421251470907,
+      "fixed_mae": 1.8241034476571807,
+      "improvement": 1.4044592351424716,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.36032827118305316,
+      "fixed_mae": 2.0285007982010512,
+      "improvement": 1.6681725270179981,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.346981159736242,
+      "fixed_mae": 1.793309812208052,
+      "improvement": 1.44632865247181,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.41117060572612424,
+      "fixed_mae": 1.9868963255897933,
+      "improvement": 1.5757257198636692,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5951426553848188,
+      "fixed_mae": 1.6811324606265245,
+      "improvement": 1.0859898052417059,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.3083515861712793,
+      "fixed_mae": 1.807895849235041,
+      "improvement": 1.4995442630637617,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.46593230122119217,
+      "fixed_mae": 1.9886818001144455,
+      "improvement": 1.5227494988932533,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.571124422426719,
+      "fixed_mae": 1.4976696218578958,
+      "improvement": 0.9265451994311767,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.579405818569199,
+      "fixed_mae": 1.9802358627461107,
+      "improvement": 1.4008300441769117,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.3902332045889685,
+      "fixed_mae": 2.177354426689209,
+      "improvement": 1.7871212221002406,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.3937619069889333,
+      "fixed_mae": 1.905303456113767,
+      "improvement": 1.5115415491248336,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5064457792693523,
+      "fixed_mae": 1.8702461684339002,
+      "improvement": 1.363800389164548,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5297419113123434,
+      "fixed_mae": 1.8299399457501717,
+      "improvement": 1.3001980344378283,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.3890892470522291,
+      "fixed_mae": 1.5827711028775038,
+      "improvement": 1.1936818558252746,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.35613978808269414,
+      "fixed_mae": 1.8679154851814073,
+      "improvement": 1.511775697098713,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.6604368163581998,
+      "fixed_mae": 1.7065075199954949,
+      "improvement": 1.046070703637295,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.3655179048143257,
+      "fixed_mae": 1.8664630830760167,
+      "improvement": 1.500945178261691,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.35446322364328103,
+      "fixed_mae": 1.7615482366596422,
+      "improvement": 1.4070850130163612,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5527911214347757,
+      "fixed_mae": 1.8823586173913995,
+      "improvement": 1.3295674959566237,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.39648529309072383,
+      "fixed_mae": 2.105666925863076,
+      "improvement": 1.709181632772352,
+      "decision_changed": true
+    },
+    {
+      "family": "seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.634922824298266,
+      "fixed_mae": 1.9602154998737682,
+      "improvement": 1.3252926755755023,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5342715394412997,
+      "fixed_mae": 0.8097890617809552,
+      "improvement": 0.27551752233965554,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.4131941422384366,
+      "fixed_mae": 2.4589259542743878,
+      "improvement": 2.0457318120359513,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.48163287106345276,
+      "fixed_mae": 1.176877886772543,
+      "improvement": 0.6952450157090901,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.32605688567590124,
+      "fixed_mae": 2.3332170629541107,
+      "improvement": 2.0071601772782093,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.35085991187997073,
+      "fixed_mae": 1.306329425209821,
+      "improvement": 0.9554695133298503,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.34427733927253623,
+      "fixed_mae": 1.2135300030473173,
+      "improvement": 0.869252663774781,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.49349911635532145,
+      "fixed_mae": 1.8765185114881098,
+      "improvement": 1.3830193951327883,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5891018870113071,
+      "fixed_mae": 1.0453983818967607,
+      "improvement": 0.45629649488545365,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5017078344178026,
+      "fixed_mae": 1.0661329260901333,
+      "improvement": 0.5644250916723307,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5446220764800094,
+      "fixed_mae": 1.5458636996215727,
+      "improvement": 1.0012416231415633,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.47047388749230884,
+      "fixed_mae": 1.638188102390474,
+      "improvement": 1.1677142148981652,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.3412273068655516,
+      "fixed_mae": 0.9246085395613038,
+      "improvement": 0.5833812326957523,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.36834490363100986,
+      "fixed_mae": 1.8926083980182746,
+      "improvement": 1.5242634943872648,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5269838533528372,
+      "fixed_mae": 0.7397014064659327,
+      "improvement": 0.2127175531130956,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.39682478331557053,
+      "fixed_mae": 1.6835719235275703,
+      "improvement": 1.2867471402119999,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.41123407549732666,
+      "fixed_mae": 2.0257821572704082,
+      "improvement": 1.6145480817730815,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5886154662443491,
+      "fixed_mae": 0.8735919766963288,
+      "improvement": 0.2849765104519797,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.4281275377936291,
+      "fixed_mae": 1.8269079693766097,
+      "improvement": 1.3987804315829806,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5211731983282052,
+      "fixed_mae": 2.442047757973375,
+      "improvement": 1.9208745596451697,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5197817761814235,
+      "fixed_mae": 1.5079986639840808,
+      "improvement": 0.9882168878026573,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.6357126260289894,
+      "fixed_mae": 1.1501925316670147,
+      "improvement": 0.5144799056380254,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.621967837911734,
+      "fixed_mae": 0.8670220054390176,
+      "improvement": 0.2450541675272836,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.4006921019493621,
+      "fixed_mae": 0.8231869327709544,
+      "improvement": 0.42249483082159234,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.3610089974828723,
+      "fixed_mae": 1.5420238817287784,
+      "improvement": 1.181014884245906,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5761497961947436,
+      "fixed_mae": 1.1876737864906188,
+      "improvement": 0.6115239902958752,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.38392776818107066,
+      "fixed_mae": 1.0545012648324625,
+      "improvement": 0.6705734966513919,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.4357479137461982,
+      "fixed_mae": 1.1507435571485294,
+      "improvement": 0.7149956434023312,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.513933403722611,
+      "fixed_mae": 1.4584276791492436,
+      "improvement": 0.9444942754266327,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.3336197269142562,
+      "fixed_mae": 1.8942802215592185,
+      "improvement": 1.5606604946449623,
+      "decision_changed": true
+    },
+    {
+      "family": "trend",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 0.48143548095142624,
+      "fixed_mae": 1.7388355159432667,
+      "improvement": 1.2574000349918404,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.8747430024915595,
+      "fixed_mae": 1.5753915785126456,
+      "improvement": 0.7006485760210861,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.9695036690982576,
+      "fixed_mae": 3.307428281913836,
+      "improvement": 2.3379246128155784,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.175742883012328,
+      "fixed_mae": 2.201566052982904,
+      "improvement": 1.025823169970576,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.3959043925035932,
+      "fixed_mae": 3.2026708724802724,
+      "improvement": 1.8067664799766792,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.4790257770501356,
+      "fixed_mae": 2.34693117436003,
+      "improvement": 0.8679053973098945,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.2289903411593608,
+      "fixed_mae": 2.269598322557942,
+      "improvement": 1.0406079813985811,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.0596320768427876,
+      "fixed_mae": 2.8220887462586055,
+      "improvement": 1.762456669415818,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.8213404133548389,
+      "fixed_mae": 1.8354941631286514,
+      "improvement": 1.0141537497738127,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.1131093814840594,
+      "fixed_mae": 2.146767425093623,
+      "improvement": 1.0336580436095637,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.0755786876266848,
+      "fixed_mae": 2.4848575478055968,
+      "improvement": 1.409278860178912,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.249360100785849,
+      "fixed_mae": 2.623480072010574,
+      "improvement": 1.3741199712247252,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.9211857908206406,
+      "fixed_mae": 1.9673607754047138,
+      "improvement": 1.046174984584073,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.1026844539691651,
+      "fixed_mae": 2.835496985033744,
+      "improvement": 1.7328125310645788,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.020644799416252,
+      "fixed_mae": 1.6240437148282112,
+      "improvement": 0.6033989154119592,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.4987540387263867,
+      "fixed_mae": 2.661299922958154,
+      "improvement": 1.1625458842317673,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.9815592915289949,
+      "fixed_mae": 2.9464751177438537,
+      "improvement": 1.9649158262148587,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.602942865774046,
+      "fixed_mae": 1.7587442019828867,
+      "improvement": 1.1558013362088406,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.3352087736042229,
+      "fixed_mae": 2.780746627832354,
+      "improvement": 1.445537854228131,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.2963137097584243,
+      "fixed_mae": 3.29336311832966,
+      "improvement": 1.9970494085712358,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.9911010024642591,
+      "fixed_mae": 2.453519212423695,
+      "improvement": 1.462418209959436,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.1131421076402217,
+      "fixed_mae": 1.9965961463298623,
+      "improvement": 0.8834540386896406,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.7417418169242292,
+      "fixed_mae": 1.8809439057219677,
+      "improvement": 1.1392020887977385,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.1063295720541655,
+      "fixed_mae": 1.8340909219821666,
+      "improvement": 0.7277613499280011,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.874789528772245,
+      "fixed_mae": 2.543343221459162,
+      "improvement": 1.668553692686917,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.0420231274466603,
+      "fixed_mae": 2.280245919590826,
+      "improvement": 1.2382227921441658,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.0901268203624321,
+      "fixed_mae": 2.079033114478443,
+      "improvement": 0.9889062941160109,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.2402727943872576,
+      "fixed_mae": 2.1463158101047917,
+      "improvement": 0.9060430157175341,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.1924715638218024,
+      "fixed_mae": 2.473679719309548,
+      "improvement": 1.2812081554877457,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.1045983888577544,
+      "fixed_mae": 2.8368901713178603,
+      "improvement": 1.7322917824601058,
+      "decision_changed": true
+    },
+    {
+      "family": "trend_plus_seasonal",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 1.308721175738885,
+      "fixed_mae": 2.7073529166379005,
+      "improvement": 1.3986317408990154,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.35845181683876753,
+      "fixed_mae": 0.5273736064798932,
+      "improvement": 0.16892178964112564,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.29118133742120195,
+      "fixed_mae": 0.8592834921114868,
+      "improvement": 0.5681021546902849,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.40466073165813593,
+      "fixed_mae": 0.36028059824899533,
+      "improvement": -0.0443801334091406,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.3031136687216842,
+      "fixed_mae": 0.7754693003226585,
+      "improvement": 0.47235563160097427,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.26528209801512165,
+      "fixed_mae": 0.18684002312639988,
+      "improvement": -0.07844207488872176,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 1.325600749518046,
+      "fixed_mae": 2.0371100079306768,
+      "improvement": 0.7115092584126308,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.3349757837814311,
+      "fixed_mae": 0.5323660430589948,
+      "improvement": 0.1973902592775637,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 1.4931355965639301,
+      "fixed_mae": 0.9587846993160117,
+      "improvement": -0.5343508972479184,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.30161066899364103,
+      "fixed_mae": 0.3026473607915326,
+      "improvement": 0.0010366917978915646,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.43285805822600865,
+      "fixed_mae": 0.3727472024933735,
+      "improvement": -0.06011085573263514,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5939026433089859,
+      "fixed_mae": 0.29834090355138443,
+      "improvement": -0.29556173975760147,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 1.795219862114435,
+      "fixed_mae": 3.26463537540174,
+      "improvement": 1.469415513287305,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 1.8105021126932386,
+      "fixed_mae": 0.5379797430098534,
+      "improvement": -1.2725223696833852,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 1.2399504718069574,
+      "fixed_mae": 1.0829558680761915,
+      "improvement": -0.1569946037307659,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.43595749323928906,
+      "fixed_mae": 0.34528994214636755,
+      "improvement": -0.09066755109292152,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "drift",
+      "fixed_model": "last_value",
+      "routed_mae": 1.5099796019761789,
+      "fixed_mae": 0.5667192979587845,
+      "improvement": -0.9432603040173944,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 1.0387637249359851,
+      "fixed_mae": 0.6673338526237634,
+      "improvement": -0.3714298723122217,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.2549079405311167,
+      "fixed_mae": 0.36608817907363034,
+      "improvement": 0.11118023854251363,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.8206174868694157,
+      "fixed_mae": 0.8206174868694157,
+      "improvement": 0.0,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.32407031112062556,
+      "fixed_mae": 0.32748487210956795,
+      "improvement": 0.0034145609889423834,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.8383529211285214,
+      "fixed_mae": 0.48317233242109525,
+      "improvement": -0.3551805887074262,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.44910658543696685,
+      "fixed_mae": 0.4824762301053221,
+      "improvement": 0.033369644668355236,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.28346514331674616,
+      "fixed_mae": 0.4502528383473247,
+      "improvement": 0.16678769503057855,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.2289504533538799,
+      "fixed_mae": 0.2837204349445192,
+      "improvement": 0.05476998159063931,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.38179092400297193,
+      "fixed_mae": 0.3819700583509014,
+      "improvement": 0.00017913434792948824,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.2780528758605701,
+      "fixed_mae": 0.3064537024358143,
+      "improvement": 0.02840082657524423,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.30914179190716223,
+      "fixed_mae": 0.2989045065555194,
+      "improvement": -0.01023728535164281,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.35428428599042255,
+      "fixed_mae": 0.3585252865978254,
+      "improvement": 0.004241000607402845,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "seasonal_naive",
+      "fixed_model": "last_value",
+      "routed_mae": 0.45493901074568305,
+      "fixed_mae": 0.46901887983076357,
+      "improvement": 0.01407986908508052,
+      "decision_changed": true
+    },
+    {
+      "family": "bursty",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.32126539287315353,
+      "fixed_mae": 0.5069190550762269,
+      "improvement": 0.1856536622030734,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 1.0526907864093904,
+      "fixed_mae": 1.0526907864093904,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.582363272152764,
+      "fixed_mae": 1.7185679390325148,
+      "improvement": 1.1362046668797507,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.60884961854058,
+      "fixed_mae": 0.650232821683458,
+      "improvement": 0.04138320314287802,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.6062564302120256,
+      "fixed_mae": 1.5509560839388108,
+      "improvement": 0.9446996537267852,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.4457686145654907,
+      "fixed_mae": 0.36918818360462163,
+      "improvement": -0.07658043096086908,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.46816433010508174,
+      "fixed_mae": 0.4659460494142203,
+      "improvement": -0.0022182806908614405,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 1.0653955469729803,
+      "fixed_mae": 1.0653955469729803,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 0.9695951764678975,
+      "fixed_mae": 0.9695951764678975,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 0.6042143220533814,
+      "fixed_mae": 0.6042143220533814,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.8632573314023396,
+      "fixed_mae": 0.7464239480470409,
+      "improvement": -0.11683338335529869,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 0.7749904630832208,
+      "fixed_mae": 0.7749904630832208,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.4177546560424294,
+      "fixed_mae": 0.5475355031099084,
+      "improvement": 0.129780847067479,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 1.0638407113853041,
+      "fixed_mae": 1.0638407113853041,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.9242558033737053,
+      "fixed_mae": 1.3454829346777002,
+      "improvement": 0.4212271313039949,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 0.6935532209863976,
+      "fixed_mae": 0.6935532209863976,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 1.159360758340186,
+      "fixed_mae": 1.159360758340186,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.9285954085923324,
+      "fixed_mae": 0.7959867538024022,
+      "improvement": -0.1326086547899301,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.6871911169517588,
+      "fixed_mae": 0.8758772925021439,
+      "improvement": 0.18868617555038503,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.6922833368387312,
+      "fixed_mae": 1.6960636772978315,
+      "improvement": 1.0037803404591004,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 0.6604642077506353,
+      "fixed_mae": 0.6604642077506353,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 0.8832638286179041,
+      "fixed_mae": 0.8832638286179041,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 0.9645138423591056,
+      "fixed_mae": 0.9645138423591056,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 0.837292119230582,
+      "fixed_mae": 0.837292119230582,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.47986892596724845,
+      "fixed_mae": 0.6387880108031084,
+      "improvement": 0.15891908483585998,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.763582844334778,
+      "fixed_mae": 0.7639397038433184,
+      "improvement": 0.00035685950854047466,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "last_value",
+      "fixed_model": "last_value",
+      "routed_mae": 0.5690951638659346,
+      "fixed_mae": 0.5690951638659346,
+      "improvement": 0.0,
+      "decision_changed": false
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.6182959562446001,
+      "fixed_mae": 0.5978059495510335,
+      "improvement": -0.020490006693566598,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.6847143321812948,
+      "fixed_mae": 0.7233570162302955,
+      "improvement": 0.03864268404900062,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.4171659722713985,
+      "fixed_mae": 0.9657069620789548,
+      "improvement": 0.5485409898075563,
+      "decision_changed": true
+    },
+    {
+      "family": "flat_noisy",
+      "routed_model": "moving_average",
+      "fixed_model": "last_value",
+      "routed_mae": 0.6619160185247618,
+      "fixed_mae": 1.038551845410333,
+      "improvement": 0.3766358268855713,
+      "decision_changed": true
+    }
+  ],
+  "note": "This is a product benchmark for decision impact, not a publication benchmark."
+}

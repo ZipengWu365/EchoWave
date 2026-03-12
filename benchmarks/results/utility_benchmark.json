@@ -1,0 +1,69 @@
+{
+  "note": "Synthetic starter utility benchmark. This is for product validation and README evidence, not a publication benchmark.",
+  "routed_mean_mse": 0.1350651012421658,
+  "fixed_last_value_mean_mse": 0.8085897988757347,
+  "wins_vs_fixed_last_value": 4,
+  "n_datasets": 5,
+  "rows": [
+    {
+      "dataset": "seasonal",
+      "routed_family": "seasonal",
+      "routed_mse": 0.1861164244170371,
+      "fixed_last_value_mse": 2.911368118547112,
+      "best_family": "seasonal",
+      "all_errors": {
+        "last_value": 2.911368118547112,
+        "linear": 1.18218176852982,
+        "seasonal": 0.1861164244170371
+      }
+    },
+    {
+      "dataset": "trend",
+      "routed_family": "linear",
+      "routed_mse": 0.020750755618341558,
+      "fixed_last_value_mse": 0.18183802976317276,
+      "best_family": "linear",
+      "all_errors": {
+        "last_value": 0.18183802976317276,
+        "linear": 0.020750755618341558,
+        "seasonal": 2.228787235642635
+      }
+    },
+    {
+      "dataset": "random_walk_like",
+      "routed_family": "linear",
+      "routed_mse": 0.11384323728324566,
+      "fixed_last_value_mse": 0.3048506486137895,
+      "best_family": "linear",
+      "all_errors": {
+        "last_value": 0.3048506486137895,
+        "linear": 0.11384323728324566,
+        "seasonal": 0.25326400377742403
+      }
+    },
+    {
+      "dataset": "bursty",
+      "routed_family": "last_value",
+      "routed_mse": 0.033730704485764956,
+      "fixed_last_value_mse": 0.033730704485764956,
+      "best_family": "linear",
+      "all_errors": {
+        "last_value": 0.033730704485764956,
+        "linear": 0.033337146446165054,
+        "seasonal": 0.03545761558285149
+      }
+    },
+    {
+      "dataset": "seasonal_plus_trend",
+      "routed_family": "linear",
+      "routed_mse": 0.32088438440643985,
+      "fixed_last_value_mse": 0.6111614929688342,
+      "best_family": "linear",
+      "all_errors": {
+        "last_value": 0.6111614929688342,
+        "linear": 0.32088438440643985,
+        "seasonal": 1.2169277368860563
+      }
+    }
+  ]
+}

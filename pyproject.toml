@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "echowave"
+version = "0.16.0"
+description = "Explainable structural similarity for time series and time-series datasets."
+readme = { file = "PYPI_LONG_DESCRIPTION.md", content-type = "text/markdown" }
+requires-python = ">=3.9"
+license = "MIT"
+authors = [
+  { name = "Zipeng Wu", email = "zxw365@student.bham.ac.uk" },
+]
+keywords = ["time-series", "similarity", "dataset-similarity", "analog-search", "structural-similarity", "agent-tools", "explainable-ai", "irregular-sampling", "event-stream", "longitudinal", "wearable", "clinical", "traffic", "markets"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = [
+  "numpy>=1.22",
+  "scipy>=1.8",
+]
+
+[project.urls]
+Homepage = "https://github.com/ZipengWu365/EchoWave"
+Documentation = "https://zipengwu365.github.io/EchoWave/"
+Repository = "https://github.com/ZipengWu365/EchoWave"
+Issues = "https://github.com/ZipengWu365/EchoWave/issues"
+
+[project.optional-dependencies]
+io = ["pandas>=2.0"]
+parquet = ["pandas>=2.0", "pyarrow>=14.0"]
+mixed-stack = ["numpy>=1.22,<2.2", "scipy>=1.8,<1.15", "pandas>=2.0,<2.3", "numba>=0.58,<0.62"]
+dev = ["pytest>=7.0", "pandas>=2.0"]
+
+[project.scripts]
+echowave = "echowave.cli:main"
+echowave-demo = "echowave.demo_server:main"
+tsontology = "tsontology.cli:main"
+tsontology-demo = "tsontology.demo_server:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

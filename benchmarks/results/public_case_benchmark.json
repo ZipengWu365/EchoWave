@@ -1,0 +1,28 @@
+{
+  "version": "0.16.0",
+  "summary": "tsontology produced stable profile/compare artifacts across shipped cross-domain CSV cases.",
+  "cases": [
+    {
+      "case": "single_sensor_drift",
+      "mode": "profile",
+      "headline": "",
+      "top_axes": "trendness, predictability, rhythmicity",
+      "ok": true
+    },
+    {
+      "case": "inflation_search_interest",
+      "mode": "compare",
+      "headline": "inflation and search_interest share a noticeable amount of structure, but the match is not one-to-one. The best agreement appears in spectral similarity and trend similarity.",
+      "similarity": 0.7280473789325929,
+      "ok": true
+    },
+    {
+      "case": "industrial_sensor_network",
+      "mode": "profile",
+      "headline": "",
+      "top_axes": "trendness, predictability, rhythmicity",
+      "ok": true
+    }
+  ],
+  "n_cases": 3
+}

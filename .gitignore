@@ -1,0 +1,13 @@
+__pycache__/
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+*.pyc
+*.pyo
+*.pyd
+PKG-INFO
+audit_pages_out/
+echowave_v0.16_pages_bundle.zip

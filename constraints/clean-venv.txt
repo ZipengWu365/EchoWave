@@ -1,0 +1,8 @@
+# tsontology compatibility constraints
+# profile: clean-venv
+# purpose: Recommended for first-time installs, CI, and reproducible examples.
+
+numpy>=1.22,<2.3
+scipy>=1.8,<1.16
+pandas>=2.0 ; extra == 'io'
+pyarrow>=14.0 ; extra == 'parquet'

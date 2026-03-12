@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'/>
+<title>echowave — local live demo</title>
+<style>
+:root { --bg:#f4f8fc; --ink:#102a43; --muted:#486581; --line:#d9e2ec; --panel:#ffffff; --brand:#0b6cff; --accent:#dd6b20; --shadow:0 1px 2px rgba(16,42,67,.05),0 12px 24px rgba(16,42,67,.08); --max:1200px; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+.container { width:min(var(--max), calc(100vw - 28px)); margin:0 auto; padding:22px 0 36px; }
+.hero { display:grid; grid-template-columns:1.05fr .95fr; gap:18px; align-items:start; }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:18px 20px; box-shadow:var(--shadow); }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px; }
+textarea, select, button, input { width:100%; font:inherit; }
+textarea { min-height:120px; padding:12px; border:1px solid var(--line); border-radius:12px; background:#fff; }
+select, input { padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#fff; }
+button { border:none; padding:12px 14px; border-radius:12px; background:var(--brand); color:#fff; font-weight:700; cursor:pointer; }
+button.alt { background:var(--accent); }
+pre { background:#f7fafc; border:1px solid var(--line); border-radius:12px; padding:14px; overflow:auto; white-space:pre-wrap; word-break:break-word; }
+iframe { width:100%; min-height:460px; border:1px solid var(--line); border-radius:14px; background:#fff; }
+.pill { display:inline-block; padding:4px 10px; border-radius:999px; background:#eef5ff; color:var(--brand); font-size:.88rem; font-weight:700; margin-right:8px; }
+.muted { color:var(--muted); }
+h1 { margin:0; font-size:clamp(2rem,4vw,3.3rem); line-height:1.02; letter-spacing:-.04em; }
+h2 { margin:0 0 8px; font-size:1.2rem; }
+.sub { color:var(--muted); margin-top:10px; }
+@media (max-width: 980px) { .hero,.grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class='container'>
+  <section class='hero'>
+    <div class='card'>
+      <span class='pill'>Local live demo</span><span class='pill'>Version 0.16.0</span>
+      <h1>Compare time series and datasets with explainable structural similarity.</h1>
+      <p class='sub'>This server runs locally on your machine. Paste one curve for a plain-English structural report, or paste two curves for a similarity verdict. No cloud upload required.</p>
+      <p class='sub'><strong>Why this exists:</strong> the static Pages playground is great for showcasing starter cases, but this local server gives you a real interactive product surface you can use with your own arrays right away.</p>
+    </div>
+    <div class='card'>
+      <h2>Starter cases</h2>
+      <p class='muted'>Load a prebuilt case into the viewer to see the product surface before trying your own data.</p>
+      <select id='starter-select'><option value='sine_vs_noise'>Sine vs noise</option>
+<option value='weekly_website_traffic'>Weekly website traffic</option>
+<option value='irregular_patient_vitals'>Irregular patient vitals</option>
+<option value='github_breakout_analogs'>GitHub breakout analogs</option>
+<option value='btc_gold_oil_shocks'>BTC / gold / oil under shocks</option>
+<option value='energy_load_heatwave'>Grid load vs heatwave</option>
+<option value='wearable_recovery_cohort'>Wearable recovery cohort</option></select>
+      <div style='height:10px'></div>
+      <button id='load-starter'>Load starter case</button>
+      <div style='height:14px'></div>
+      <pre id='starter-status'>Choose a starter case and click load.</pre>
+    </div>
+  </section>
+
+  <section class='grid'>
+    <div class='card'>
+      <h2>Profile a dataset</h2>
+      <p class='muted'>Paste a comma-, space-, or newline-separated numeric sequence.</p>
+      <label>Values</label>
+      <textarea id='profile-values'>1, 2, 3, 4, 5, 6, 7, 8</textarea>
+      <label>Timestamps (optional)</label>
+      <textarea id='profile-timestamps' placeholder='0, 1, 2, 3, 4, 5, 6, 7'></textarea>
+      <label>Domain</label>
+      <input id='profile-domain' value='generic'/>
+      <div style='height:10px'></div>
+      <button id='run-profile'>Generate report</button>
+    </div>
+    <div class='card'>
+      <h2>Compare two curves</h2>
+      <p class='muted'>Paste two sequences to get a plain-English similarity verdict.</p>
+      <label>Left</label>
+      <textarea id='compare-left'>1, 2, 3, 4, 5, 6</textarea>
+      <label>Right</label>
+      <textarea id='compare-right'>1.2, 2.0, 3.1, 4.1, 5.0, 6.2</textarea>
+      <div style='height:10px'></div>
+      <button class='alt' id='run-compare'>Compare curves</button>
+    </div>
+  </section>
+
+  <section class='grid'>
+    <div class='card'>
+      <h2>Summary</h2>
+      <pre id='summary-box'>Run a profile or comparison to see the summary card here.</pre>
+      <h2 style='margin-top:18px'>Stable JSON</h2>
+      <pre id='json-box'>The agent-ready JSON envelope will appear here.</pre>
+    </div>
+    <div class='card'>
+      <h2>HTML report preview</h2>
+      <iframe id='report-frame'></iframe>
+    </div>
+  </section>
+</div>
+<script>
+async function postJSON(url, payload) {
+  const res = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+  if (!res.ok) throw new Error('Request failed: ' + res.status);
+  return await res.json();
+}
+function renderPayload(payload) {
+  document.getElementById('summary-box').textContent = payload.summary_markdown || payload.headline || 'No summary available.';
+  document.getElementById('json-box').textContent = JSON.stringify(payload.tool_json || payload, null, 2);
+  document.getElementById('report-frame').srcdoc = payload.html_report || '<p>No HTML report.</p>';
+}
+
+document.getElementById('run-profile').addEventListener('click', async () => {
+  const payload = await postJSON('/api/profile', {
+    values: document.getElementById('profile-values').value,
+    timestamps: document.getElementById('profile-timestamps').value,
+    domain: document.getElementById('profile-domain').value || 'generic'
+  });
+  renderPayload(payload);
+});
+
+document.getElementById('run-compare').addEventListener('click', async () => {
+  const payload = await postJSON('/api/compare', {
+    left: document.getElementById('compare-left').value,
+    right: document.getElementById('compare-right').value
+  });
+  renderPayload(payload);
+});
+
+document.getElementById('load-starter').addEventListener('click', async () => {
+  const name = document.getElementById('starter-select').value;
+  const payload = await fetch('/api/starter?name=' + encodeURIComponent(name)).then(r => r.json());
+  document.getElementById('starter-status').textContent = 'Loaded: ' + name;
+  renderPayload(payload);
+});
+</script>
+</body>
+</html>

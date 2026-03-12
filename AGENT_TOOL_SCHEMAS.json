@@ -1,0 +1,535 @@
+{
+  "schema_version": "2.4.0",
+  "tools": [
+    {
+      "name": "ts_profile",
+      "description": "Profile a time-series dataset for modelling handoff and return a compact structural summary.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "data_ref": {
+            "description": "Array-like data, typed wrapper, DataFrame-like table, or a caller-managed path/URI.",
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Path, URI, or caller-managed handle."
+              },
+              {
+                "type": "array",
+                "description": "Inline array-like numeric values."
+              },
+              {
+                "type": "object",
+                "description": "Typed wrapper, mapping, DataFrame-like object, or caller-side structured payload."
+              }
+            ]
+          },
+          "input_kind": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "array",
+              "table",
+              "irregular",
+              "event_stream",
+              "path_or_uri",
+              "dataframe_like",
+              "typed_wrapper"
+            ]
+          },
+          "timestamps_ref": {
+            "description": "Optional timestamps aligned with data_ref for irregular or explicitly timed series.",
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Path, URI, or caller-managed handle."
+              },
+              {
+                "type": "array",
+                "description": "Inline array-like numeric values."
+              },
+              {
+                "type": "object",
+                "description": "Typed wrapper, mapping, DataFrame-like object, or caller-side structured payload."
+              }
+            ]
+          },
+          "domain": {
+            "type": "string",
+            "description": "Optional domain hint such as generic, traffic, clinical, wearable, fmri, or eeg."
+          },
+          "budget": {
+            "type": "string",
+            "enum": [
+              "lean",
+              "balanced",
+              "deep"
+            ]
+          },
+          "audience": {
+            "type": "string",
+            "description": "general, agent, clinical, product, neuroscience, etc."
+          },
+          "safe": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "data_ref"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "tool",
+          "ok",
+          "input_contract",
+          "artifact_uri",
+          "cost_hint",
+          "input_digest",
+          "cache_key",
+          "confidence",
+          "limitations",
+          "recommended_next_step",
+          "next_actions",
+          "error",
+          "headline",
+          "archetypes",
+          "top_axes",
+          "reliability"
+        ],
+        "properties": {
+          "schema_version": {
+            "type": "string"
+          },
+          "tool": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "input_contract": {
+            "type": "object"
+          },
+          "artifact_uri": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "cost_hint": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "input_digest": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "cache_key": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "confidence": {
+            "type": "string"
+          },
+          "limitations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidence": {
+            "type": "object"
+          },
+          "recommended_next_step": {
+            "type": "string"
+          },
+          "next_actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "error": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ts_compare",
+      "description": "Compare two time-series inputs and stop early if the signal is already clear.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "left_ref": {
+            "description": "Primary series or dataset reference.",
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Path, URI, or caller-managed handle."
+              },
+              {
+                "type": "array",
+                "description": "Inline array-like numeric values."
+              },
+              {
+                "type": "object",
+                "description": "Typed wrapper, mapping, DataFrame-like object, or caller-side structured payload."
+              }
+            ]
+          },
+          "right_ref": {
+            "description": "Reference series or dataset to compare against.",
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Path, URI, or caller-managed handle."
+              },
+              {
+                "type": "array",
+                "description": "Inline array-like numeric values."
+              },
+              {
+                "type": "object",
+                "description": "Typed wrapper, mapping, DataFrame-like object, or caller-side structured payload."
+              }
+            ]
+          },
+          "left_timestamps_ref": {
+            "description": "Optional timestamps for left_ref.",
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Path, URI, or caller-managed handle."
+              },
+              {
+                "type": "array",
+                "description": "Inline array-like numeric values."
+              },
+              {
+                "type": "object",
+                "description": "Typed wrapper, mapping, DataFrame-like object, or caller-side structured payload."
+              }
+            ]
+          },
+          "right_timestamps_ref": {
+            "description": "Optional timestamps for right_ref.",
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Path, URI, or caller-managed handle."
+              },
+              {
+                "type": "array",
+                "description": "Inline array-like numeric values."
+              },
+              {
+                "type": "object",
+                "description": "Typed wrapper, mapping, DataFrame-like object, or caller-side structured payload."
+              }
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "series",
+              "profile"
+            ]
+          },
+          "budget": {
+            "type": "string",
+            "enum": [
+              "lean",
+              "balanced",
+              "deep"
+            ]
+          },
+          "safe": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "left_ref",
+          "right_ref"
+        ],
+        "additionalProperties": true
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "tool",
+          "ok",
+          "input_contract",
+          "artifact_uri",
+          "cost_hint",
+          "input_digest",
+          "cache_key",
+          "confidence",
+          "limitations",
+          "recommended_next_step",
+          "next_actions",
+          "error",
+          "verdict",
+          "overall_similarity",
+          "qualitative_label",
+          "top_components",
+          "stop_here"
+        ],
+        "properties": {
+          "schema_version": {
+            "type": "string"
+          },
+          "tool": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "input_contract": {
+            "type": "object"
+          },
+          "artifact_uri": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "cost_hint": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "input_digest": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "cache_key": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "confidence": {
+            "type": "string"
+          },
+          "limitations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidence": {
+            "type": "object"
+          },
+          "recommended_next_step": {
+            "type": "string"
+          },
+          "next_actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "error": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "ts_route",
+      "description": "Route a natural-language time-series task to the smallest useful tsontology tool and expected output.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string"
+          },
+          "available_inputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional caller-side hints such as ['data_ref'] or ['left_ref', 'right_ref']."
+          },
+          "has_reference": {
+            "type": "boolean"
+          },
+          "safe": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "task"
+        ],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "tool",
+          "ok",
+          "input_contract",
+          "artifact_uri",
+          "cost_hint",
+          "input_digest",
+          "cache_key",
+          "confidence",
+          "limitations",
+          "recommended_next_step",
+          "next_actions",
+          "error",
+          "recommended_tool",
+          "reason",
+          "expected_output"
+        ],
+        "properties": {
+          "schema_version": {
+            "type": "string"
+          },
+          "tool": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "input_contract": {
+            "type": "object"
+          },
+          "artifact_uri": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "cost_hint": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "input_digest": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "cache_key": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "confidence": {
+            "type": "string"
+          },
+          "limitations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidence": {
+            "type": "object"
+          },
+          "recommended_next_step": {
+            "type": "string"
+          },
+          "next_actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "error": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

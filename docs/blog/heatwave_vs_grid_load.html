@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'/>
+<title>Heatwave vs grid load - EchoWave demo story</title>
+<style>
+:root { --bg:#f4f8fc; --ink:#102a43; --muted:#486581; --line:#d9e2ec; --panel:#ffffff; --brand:#0b6cff; --shadow:0 1px 2px rgba(16,42,67,.05),0 12px 24px rgba(16,42,67,.08); --max:980px; }
+* { box-sizing:border-box; } body { margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); }
+.container { width:min(var(--max), calc(100vw - 28px)); margin:0 auto; padding:28px 0 42px; }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:22px 24px; box-shadow:var(--shadow); margin-bottom:18px; }
+.pill { display:inline-block; padding:4px 10px; border-radius:999px; background:#eef5ff; color:var(--brand); font-size:.88rem; font-weight:700; margin-right:8px; }
+a { color:var(--brand); text-decoration:none; } a:hover { text-decoration:underline; }
+h1 { margin:0 0 10px; font-size:clamp(2rem,4vw,3rem); line-height:1.05; letter-spacing:-.04em; } h2 { margin:0 0 10px; font-size:1.22rem; } p.lead { color:var(--muted); font-size:1.05rem; } ul { margin:0; padding-left:1.2rem; }
+</style>
+</head>
+<body>
+<div class='container'>
+  <div class='card'>
+    <span class='pill'>flagship story</span><span class='pill'>EchoWave</span>
+    <h1>Heatwave vs grid load</h1>
+    <p class='lead'>An operations-friendly report story about drift, rhythm, and regime switching under extreme weather.</p>
+  </div>
+  <div class='card'>
+    <h2>Why this demo travels</h2>
+    <ul><li>This demo travels well because the narrative is operational, not purely methodological.</li><li>The report makes structural instability legible before transfer or forecasting decisions begin.</li><li>It is a good example of how EchoWave can turn a dataset handoff into an artifact someone else can act on.</li></ul>
+  </div>
+  <div class='card'>
+    <h2>Open the assets</h2>
+    <ul>
+      <li><a href='../reports/energy_load_heatwave_report.html'>Open the HTML report</a></li>
+      <li><a href='../social/energy_load_card.svg'>Open the social card</a></li>
+      <li>See the matching notebook in examples/notebooks/06_energy_load_heatwave.ipynb.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

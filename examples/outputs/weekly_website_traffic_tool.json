@@ -1,0 +1,132 @@
+{
+  "schema_version": "2.0.0",
+  "tool": "ts_profile",
+  "ok": true,
+  "input_contract": {
+    "accepted_input_kinds": [
+      "array",
+      "dataframe_like",
+      "table",
+      "typed_wrapper",
+      "path_or_uri",
+      "irregular",
+      "event_stream"
+    ],
+    "requested_input_kind": "auto",
+    "resolved_input_kind": "array",
+    "resolved_reference_kind": null,
+    "has_timestamps": false,
+    "has_reference_timestamps": false,
+    "mode": null,
+    "budget": "lean",
+    "domain": "traffic",
+    "audience": "agent",
+    "available_inputs": null
+  },
+  "error": null,
+  "headline": "This looks like a product, app, or web-traffic time-series dataset with about 1 group(s) and roughly 2 metric channel(s). In plain language, the strongest signals in its structure are that complexity is high, rhythmicity is high, and predictability is high. Overall evidence quality for this profile is high.",
+  "archetypes": [
+    "mixed_structure"
+  ],
+  "top_axes": [
+    {
+      "axis": "complexity",
+      "plain_label": "complexity",
+      "score": 0.6991946143381664,
+      "level": "high",
+      "meaning": "the signal contains rich local variation rather than one simple repeating template"
+    },
+    {
+      "axis": "rhythmicity",
+      "plain_label": "rhythmicity",
+      "score": 0.6071488101123806,
+      "level": "high",
+      "meaning": "the data contain repeating or oscillatory patterns that may support seasonal or frequency-aware analysis"
+    },
+    {
+      "axis": "predictability",
+      "plain_label": "predictability",
+      "score": 0.5773594807227918,
+      "level": "high",
+      "meaning": "recent history carries usable information about what comes next"
+    }
+  ],
+  "reliability": {
+    "score": 0.759201388888889,
+    "level": "high",
+    "method": "heuristic"
+  },
+  "confidence": "moderate",
+  "limitations": [
+    "sampling_irregularity: Proxy coverage is partial for this axis under the current data and domain settings.",
+    "heterogeneity: Proxy coverage is partial for this axis under the current data and domain settings.",
+    "Sampling irregularity is estimated only from missingness because explicit timestamps were not provided.",
+    "Reliability scores combine proxy coverage and data-support heuristics."
+  ],
+  "evidence": {
+    "domain": "traffic",
+    "observation_mode": "dense",
+    "n_subjects": 1,
+    "n_channels_median": 2,
+    "length_median": 84,
+    "dominant_axes": "complexity, rhythmicity, predictability",
+    "top_axis_scores": [
+      {
+        "axis": "complexity",
+        "score": 0.6991946143381664,
+        "level": "high"
+      },
+      {
+        "axis": "rhythmicity",
+        "score": 0.6071488101123806,
+        "level": "high"
+      },
+      {
+        "axis": "predictability",
+        "score": 0.5773594807227918,
+        "level": "high"
+      }
+    ]
+  },
+  "recommended_next_step": "Expect single-number summaries to miss part of the structure; representation learning may help.",
+  "next_actions": [
+    "Expect single-number summaries to miss part of the structure; representation learning may help.",
+    "Try frequency-aware, seasonal, or cycle-aware summaries before assuming the data are memoryless.",
+    "Simple baselines and short-horizon forecasting are worth trying before more complex models."
+  ],
+  "compact_context": {
+    "type": "profile",
+    "audience": "agent",
+    "headline": "traffic dataset with mixed_structure tendencies",
+    "archetypes": [
+      "mixed_structure"
+    ],
+    "top_axes": [
+      {
+        "axis": "complexity",
+        "score": 0.6991946143381664,
+        "level": "high"
+      },
+      {
+        "axis": "rhythmicity",
+        "score": 0.6071488101123806,
+        "level": "high"
+      },
+      {
+        "axis": "predictability",
+        "score": 0.5773594807227918,
+        "level": "high"
+      }
+    ],
+    "task_hints": [
+      "Benchmark multivariate and graph-aware models; independent per-channel models will likely discard signal."
+    ],
+    "reliability": {
+      "score": 0.759201388888889,
+      "level": "high"
+    },
+    "notes": [
+      "Sampling irregularity is estimated only from missingness because explicit timestamps were not provided."
+    ]
+  }
+}

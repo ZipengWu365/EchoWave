@@ -1,0 +1,4 @@
+# tsontology compatibility constraints
+# profile: pages-only
+# purpose: Preview the product surface without installing tsontology into Python at all.
+

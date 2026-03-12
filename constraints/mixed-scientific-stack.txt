@@ -1,0 +1,10 @@
+# tsontology compatibility constraints
+# profile: mixed-scientific-stack
+# purpose: Conservative pins for environments that already contain aeon, sktime, numba, or broader notebook tooling.
+
+numpy>=1.22,<2.2
+scipy>=1.8,<1.15
+pandas>=2.0,<2.3
+numba>=0.58,<0.62
+aeon>=0.11,<1.0
+sktime>=0.27,<0.40

@@ -1,0 +1,47 @@
+{
+  "version": "0.16.0",
+  "product_surface": "explainable time-series similarity for humans and agents",
+  "pages": {
+    "homepage": "index.html",
+    "start_here": "start-here.html",
+    "playground": "playground.html",
+    "reports": {
+      "weekly_website_traffic": "reports/weekly_website_traffic_report.html",
+      "irregular_patient_vitals": "reports/irregular_patient_vitals_report.html",
+      "github_breakout": "reports/github_breakout_similarity.html",
+      "btc_vs_gold": "reports/btc_vs_gold_similarity.html",
+      "energy_load_heatwave": "reports/energy_load_heatwave_report.html"
+    },
+    "blog": {
+      "github_breakout": "blog/github_breakout_analogs.html",
+      "btc_vs_gold": "blog/btc_vs_gold_under_shocks.html",
+      "heatwave_grid_load": "blog/heatwave_vs_grid_load.html"
+    }
+  },
+  "flagship_demos": [
+    {
+      "slug": "openclaw_breakout_analogs",
+      "title": "OpenClaw-style GitHub breakout analogs",
+      "story": "Ask whether a new repo looks like a durable breakout or a short viral spike.",
+      "social_hook": "Is this a real breakout or just a viral spike?"
+    },
+    {
+      "slug": "btc_gold_oil_shocks",
+      "title": "BTC vs gold vs oil under shocks",
+      "story": "Ask which assets become more similar during macro or geopolitical stress.",
+      "social_hook": "When stress hits, does BTC behave more like gold or oil?"
+    },
+    {
+      "slug": "energy_load_heatwave",
+      "title": "Heatwave vs grid load",
+      "story": "Ask which load curves drift or switch regime under extreme weather.",
+      "social_hook": "Which grid loses structural stability first in a heatwave?"
+    }
+  ],
+  "notes": [
+    "The Pages bundle is static and similarity-showcase-oriented.",
+    "Use tsontology-demo locally when you need real computation on pasted arrays; echowave-demo is the new primary command."
+  ],
+  "public_demo_url_hint": "https://<your-github-username>.github.io/echowave/",
+  "external_evidence_status": "seeking public showcase submissions and third-party case studies"
+}
