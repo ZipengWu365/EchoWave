@@ -527,6 +527,8 @@ def test_compare_series_scores_sine_higher_than_noise() -> None:
 
     assert similar_report.similarity_score > different_report.similarity_score
     assert similar_report.component_scores["spectral_similarity"] > 0.6
+    assert {"pearson_r", "spearman_rho", "kendall_tau"} <= set(similar_report.reference_metrics)
+    assert similar_report.reference_metrics["pearson_r"] > different_report.reference_metrics["pearson_r"]
 
 
 
@@ -551,6 +553,8 @@ def test_rolling_similarity_returns_windows() -> None:
     windows = rolling_similarity(left, right, window=40, step=10)
     assert windows
     assert windows[0]["similarity_score"] > 0.5
+    assert windows[0]["component_mean"] > 0.5
+    assert {"pearson_r", "spearman_rho", "normalized_mutual_information"} <= set(windows[0])
 
 
 
@@ -766,6 +770,11 @@ def test_similarity_html_report_contains_html() -> None:
     html = report.to_html_report()
     assert html.lstrip().startswith("<!doctype html>")
     assert "Similarity components" in html
+    assert "Similarity radar" in html
+    assert "Familiar statistics" in html
+    assert "Pearson r" in html
+    assert "Mutual info" in html
+    assert "Rolling component mean" not in html
 
 
 def test_agent_tool_wrappers_expose_stable_fields() -> None:
@@ -878,7 +887,7 @@ def test_blog_pages_include_real_visuals() -> None:
     ):
         html = bundle[path]
         assert "<svg" in html
-        assert "Component breakdown" in html or "Dataset radar" in html
+        assert "Similarity radar" in html or "Dataset radar" in html
 
 
 def test_new_repo_guides_cover_zero_install_and_pages() -> None:

@@ -8,6 +8,7 @@ from typing import Any, Mapping
 
 import numpy as np
 from scipy.signal import savgol_filter
+from scipy.stats import kendalltau, spearmanr
 
 from .metrics import EPS, _js_divergence, _normalized_spectrum
 from .profile import DatasetProfile, SeriesProfile, profile_dataset
@@ -26,6 +27,18 @@ def _level(score: float) -> str:
     return "very low"
 
 
+def _reference_metric_label(name: str) -> str:
+    labels = {
+        "pearson_r": "Pearson r",
+        "spearman_rho": "Spearman rho",
+        "kendall_tau": "Kendall tau",
+        "best_lag_pearson_r": "Best-lag Pearson r",
+        "normalized_mutual_information": "Mutual info",
+        "first_difference_r": "First-difference r",
+    }
+    return labels.get(name, name.replace("_", " "))
+
+
 @dataclass(slots=True)
 class SimilarityReport:
     left_name: str
@@ -35,9 +48,17 @@ class SimilarityReport:
     qualitative_label: str
     component_scores: dict[str, float]
     interpretation: str
+    reference_metrics: dict[str, float] = field(default_factory=dict)
     notes: list[str] = field(default_factory=list)
     suggestions: list[str] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def component_mean(self) -> float:
+        values = [float(v) for v in self.component_scores.values() if np.isfinite(v)]
+        if not values:
+            return float("nan")
+        return float(np.mean(values))
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -47,7 +68,9 @@ class SimilarityReport:
             "similarity_score": float(self.similarity_score),
             "qualitative_label": self.qualitative_label,
             "component_scores": dict(self.component_scores),
+            "component_mean": float(self.component_mean),
             "interpretation": self.interpretation,
+            "reference_metrics": dict(self.reference_metrics),
             "notes": list(self.notes),
             "suggestions": list(self.suggestions),
             "metadata": dict(self.metadata),
@@ -63,17 +86,29 @@ class SimilarityReport:
             f"**left:** {self.left_name}  ",
             f"**right:** {self.right_name}  ",
             f"**mode:** {self.mode}  ",
-            f"**overall similarity:** {self.similarity_score:0.3f} ({self.qualitative_label})",
+            f"**component mean:** {self.component_mean:0.3f}",
             "",
             "## Interpretation",
             "",
             self.interpretation,
             "",
+        ]
+        if self.reference_metrics:
+            lines.extend([
+                "## Familiar statistics",
+                "",
+                "| metric | value |",
+                "|---|---:|",
+            ])
+            for key, value in self.reference_metrics.items():
+                lines.append(f"| {_reference_metric_label(key)} | {float(value):0.3f} |")
+            lines.append("")
+        lines.extend([
             "## Component scores",
             "",
             "| component | score | level |",
             "|---|---:|---|",
-        ]
+        ])
         for key, value in self.component_scores.items():
             lines.append(f"| {key} | {float(value):0.3f} | {_level(float(value))} |")
         if self.suggestions:
@@ -98,15 +133,25 @@ class SimilarityReport:
             "",
             "## Headline",
             "",
-            f"These two inputs show **{self.qualitative_label}** similarity overall (score {self.similarity_score:0.3f}).",
-            "",
             self.interpretation,
             "",
-            "## Most important similarity dimensions",
+        ]
+        if self.reference_metrics:
+            lines.extend([
+                "## Familiar statistics",
+                "",
+                "| metric | value |",
+                "|---|---:|",
+            ])
+            for key, value in self.reference_metrics.items():
+                lines.append(f"| {_reference_metric_label(key)} | {float(value):0.3f} |")
+            lines.append("")
+        lines.extend([
+            "## Time-series-specific metrics",
             "",
             "| plain-language label | score |",
             "|---|---:|",
-        ]
+        ])
         for key, value in sorted(self.component_scores.items(), key=lambda kv: kv[1], reverse=True)[:4]:
             label = key.replace("_", " ")
             lines.append(f"| {label} | {float(value):0.3f} |")
@@ -128,9 +173,17 @@ class SimilarityReport:
             "",
             self.interpretation,
             "",
+        ]
+        if self.reference_metrics:
+            metrics = ", ".join(
+                f"{_reference_metric_label(key)} {float(value):0.2f}"
+                for key, value in list(self.reference_metrics.items())[:4]
+            )
+            lines.extend(["## Familiar statistics", "", metrics, ""])
+        lines.extend([
             "## Why this matters",
             "",
-        ]
+        ])
         top = sorted(self.component_scores.items(), key=lambda kv: kv[1], reverse=True)
         if top:
             best = top[0][0].replace("_", " ")
@@ -257,10 +310,88 @@ def _safe_corr(x: np.ndarray, y: np.ndarray) -> float:
     return float(np.corrcoef(x2, y2)[0, 1])
 
 
+def _safe_spearman_corr(x: np.ndarray, y: np.ndarray) -> float:
+    mask = np.isfinite(x) & np.isfinite(y)
+    if int(mask.sum()) < 3:
+        return float("nan")
+    x2 = x[mask]
+    y2 = y[mask]
+    if float(np.std(x2)) <= EPS or float(np.std(y2)) <= EPS:
+        return 0.0
+    result = spearmanr(x2, y2)
+    value = getattr(result, "correlation", getattr(result, "statistic", result[0]))
+    return float(value)
+
+
+def _safe_kendall_tau(x: np.ndarray, y: np.ndarray) -> float:
+    mask = np.isfinite(x) & np.isfinite(y)
+    if int(mask.sum()) < 3:
+        return float("nan")
+    x2 = x[mask]
+    y2 = y[mask]
+    if float(np.std(x2)) <= EPS or float(np.std(y2)) <= EPS:
+        return 0.0
+    result = kendalltau(x2, y2)
+    value = getattr(result, "correlation", getattr(result, "statistic", result[0]))
+    return float(value)
+
+
 def _corr_to_similarity(corr: float) -> float:
     if not np.isfinite(corr):
         return float("nan")
     return float(np.clip((corr + 1.0) / 2.0, 0.0, 1.0))
+
+
+def _best_lag_corr(x: np.ndarray, y: np.ndarray, max_lag: int | None = None) -> float:
+    x = np.asarray(x, dtype=float).reshape(-1)
+    y = np.asarray(y, dtype=float).reshape(-1)
+    n = min(x.size, y.size)
+    if n < 6:
+        return float("nan")
+    if max_lag is None:
+        max_lag = max(1, min(24, n // 10))
+    best = -np.inf
+    for lag in range(-max_lag, max_lag + 1):
+        if lag < 0:
+            xl = x[:lag]
+            yl = y[-lag:]
+        elif lag > 0:
+            xl = x[lag:]
+            yl = y[:-lag]
+        else:
+            xl = x
+            yl = y
+        corr = _safe_corr(xl, yl)
+        if np.isfinite(corr):
+            best = max(best, corr)
+    if not np.isfinite(best):
+        return float("nan")
+    return float(best)
+
+
+def _normalized_mutual_information(x: np.ndarray, y: np.ndarray) -> float:
+    mask = np.isfinite(x) & np.isfinite(y)
+    if int(mask.sum()) < 12:
+        return float("nan")
+    x2 = np.asarray(x[mask], dtype=float)
+    y2 = np.asarray(y[mask], dtype=float)
+    if float(np.std(x2)) <= EPS or float(np.std(y2)) <= EPS:
+        return 0.0
+    bins = int(np.clip(round(np.sqrt(len(x2) / 4.0)), 4, 20))
+    hist, _, _ = np.histogram2d(x2, y2, bins=bins)
+    total = float(np.sum(hist))
+    if total <= EPS:
+        return float("nan")
+    pxy = hist / total
+    px = np.sum(pxy, axis=1)
+    py = np.sum(pxy, axis=0)
+    mask_xy = pxy > 0
+    denom = px[:, None] * py[None, :]
+    mi = float(np.sum(pxy[mask_xy] * np.log(pxy[mask_xy] / np.maximum(denom[mask_xy], EPS))))
+    hx = float(-np.sum(px[px > 0] * np.log(px[px > 0])))
+    hy = float(-np.sum(py[py > 0] * np.log(py[py > 0])))
+    scale = max(np.sqrt(max(hx, 0.0) * max(hy, 0.0)), EPS)
+    return float(np.clip(mi / scale, 0.0, 1.0))
 
 
 def _smooth_trend(x: np.ndarray) -> np.ndarray:
@@ -330,20 +461,37 @@ def _mean_channel(values: np.ndarray) -> np.ndarray:
     return np.nanmean(values, axis=1)
 
 
-def _series_interpretation(overall: float, components: Mapping[str, float], left_name: str, right_name: str) -> str:
+def _series_interpretation(
+    overall: float,
+    components: Mapping[str, float],
+    left_name: str,
+    right_name: str,
+    reference_metrics: Mapping[str, float],
+) -> str:
     ranked = sorted(components.items(), key=lambda kv: kv[1], reverse=True)
     strong = [name.replace("_", " ") for name, value in ranked if value >= 0.65][:2]
     weak = [name.replace("_", " ") for name, value in ranked if value <= 0.4][:2]
-    if overall >= 0.75:
-        sentence = f"{left_name} and {right_name} are strongly similar overall."
+    metrics_text = []
+    for key in ("pearson_r", "spearman_rho", "kendall_tau"):
+        value = float(reference_metrics.get(key, float("nan")))
+        if np.isfinite(value):
+            metrics_text.append(f"{_reference_metric_label(key)} {value:.2f}")
+    pearson = float(reference_metrics.get("pearson_r", float("nan")))
+    diff_r = float(reference_metrics.get("first_difference_r", float("nan")))
+    if metrics_text:
+        sentence = f"{left_name} vs {right_name}: " + ", ".join(metrics_text) + "."
+    elif overall >= 0.75:
+        sentence = f"{left_name} and {right_name} line up strongly across several metrics."
     elif overall >= 0.55:
-        sentence = f"{left_name} and {right_name} share a noticeable amount of structure, but the match is not one-to-one."
+        sentence = f"{left_name} and {right_name} share noticeable structure, but the match is not one-to-one."
     elif overall >= 0.35:
         sentence = f"{left_name} and {right_name} have some overlapping structure, but the relationship is mixed."
     else:
-        sentence = f"{left_name} and {right_name} do not look very similar overall."
+        sentence = f"{left_name} and {right_name} do not line up consistently."
     if strong:
         sentence += " The best agreement appears in " + " and ".join(strong) + "."
+    if np.isfinite(pearson) and np.isfinite(diff_r) and pearson >= 0.75 and diff_r <= 0.35:
+        sentence += " The levels line up much more than the day-to-day changes, so the relationship is easier to defend as a broad shape analogy than as a local-dynamics match."
     if weak:
         sentence += " The weakest agreement appears in " + " and ".join(weak) + ", so timing or regime differences probably matter."
     return sentence
@@ -379,14 +527,27 @@ def compare_series(
     left_cmp, right_cmp, channel_mode = _pair_multichannel(left_rs, right_rs)
 
     correlations = []
+    pearson_corrs = []
+    spearman_corrs = []
+    kendall_corrs = []
+    best_lag_corrs = []
+    nmi_scores = []
     dtw_scores = []
     trend_scores = []
     derivative_scores = []
+    derivative_corrs = []
     spectral_scores = []
     for idx in range(left_cmp.shape[1]):
         xl = left_cmp[:, idx]
         xr = right_cmp[:, idx]
-        corr = _corr_to_similarity(_safe_corr(xl, xr))
+        pearson = _safe_corr(xl, xr)
+        pearson_corrs.append(pearson)
+        spearman_corrs.append(_safe_spearman_corr(xl, xr))
+        kendall_corrs.append(_safe_kendall_tau(xl, xr))
+        best_lag_corrs.append(_best_lag_corr(xl, xr))
+        nmi_scores.append(_normalized_mutual_information(xl, xr))
+
+        corr = _corr_to_similarity(pearson)
         correlations.append(corr)
 
         dtw = _distance_to_similarity(_dtw_distance(xl, xr), scale=0.8)
@@ -394,11 +555,14 @@ def compare_series(
 
         trend_l = _smooth_trend(xl)
         trend_r = _smooth_trend(xr)
-        trend_scores.append(_corr_to_similarity(_safe_corr(trend_l, trend_r)))
+        trend_corr = _safe_corr(trend_l, trend_r)
+        trend_scores.append(_corr_to_similarity(trend_corr))
 
         dxl = np.diff(xl)
         dxr = np.diff(xr)
-        derivative_scores.append(_corr_to_similarity(_safe_corr(dxl, dxr)))
+        derivative_corr = _safe_corr(dxl, dxr)
+        derivative_corrs.append(derivative_corr)
+        derivative_scores.append(_corr_to_similarity(derivative_corr))
 
         _, pl = _normalized_spectrum(xl)
         _, pr = _normalized_spectrum(xr)
@@ -415,6 +579,14 @@ def compare_series(
         "derivative_similarity": float(np.nanmean(derivative_scores)),
         "spectral_similarity": float(np.nanmean(spectral_scores)),
     }
+    reference_metrics = {
+        "pearson_r": float(np.nanmean(pearson_corrs)),
+        "spearman_rho": float(np.nanmean(spearman_corrs)),
+        "kendall_tau": float(np.nanmean(kendall_corrs)),
+        "best_lag_pearson_r": float(np.nanmean(best_lag_corrs)),
+        "normalized_mutual_information": float(np.nanmean(nmi_scores)),
+        "first_difference_r": float(np.nanmean(derivative_corrs)),
+    }
 
     weights = {
         "shape_similarity": 0.27,
@@ -429,10 +601,15 @@ def compare_series(
         overall = float(sum(weights[key] * value for key, value in valid) / max(weight_sum, EPS))
     else:
         overall = 0.0
+    component_mean = float(np.nanmean(list(components.values()))) if components else float("nan")
 
     notes: list[str] = []
     if channel_mode == "aggregate_channels":
         notes.append("Channel counts did not match, so the comparison used aggregate trajectories rather than one-to-one channel pairing.")
+    if np.isfinite(reference_metrics["pearson_r"]) and np.isfinite(reference_metrics["spearman_rho"]) and abs(reference_metrics["spearman_rho"] - reference_metrics["pearson_r"]) >= 0.15:
+        notes.append("Spearman is noticeably higher than Pearson, so rank-order agreement is stronger than strict linear agreement.")
+    if np.isfinite(reference_metrics["pearson_r"]) and np.isfinite(reference_metrics["first_difference_r"]) and reference_metrics["pearson_r"] >= 0.75 and reference_metrics["first_difference_r"] <= 0.35:
+        notes.append("Levels or cumulative trajectories are much closer than the first differences, so local change-by-change agreement is weaker than the headline coefficients suggest.")
     if components["trend_similarity"] - components["shape_similarity"] >= 0.2:
         notes.append("Broad trend agreement is stronger than point-by-point alignment, which often means the stories match better than the exact timing.")
     if components["spectral_similarity"] - components["shape_similarity"] >= 0.2:
@@ -457,10 +634,13 @@ def compare_series(
         similarity_score=overall,
         qualitative_label=_level(overall),
         component_scores=components,
-        interpretation=_series_interpretation(overall, components, left_name, right_name),
+        interpretation=_series_interpretation(overall, components, left_name, right_name, reference_metrics),
+        reference_metrics=reference_metrics,
         notes=notes,
         suggestions=suggestions,
         metadata={
+            "aggregate_method": "weighted component average",
+            "component_mean": component_mean,
             "channel_mode": channel_mode,
             "resample_points": int(n_points),
             "left_channels": int(left_rs.shape[1]),
@@ -583,6 +763,11 @@ def rolling_similarity(
             "start": float(start),
             "stop": float(stop),
             "similarity_score": float(report.similarity_score),
+            "component_mean": float(report.component_mean),
+            "pearson_r": float(report.reference_metrics.get("pearson_r", float("nan"))),
+            "spearman_rho": float(report.reference_metrics.get("spearman_rho", float("nan"))),
+            "normalized_mutual_information": float(report.reference_metrics.get("normalized_mutual_information", float("nan"))),
+            "first_difference_r": float(report.reference_metrics.get("first_difference_r", float("nan"))),
             "shape_similarity": float(report.component_scores.get("shape_similarity", float("nan"))),
             "trend_similarity": float(report.component_scores.get("trend_similarity", float("nan"))),
             "spectral_similarity": float(report.component_scores.get("spectral_similarity", float("nan"))),

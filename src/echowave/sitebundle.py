@@ -36,7 +36,7 @@ from .visuals import (
     rolling_similarity_svg,
     series_overlay_svg,
     similarity_html_report,
-    similarity_components_svg,
+    similarity_radar_svg,
     similarity_social_card_svg,
 )
 
@@ -244,21 +244,21 @@ def project_pages_bundle(*, version: str = PACKAGE_VERSION) -> dict[str, str]:
                     "caption": "The closest analog stays shape-aligned enough that the story is visible before you read the verdict.",
                 },
                 {
-                    "label": "Component breakdown",
-                    "svg": similarity_components_svg(attention_report),
-                    "caption": "The similarity is not just one score. EchoWave shows which structural dimensions make the analogy convincing.",
+                    "label": "Similarity radar",
+                    "svg": similarity_radar_svg(attention_report),
+                    "caption": "The radar shows which time-series metrics keep supporting the analog and which ones stay weaker.",
                 },
                 {
-                    "label": "Rolling similarity",
+                    "label": "Rolling component mean",
                     "svg": rolling_similarity_svg(attention_roll),
-                    "caption": "Windowed similarity shows whether the analog survives beyond the first surge of attention.",
+                    "caption": "Windowed component means show whether the analog survives beyond the first surge of attention.",
                 },
             ],
             source_href="https://github.com/ZipengWu365/EchoWave/blob/main/examples/gallery/plot_github_breakout_analogs.py",
         ),
         "blog/btc_vs_gold_under_shocks.html": _blog_page(
             title="BTC vs VIX in 2024",
-            deck="A macro narrative that turns rolling similarity and regime-aware comparison into a shareable story without pretending the analogy is stronger than it is.",
+            deck="A macro narrative that turns rolling window diagnostics and regime-aware comparison into a shareable story without pretending the analogy is stronger than it is.",
             report_href="reports/btc_vs_gold_similarity.html",
             social_href="social/btc_vs_gold_card.svg",
             support_note="This story uses a frozen local CSV snapshot built from FRED so the exact comparison can be regenerated later.",
@@ -276,12 +276,12 @@ def project_pages_bundle(*, version: str = PACKAGE_VERSION) -> dict[str, str]:
                     "caption": "The normalized overlay makes the shared structural windows visible despite the scale mismatch.",
                 },
                 {
-                    "label": "Component breakdown",
-                    "svg": similarity_components_svg(market_report),
-                    "caption": "The verdict stays interpretable because the component view shows whether the analogy is shape-, trend-, or shock-driven.",
+                    "label": "Similarity radar",
+                    "svg": similarity_radar_svg(market_report),
+                    "caption": "The verdict stays interpretable because the radar shows whether the analogy is shape-, trend-, or shock-driven.",
                 },
                 {
-                    "label": "Rolling similarity",
+                    "label": "Rolling component mean",
                     "svg": rolling_similarity_svg(market_roll),
                     "caption": "The rolling panel shows when the BTC-VIX analogy actually strengthens instead of pretending the relationship is constant.",
                 },

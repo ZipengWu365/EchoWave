@@ -21,7 +21,7 @@ from .docs_site import (
     project_tutorials_html,
 )
 from .sitebundle import project_demo_manifest, project_pages_bundle, write_pages_bundle
-from .visuals import axis_bar_svg, profile_html_report, profile_radar_svg, profile_social_card_svg, rolling_similarity_svg, series_overlay_svg, similarity_components_svg, similarity_html_report, similarity_social_card_svg
+from .visuals import axis_bar_svg, profile_html_report, profile_radar_svg, profile_social_card_svg, rolling_similarity_svg, series_overlay_svg, similarity_components_svg, similarity_html_report, similarity_radar_svg, similarity_social_card_svg
 from .datasets import list_starter_datasets, starter_dataset, write_starter_dataset
 from .product import explain_dataset, explain_similarity, report_dataset, report_similarity
 from .agent_tools import TOOL_SCHEMA_VERSION, mcp_tool_descriptors, openai_function_schemas, tool_schemas, ts_compare, ts_profile, ts_route
@@ -52,7 +52,7 @@ __all__ = [
     'project_docs_home_html', 'project_getting_started_html', 'project_tutorials_html', 'project_api_reference_html', 'project_scenarios_html', 'project_ecosystem_html', 'project_agents_html', 'project_docs_pages',
     'project_demo_manifest', 'project_pages_bundle', 'write_pages_bundle',
     'profile_html_report', 'similarity_html_report', 'profile_radar_svg', 'profile_social_card_svg', 'axis_bar_svg',
-    'series_overlay_svg', 'rolling_similarity_svg', 'similarity_components_svg', 'similarity_social_card_svg',
+    'series_overlay_svg', 'rolling_similarity_svg', 'similarity_components_svg', 'similarity_radar_svg', 'similarity_social_card_svg',
     'starter_dataset', 'list_starter_datasets', 'write_starter_dataset',
     'explain_dataset', 'report_dataset', 'explain_similarity', 'report_similarity',
     'ts_profile', 'ts_compare', 'ts_route', 'tool_schemas', 'openai_function_schemas', 'mcp_tool_descriptors', 'TOOL_SCHEMA_VERSION',

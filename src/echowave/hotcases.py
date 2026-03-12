@@ -117,7 +117,7 @@ HOT_CASES: tuple[HotCase, ...] = (
         ),
         notes=(
             "Use returns or z-scored prices when scales differ wildly.",
-            "Rolling similarity is usually more informative than one score for the whole year.",
+            "Rolling windows are usually more informative than one all-period average for the whole year.",
         ),
     ),
     HotCase(

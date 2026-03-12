@@ -12,6 +12,8 @@ from html import escape
 from pathlib import Path
 from typing import Any, Iterable
 
+import numpy as np
+
 from .agent_tools import TOOL_SCHEMA_VERSION
 from .copydeck import (
     AGENT_HEADING,
@@ -53,6 +55,7 @@ from .visuals import (
     rolling_similarity_svg,
     series_overlay_svg,
     similarity_components_svg,
+    similarity_radar_svg,
 )
 
 DOC_PAGES = (
@@ -342,6 +345,35 @@ def _component_rows(entry: dict[str, Any], *, limit: int = 4) -> str:
     return "".join(rows)
 
 
+def _report_metric(report: Any, key: str) -> float:
+    return float(getattr(report, "reference_metrics", {}).get(key, np.nan))
+
+
+def _report_metric_summary(report: Any) -> str:
+    parts = []
+    for label, key in (("Pearson", "pearson_r"), ("Spearman", "spearman_rho"), ("Mutual info", "normalized_mutual_information"), ("Kendall", "kendall_tau")):
+        value = _report_metric(report, key)
+        if np.isfinite(value):
+            parts.append(f"{label} {value:.2f}")
+    return " / ".join(parts[:3]) if parts else f"Component mean {float(getattr(report, 'component_mean', np.nan)):.2f}"
+
+
+def _reference_metric_chips(report: Any, *, limit: int = 4) -> str:
+    items = []
+    metric_map = (
+        ("Pearson", "pearson_r"),
+        ("Spearman", "spearman_rho"),
+        ("Mutual info", "normalized_mutual_information"),
+        ("Kendall", "kendall_tau"),
+        ("Best-lag r", "best_lag_pearson_r"),
+    )
+    for label, key in metric_map:
+        value = _report_metric(report, key)
+        if np.isfinite(value):
+            items.append(f"<span class='meta-chip'><strong>{escape(label)}</strong> {value:.2f}</span>")
+    return "".join(items[:limit])
+
+
 def _example_workflow_list(entry: dict[str, Any]) -> str:
     items = "".join(f"<li>{escape(item)}</li>" for item in entry["workflow_steps"])
     return f"<ol class='panel-list'>{items}</ol>"
@@ -399,8 +431,8 @@ def _render_example_page(entry: dict[str, Any], entries: list[dict[str, Any]]) -
       </div>
       <div class='docs-card'>
         {_pill('Result at a glance', 'sun')}
-        <div class='example-score'>{entry['report'].similarity_score:.2f}</div>
-        <div class='example-score-label'>{escape(entry['report'].qualitative_label.title())} similarity overall</div>
+        <div class='meta-line'>{_reference_metric_chips(entry['report'])}</div>
+        <div class='example-score-label'>Component mean {entry['report'].component_mean:.2f} across {len(entry['report'].component_scores)} time-series metrics</div>
         <p>{escape(entry['report'].interpretation)}</p>
         <div class='component-list'>{_component_rows(entry)}</div>
       </div>
@@ -457,13 +489,13 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "category": "Beginner example",
             "tone": "sun",
             "mode": "compare_series",
-            "score_text": f"{treasury_report.similarity_score:.2f} overall similarity",
+            "score_text": _report_metric_summary(treasury_report),
             "summary": treasury_report.to_summary_card_markdown(),
             "report": treasury_report,
             "code_filename": "plot_two_curves_similarity.py",
             "code": _load_example_source("plot_two_curves_similarity.py"),
             "highlights": [
-                f"The 10Y and 2Y curves score {treasury_report.similarity_score:.2f} overall ({treasury_report.qualitative_label}).",
+                f"{_report_metric_summary(treasury_report)} says the two Treasury curves move together strongly at the level and rank level.",
                 "Trend and spectral agreement stay high, which is what you would expect from two rates embedded in the same macro regime.",
                 "Rolling similarity stays elevated through most of the year instead of collapsing after one short window.",
             ],
@@ -475,16 +507,16 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                     "caption": "The overlay is generated from the real 2024 Treasury yield curves after EchoWave normalizes scale.",
                 },
                 {
-                    "label": "Component breakdown",
+                    "label": "Similarity radar",
                     "tone": "sun",
-                    "svg": similarity_components_svg(treasury_report),
-                    "caption": "The component panel shows which parts of the relationship are actually doing the work.",
+                    "svg": similarity_radar_svg(treasury_report),
+                    "caption": "The radar shows which time-series-specific metrics stay high instead of hiding everything inside one opaque number.",
                 },
                 {
-                    "label": "Rolling similarity",
+                    "label": "Rolling component mean",
                     "tone": "blue",
                     "svg": rolling_similarity_svg(treasury_roll),
-                    "caption": "Rolling windows show where the yield-curve relationship stays tight and where it loosens.",
+                    "caption": "Rolling windows show where the average across the similarity metrics stays tight and where it loosens.",
                     "wide": True,
                 },
             ],
@@ -515,13 +547,13 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "category": "Beginner example",
             "tone": "blue",
             "mode": "compare_series",
-            "score_text": f"{pageview_report.similarity_score:.2f} overall similarity",
+            "score_text": _report_metric_summary(pageview_report),
             "summary": pageview_report.to_summary_card_markdown(),
             "report": pageview_report,
             "code_filename": "plot_weekly_traffic_similarity.py",
             "code": _load_example_source("plot_weekly_traffic_similarity.py"),
             "highlights": [
-                f"The two pageview curves score {pageview_report.similarity_score:.2f}, so they clearly move together without becoming interchangeable.",
+                f"{_report_metric_summary(pageview_report)} shows the curves move together, but the first-difference match is weaker than the broad trend.",
                 "Trend agreement is stronger than spectral agreement, which means the shared direction is clearer than the fine-grained cadence.",
                 "This is a real table you can inspect and swap out for your own CSV with almost no code changes.",
             ],
@@ -533,16 +565,16 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                     "caption": "The daily pageview curves share broad shape, but the peaks and dips do not line up perfectly.",
                 },
                 {
-                    "label": "Component breakdown",
+                    "label": "Similarity radar",
                     "tone": "sun",
-                    "svg": similarity_components_svg(pageview_report),
-                    "caption": "EchoWave shows where the relationship is strong and where it weakens.",
+                    "svg": similarity_radar_svg(pageview_report),
+                    "caption": "The radar makes it obvious which kinds of agreement are strong and which are only moderate.",
                 },
                 {
-                    "label": "Rolling similarity",
+                    "label": "Rolling component mean",
                     "tone": "blue",
                     "svg": rolling_similarity_svg(pageview_roll),
-                    "caption": "Rolling windows show when the two topics attract attention in similar ways and when they separate.",
+                    "caption": "Rolling windows show when the average across the similarity metrics stays high and when the two topics separate.",
                     "wide": True,
                 },
             ],
@@ -582,13 +614,13 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "category": "Cross-disciplinary example",
             "tone": "sun",
             "mode": "compare_series + profile_dataset",
-            "score_text": f"{quake_report.similarity_score:.2f} overall similarity",
+            "score_text": _report_metric_summary(quake_report),
             "summary": quake_report.to_summary_card_markdown(),
             "report": quake_report,
             "code_filename": "plot_irregular_patient_similarity.py",
             "code": _load_example_source("plot_irregular_patient_similarity.py"),
             "highlights": [
-                f"Even with real irregular timestamps, EchoWave still resolves a {quake_report.qualitative_label} similarity judgment.",
+                f"{_report_metric_summary(quake_report)} is only part of the story; the event-timestamp handling matters just as much here.",
                 "The comparison respects event timing instead of forcing both regions onto a regular daily grid first.",
                 "The dataset profile adds event-stream context around burstiness, irregularity, and heterogeneity.",
             ],
@@ -605,10 +637,10 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                     "caption": "The overlay is shown in event order, but the actual comparison also uses the real timestamps from the USGS feed.",
                 },
                 {
-                    "label": "Similarity components",
+                    "label": "Similarity radar",
                     "tone": "sun",
-                    "svg": similarity_components_svg(quake_report),
-                    "caption": "The component view keeps the irregular-event comparison interpretable.",
+                    "svg": similarity_radar_svg(quake_report),
+                    "caption": "The radar keeps the irregular-event comparison interpretable without pretending one scalar is enough.",
                 },
                 {
                     "label": "Event-stream axes",
@@ -630,7 +662,7 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                     }
                 ],
             ),
-            "preview_svg": similarity_components_svg(quake_report, width=520, height=220),
+            "preview_svg": similarity_radar_svg(quake_report, width=520, height=220),
         }
     )
 
@@ -648,14 +680,14 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "category": "Flagship demo",
             "tone": "blue",
             "mode": "compare_series + rolling_similarity",
-            "score_text": f"{attention_report.similarity_score:.2f} closest analog score",
+            "score_text": _report_metric_summary(attention_report),
             "summary": attention_report.to_summary_card_markdown(),
             "report": attention_report,
             "code_filename": "plot_github_breakout_analogs.py",
             "code": _load_example_source("plot_github_breakout_analogs.py"),
             "highlights": [
-                f"DeepSeek vs Threads scores {attention_report.similarity_score:.2f}, compared with {attention_alt.similarity_score:.2f} against ChatGPT.",
-                "The rolling view makes the analog choice inspectable instead of reducing everything to one headline score.",
+                f"DeepSeek vs Threads: {_report_metric_summary(attention_report)}; against ChatGPT: {_report_metric_summary(attention_alt)}.",
+                "The rolling view makes the analog choice inspectable instead of hiding disagreement behind one opaque number.",
                 "This is a real analog-selection workflow on public data, not a hand-drawn breakout curve.",
             ],
             "figures": [
@@ -663,19 +695,19 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                     "label": "DeepSeek vs Threads",
                     "tone": "blue",
                     "svg": series_overlay_svg(attention["deepseek_cumulative"], attention["threads_cumulative"], left_label="DeepSeek", right_label="Threads"),
-                    "caption": "The cumulative attention curves stay close enough that the analog is visible before you read the score.",
+                    "caption": "The cumulative attention curves stay close enough that the analog is visible before you read the coefficients and radar.",
                 },
                 {
-                    "label": "Component breakdown",
+                    "label": "Similarity radar",
                     "tone": "sun",
-                    "svg": similarity_components_svg(attention_report),
-                    "caption": "The analog call is backed by multiple similarity components rather than a single scalar.",
+                    "svg": similarity_radar_svg(attention_report),
+                    "caption": "The analog call is backed by multiple time-series metrics rather than a single scalar.",
                 },
                 {
-                    "label": "Rolling similarity",
+                    "label": "Rolling component mean",
                     "tone": "blue",
                     "svg": rolling_similarity_svg(attention_roll),
-                    "caption": "Rolling similarity shows whether the match survives beyond the initial breakout surge.",
+                    "caption": "Rolling component mean shows whether the match survives beyond the initial breakout surge.",
                     "wide": True,
                 },
             ],
@@ -701,7 +733,7 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                     },
                 ],
             ),
-            "preview_svg": similarity_components_svg(attention_report, width=520, height=220),
+            "preview_svg": similarity_radar_svg(attention_report, width=520, height=220),
         }
     )
 
@@ -719,13 +751,13 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "category": "Flagship demo",
             "tone": "sun",
             "mode": "compare_series + rolling_similarity",
-            "score_text": f"{market_report.similarity_score:.2f} BTC-vs-VIX score",
+            "score_text": _report_metric_summary(market_report),
             "summary": market_report.to_summary_card_markdown(),
             "report": market_report,
             "code_filename": "plot_btc_gold_under_shocks.py",
             "code": _load_example_source("plot_btc_gold_under_shocks.py"),
             "highlights": [
-                f"BTC vs VIX scores {market_report.similarity_score:.2f}, compared with {market_alt.similarity_score:.2f} for BTC vs Brent.",
+                f"BTC vs VIX: {_report_metric_summary(market_report)}; BTC vs Brent: {_report_metric_summary(market_alt)}.",
                 "The rolling curve shows that the analogy is regime-dependent rather than something you should treat as globally stable.",
                 "This is a better external demo than a hand-picked market anecdote because the claim is explicit and reproducible.",
             ],
@@ -737,16 +769,16 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                     "caption": "The raw scales differ, so EchoWave normalizes before comparing shared structure.",
                 },
                 {
-                    "label": "Component breakdown",
+                    "label": "Similarity radar",
                     "tone": "sun",
-                    "svg": similarity_components_svg(market_report),
-                    "caption": "The component view shows where the BTC-VIX analogy is real and where it is weak.",
+                    "svg": similarity_radar_svg(market_report),
+                    "caption": "The radar shows where the BTC-VIX analogy is real and where it stays weak.",
                 },
                 {
-                    "label": "Rolling similarity",
+                    "label": "Rolling component mean",
                     "tone": "blue",
                     "svg": rolling_similarity_svg(market_roll),
-                    "caption": "Rolling windows show when the BTC-VIX relationship strengthens and when it fades.",
+                    "caption": "Rolling windows show when the average across the similarity metrics strengthens and when it fades.",
                     "wide": True,
                 },
             ],
@@ -772,7 +804,7 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                     },
                 ],
             ),
-            "preview_svg": similarity_components_svg(market_report, width=520, height=220),
+            "preview_svg": similarity_radar_svg(market_report, width=520, height=220),
         }
     )
 
@@ -789,13 +821,13 @@ def _tutorial_examples() -> list[dict[str, Any]]:
             "category": "Flagship demo",
             "tone": "blue",
             "mode": "compare_series + profile_dataset",
-            "score_text": f"{heat_report.similarity_score:.2f} Phoenix-vs-Las Vegas score",
+            "score_text": _report_metric_summary(heat_report),
             "summary": heat_report.to_summary_card_markdown(),
             "report": heat_report,
             "code_filename": "plot_heatwave_grid_load.py",
             "code": _load_example_source("plot_heatwave_grid_load.py"),
             "highlights": [
-                f"Phoenix and Las Vegas still score {heat_report.similarity_score:.2f} overall, so the two cities track each other closely through the heatwave window.",
+                f"{_report_metric_summary(heat_report)} shows the two cities track each other closely through the heatwave window.",
                 "The supporting dataset profile shows the broader structural context behind that pairwise comparison.",
                 "This is a realistic wide-table workflow you can reuse for any small panel of real measurements.",
             ],
@@ -807,10 +839,10 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                     "caption": "The two city temperature curves share broad movement, but day-to-day changes are not identical.",
                 },
                 {
-                    "label": "Similarity components",
+                    "label": "Similarity radar",
                     "tone": "sun",
-                    "svg": similarity_components_svg(heat_report),
-                    "caption": "The component breakdown shows where the two temperature curves agree most strongly.",
+                    "svg": similarity_radar_svg(heat_report),
+                    "caption": "The radar shows where the two temperature curves agree most strongly.",
                 },
                 {
                     "label": "Dataset structure",
@@ -875,7 +907,7 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                 "Select the two columns you want to compare.",
                 "Run compare_series(...) and optionally rolling_similarity(...) to see where the relationship changes.",
             ],
-            "expected_result": "You should see a high but not perfect similarity score: the broad attention trend matches better than the exact local spikes.",
+            "expected_result": "You should see high Pearson and Spearman agreement, with weaker local-change alignment than the broad attention trend.",
             "own_data_intro": "This is the pattern most users will follow with their own CSV.",
             "own_data_tips": [
                 "Read your table with pandas, then pass the two numeric columns into compare_series(...).",
@@ -911,7 +943,7 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                 "Compare the target against each analog with compare_series(...).",
                 "Use rolling_similarity(...) to see whether the match survives beyond the initial spike.",
             ],
-            "expected_result": "You should see one analog score materially higher than the others, with rolling windows supporting the choice.",
+            "expected_result": "You should see one analog with consistently stronger Pearson, Spearman, and DTW evidence than the others, plus rolling windows that support the choice.",
             "own_data_intro": "This workflow generalizes to any \"which historical analog is closest?\" question.",
             "own_data_tips": [
                 "Replace the example curves with your own daily installs, signups, traffic, or attention series.",
@@ -929,11 +961,11 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                 "Run compare_series(...) for the pair you care about first.",
                 "Use rolling_similarity(...) when you suspect the relationship changes across regimes.",
             ],
-            "expected_result": "You should get a moderate headline similarity score and a rolling view showing when the analogy strengthens or breaks.",
+            "expected_result": "You should get mixed evidence rather than a clean analog: some metrics stay moderate, and the rolling view should show where the relationship strengthens or breaks.",
             "own_data_intro": "This is the same workflow you would use for returns, prices, search trends, or any pair of aligned signals.",
             "own_data_tips": [
                 "For very different scales, compare returns or z-scored values instead of raw levels.",
-                "Use rolling_similarity(...) for regime questions; a single whole-period score is usually too blunt.",
+                "Use rolling_similarity(...) for regime questions; a single whole-period average is usually too blunt.",
                 "If your series come from a CSV, load them with pandas and pass the numeric columns directly into compare_series(...).",
             ],
         },
@@ -947,7 +979,7 @@ def _tutorial_examples() -> list[dict[str, Any]]:
                 "Compare the two columns you care about with compare_series(...).",
                 "Profile the full dataset with profile_dataset(...) to see the wider structural context.",
             ],
-            "expected_result": "You should see a high pairwise similarity score plus a dataset profile explaining the broader panel structure.",
+            "expected_result": "You should see high pairwise correlation metrics plus a dataset profile explaining the broader panel structure.",
             "own_data_intro": "This is the most useful pattern when you have a whole panel, not just one pair of curves.",
             "own_data_tips": [
                 "For a CSV, keep one timestamp column and one numeric column per city, region, or sensor.",

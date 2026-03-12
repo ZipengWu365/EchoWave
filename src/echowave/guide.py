@@ -1039,7 +1039,7 @@ EXTRA_API_ENTRIES: tuple[ApiEntry, ...] = (
         when_to_use="Use for GitHub star growth, crypto or commodity price windows, launch-week traffic curves, and any pair of trajectories where shape matters.",
         returns="SimilarityReport",
         accepted_inputs=("univariate arrays", "multichannel arrays", "optional timestamps"),
-        outputs_to_inspect=("similarity_score", "component_scores", "to_summary_card_markdown()", "to_narrative_report()"),
+        outputs_to_inspect=("reference_metrics", "component_mean", "component_scores", "to_summary_card_markdown()", "to_narrative_report()"),
         recommended_environments=("notebook", "python_script", "cli_batch", "pandas_pipeline"),
     ),
     ApiEntry(
@@ -1067,7 +1067,7 @@ EXTRA_API_ENTRIES: tuple[ApiEntry, ...] = (
         when_to_use="Use for windowed market comparisons, launch tracking, and changing relationships over time.",
         returns="list of per-window similarity summaries",
         accepted_inputs=("pair of arrays or multichannel arrays", "window length", "optional timestamps"),
-        outputs_to_inspect=("similarity_score", "shape_similarity", "trend_similarity", "spectral_similarity"),
+        outputs_to_inspect=("component_mean", "pearson_r", "shape_similarity", "trend_similarity", "spectral_similarity"),
         recommended_environments=("notebook", "python_script", "pandas_pipeline"),
     ),
     ApiEntry(
