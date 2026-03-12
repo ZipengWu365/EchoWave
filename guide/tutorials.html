@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang='en'>
+<head><meta charset='utf-8'/><meta name='viewport' content='width=device-width, initial-scale=1'/><link rel='preconnect' href='https://fonts.googleapis.com'>
+<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap' rel='stylesheet'><title>EchoWave docs - Tutorials and Examples</title><style>
+:root {
+  --page-bg: #FFFFFF;
+  --surface: #FAFAFA;
+  --surface-strong: #FFFFFF;
+  --surface-sun: #FFF4C2;
+  --surface-sun-strong: #FFF9E4;
+  --sun-500: #FFC83D;
+  --sun-300: #FFE27A;
+  --sun-100: #FFF4C2;
+  --sun-700: #C7950A;
+  --blue-600: #2F6BFF;
+  --blue-700: #2554CC;
+  --text-900: #1F2937;
+  --text-600: #6B7280;
+  --border: #E5E7EB;
+  --shadow-sm: 0 10px 30px rgba(31, 41, 55, 0.06);
+  --shadow-md: 0 18px 50px rgba(31, 41, 55, 0.08);
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 14px;
+  --max-width: 1180px;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top right, rgba(255, 226, 122, 0.16), transparent 24%),
+    linear-gradient(180deg, #fffef9 0%, var(--page-bg) 12%, var(--page-bg) 100%);
+  color: var(--text-900);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
+a {
+  color: var(--blue-600);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--blue-700);
+}
+code, pre {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+select, input, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  color: var(--text-900);
+  font: inherit;
+}
+.shell {
+  width: min(var(--max-width), calc(100vw - 32px));
+  margin: 0 auto;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.94);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px) saturate(180%);
+}
+.topbar-inner {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.brand-mark {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--sun-500), var(--sun-300));
+  box-shadow: inset 0 0 0 1px rgba(31, 41, 55, 0.06);
+}
+.brand-copy strong {
+  display: block;
+  font-size: 1.12rem;
+  letter-spacing: -0.02em;
+}
+.brand-copy span {
+  color: var(--text-600);
+  font-size: 0.95rem;
+}
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.95rem;
+}
+.nav a {
+  color: var(--text-600);
+  font-weight: 500;
+}
+.nav a:hover {
+  color: var(--text-900);
+}
+.section {
+  padding: 26px 0 18px;
+}
+.section-head {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 200, 61, 0.38);
+  background: var(--surface-sun);
+  color: var(--sun-700);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hero {
+  padding: 42px 0 18px;
+}
+.hero-grid, .grid-2, .grid-3 {
+  display: grid;
+  gap: 20px;
+}
+.hero-grid {
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: start;
+}
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+.grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.card {
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
+}
+.card.sun {
+  background: linear-gradient(180deg, #fffdfa 0%, var(--surface-sun-strong) 100%);
+}
+.card.soft {
+  background: var(--surface);
+}
+.feature-card {
+  display: grid;
+  gap: 10px;
+}
+.feature-card p,
+.card p {
+  margin: 0;
+}
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.logo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-600);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+.logo-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun-500), var(--blue-600));
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-600);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+.pill.sun {
+  border-color: rgba(255, 200, 61, 0.42);
+  background: var(--surface-sun);
+  color: var(--sun-700);
+}
+.pill.blue {
+  border-color: rgba(47, 107, 255, 0.18);
+  background: rgba(47, 107, 255, 0.08);
+  color: var(--blue-700);
+}
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--text-900);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.button.primary {
+  border-color: rgba(255, 200, 61, 0.48);
+  background: linear-gradient(180deg, #ffd65f 0%, var(--sun-500) 100%);
+  color: var(--text-900);
+}
+.button.secondary {
+  border-color: rgba(47, 107, 255, 0.18);
+  background: rgba(47, 107, 255, 0.08);
+  color: var(--blue-700);
+}
+.button.ghost {
+  background: transparent;
+  box-shadow: none;
+}
+.button.text {
+  padding: 0;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--blue-700);
+}
+h1, h2, h3 {
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+h1 {
+  font-size: clamp(2.6rem, 5vw, 4.5rem);
+  line-height: 0.98;
+}
+h2 {
+  font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+}
+h3 {
+  font-size: 1.08rem;
+}
+.subhead, .lead, .muted {
+  color: var(--text-600);
+}
+.subhead {
+  max-width: 46rem;
+  font-size: 1.12rem;
+}
+.lead {
+  margin: 0;
+  max-width: 68rem;
+}
+.hero-stat {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+.hero-stage {
+  display: grid;
+  gap: 18px;
+}
+.stat {
+  border: 1px solid rgba(255, 200, 61, 0.28);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 244, 194, 0.55);
+  padding: 12px 14px;
+}
+.stat strong {
+  display: block;
+  font-size: 1.2rem;
+}
+.panel-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.workflow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.step {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+}
+.step-number {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--sun-500);
+  color: var(--text-900);
+  font-weight: 800;
+}
+.code-block, pre {
+  margin: 0;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: #fffef8;
+  color: var(--text-900);
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+.surface-frame {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.surface-frame.pad {
+  padding: 16px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+th, td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+th {
+  background: #fffdf6;
+  color: var(--text-600);
+  font-size: 0.92rem;
+}
+tr:last-child td {
+  border-bottom: none;
+}
+iframe.demo {
+  width: 100%;
+  min-height: 460px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+}
+img.brand-card {
+  width: 100%;
+  max-width: 460px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.footer {
+  padding: 28px 0 54px;
+  color: var(--text-600);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 18px;
+  align-items: start;
+}
+.diagram {
+  display: grid;
+  gap: 14px;
+}
+.diagram-flow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.diagram-arrow {
+  color: var(--blue-700);
+  font-weight: 800;
+}
+.diagram-band {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.diagram-card {
+  padding: 18px;
+  border: 1px dashed rgba(47, 107, 255, 0.22);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, rgba(255, 244, 194, 0.38) 0%, #ffffff 100%);
+}
+.note-box {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.note-box.info {
+  border-color: rgba(47, 107, 255, 0.18);
+  background: rgba(47, 107, 255, 0.05);
+}
+.note-box.warn {
+  border-color: rgba(255, 200, 61, 0.45);
+  background: rgba(255, 244, 194, 0.66);
+}
+.author-meta {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+}
+.callout {
+  padding: 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 200, 61, 0.42);
+  background: linear-gradient(180deg, #fff9e4 0%, #ffffff 100%);
+  box-shadow: var(--shadow-sm);
+}
+@media (max-width: 980px) {
+  .topbar-inner {
+    padding: 12px 0;
+    align-items: flex-start;
+  }
+  .hero-grid, .grid-2, .grid-3, .workflow, .diagram-band, .hero-stat, .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+    .docs-wrap { display:grid; grid-template-columns: 280px minmax(0, 1fr); gap: 24px; padding: 28px 0 40px; }
+    .docs-sidebar { position: sticky; top: 94px; align-self: start; display:grid; gap:18px; }
+    .sidebar-card { background: var(--surface-strong); border:1px solid var(--border); border-radius: var(--radius-md); padding: 18px; box-shadow: var(--shadow-sm); }
+    .sidebar-title { margin:0 0 10px; font-size: 0.86rem; color: var(--text-600); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .doc-link { display:block; padding: 10px 12px; border-radius: 12px; color: var(--text-600); font-weight: 600; }
+    .doc-link:hover { background: rgba(47,107,255,0.06); color: var(--text-900); }
+    .doc-link.active { background: rgba(255, 244, 194, 0.78); color: var(--text-900); border:1px solid rgba(255,200,61,0.38); }
+    .docs-main { display:grid; gap: 24px; min-width: 0; }
+    .docs-hero { display:grid; gap: 12px; }
+    .docs-hero h1 { font-size: clamp(2.1rem, 4vw, 3.3rem); line-height: 1.02; }
+    .docs-card { background: var(--surface-strong); border:1px solid var(--border); border-radius: var(--radius-md); padding: 22px 24px; box-shadow: var(--shadow-sm); display:grid; gap: 12px; }
+    .docs-grid-2, .docs-grid-3 { display:grid; gap: 20px; }
+    .docs-grid-2 { grid-template-columns: 1fr 1fr; }
+    .docs-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .meta-line { display:flex; flex-wrap:wrap; gap: 10px; }
+    .meta-chip { display:inline-flex; align-items:center; gap:6px; padding: 6px 10px; border-radius: 999px; background: var(--surface); border:1px solid var(--border); color: var(--text-600); font-size: 0.84rem; font-weight: 700; }
+    .meta-chip strong { color: var(--text-900); }
+    .entry-stack { display:grid; gap: 16px; }
+    .entry { border-top: 1px solid var(--border); padding-top: 16px; }
+    .entry:first-child { border-top: 0; padding-top: 0; }
+    .entry h3 { font-size: 1.1rem; }
+    .inline-code { font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; background: #fffef8; border:1px solid var(--border); padding: 2px 6px; border-radius: 8px; }
+    .small-table { width:100%; border-collapse:collapse; }
+    .small-table th, .small-table td { padding: 11px 12px; text-align:left; border-bottom:1px solid var(--border); vertical-align: top; }
+    .small-table th { background: #fffdf6; color: var(--text-600); font-size: 0.9rem; }
+    .small-table tr:last-child td { border-bottom: 0; }
+    .toc-note { font-size: 0.92rem; color: var(--text-600); }
+    @media (max-width: 980px) {
+      .docs-wrap { grid-template-columns: 1fr; }
+      .docs-sidebar { position: static; }
+      .docs-grid-2, .docs-grid-3 { grid-template-columns: 1fr; }
+    }
+    </style></head>
+<body>
+<header class='topbar'>
+  <div class='shell topbar-inner'>
+    <div class='brand'>
+      <span class='brand-mark'></span>
+      <div class='brand-copy'>
+        <strong>EchoWave</strong>
+        <span>Explainable time-series similarity for humans and agents.</span>
+      </div>
+    </div>
+    <nav class='nav'>
+      <a href='../index.html'>Home</a>
+      <a href='index.html'>Docs</a>
+      <a href='tutorials.html'>Tutorials</a>
+      <a href='api.html'>API</a>
+      <a href='../playground.html'>Playground</a>
+      <a href='https://github.com/ZipengWu365/EchoWave'>GitHub</a>
+    </nav>
+  </div>
+</header>
+<main class='shell docs-wrap'>
+  <aside class='docs-sidebar'>
+    <div class='sidebar-card'>
+      <div class='sidebar-title'>Documentation</div>
+      <a class='doc-link' href='index.html'>Docs Home</a><a class='doc-link' href='getting-started.html'>Getting Started</a><a class='doc-link active' href='tutorials.html'>Tutorials</a><a class='doc-link' href='api.html'>API Reference</a><a class='doc-link' href='scenarios.html'>Scenarios</a><a class='doc-link' href='ecosystem.html'>Ecosystem</a><a class='doc-link' href='agents.html'>Agent Tools</a>
+    </div>
+    <div class='sidebar-card'>
+      <div class='sidebar-title'>Quick links</div>
+      <a class='doc-link' href='../playground.html'>Static playground</a>
+      <a class='doc-link' href='../start-here.html'>Start here</a>
+      <a class='doc-link' href='../reports/github_breakout_similarity.html'>Flagship report</a>
+    </div>
+    <div class='sidebar-card'>
+      <div class='sidebar-title'>Maintainer</div>
+      <div class='toc-note'><strong>Zipeng Wu</strong><br>The University of Birmingham<br><a href='mailto:zxw365@student.bham.ac.uk'>zxw365@student.bham.ac.uk</a></div>
+    </div>
+  </aside>
+  <section class='docs-main'>
+    <div class='docs-hero'>
+      <div class='eyebrow'>Documentation</div>
+      <h1>Tutorials and Examples</h1>
+      <p class='subhead'>Begin with tiny scenarios, then move to flagship demos built for GitHub, talks, social posts, and notebooks.</p>
+    </div>
+    
+    <div class='docs-card'>
+      <span class='pill sun'>Tutorial map</span>
+      <p>This page is where users should browse examples. It is intentionally separate from the homepage so the landing page stays short and the tutorials stay discoverable.</p>
+    </div>
+    <div class='docs-grid-3'>
+      <div class='docs-card'><span class='pill sun'>Single-column CSV -&gt; similarity-ready signal</span><p>Show that one numeric column is enough to try the package.</p></div><div class='docs-card'><span class='pill sun'>Timestamps + missingness -&gt; why irregularity matters</span><p>Show why explicit timestamps and gaps can change a similarity verdict.</p></div><div class='docs-card'><span class='pill sun'>Two curves -&gt; similarity verdict</span><p>Show the simplest possible similarity workflow without ontology jargon.</p></div><div class='docs-card'><span class='pill sun'>Inflation + search interest -&gt; regime similarity</span><p>Show a macro-adjacent beginner case without assuming a finance background.</p></div><div class='docs-card'><span class='pill sun'>Single sensor drift -&gt; structural watchouts</span><p>Show how slow drift changes what a meaningful analog looks like in engineering data.</p></div><div class='docs-card'><span class='pill sun'>Daily survey sentiment -&gt; irregularity and burstiness</span><p>Show how sparse observational signals differ from smooth telemetry.</p></div>
+    </div>
+    <div class='docs-card'>
+      <span class='pill blue'>Flagship demos</span>
+      <div class='docs-grid-3'>
+        <div class='docs-card'><span class='pill blue'>OpenClaw-style GitHub breakout analogs</span><p>Ask whether a new repo looks like a durable breakout or a short viral spike.</p><div class='note-box info'>Is this a real breakout or just a viral spike?</div></div><div class='docs-card'><span class='pill blue'>BTC vs gold vs oil under shocks</span><p>Ask which assets become more similar during macro or geopolitical stress.</p><div class='note-box info'>When stress hits, does BTC behave more like gold or oil?</div></div><div class='docs-card'><span class='pill blue'>Heatwave vs grid load</span><p>Ask which load curves drift or switch regime under extreme weather.</p><div class='note-box info'>Which grid loses structural stability first in a heatwave?</div></div>
+      </div>
+    </div>
+    <div class='docs-card'>
+      <span class='pill sun'>Starter datasets</span>
+      <table class='small-table'>
+        <thead><tr><th>Dataset</th><th>Domain</th><th>Kind</th><th>Why it exists</th></tr></thead>
+        <tbody><tr><td><strong>Sine vs noise</strong><br><span class='muted'>sine_vs_noise</span></td><td>generic</td><td>comparison</td><td>The smallest possible demo for rhythmicity and predictability.</td></tr>
+<tr><td><strong>Weekly website traffic</strong><br><span class='muted'>weekly_website_traffic</span></td><td>traffic</td><td>dataset</td><td>A product-style dataset with weekly rhythm, trend, and launch bursts.</td></tr>
+<tr><td><strong>Irregular patient vitals</strong><br><span class='muted'>irregular_patient_vitals</span></td><td>clinical</td><td>dataset</td><td>A minimal irregularly sampled clinical-monitoring cohort.</td></tr>
+<tr><td><strong>GitHub breakout analogs</strong><br><span class='muted'>github_breakout_analogs</span></td><td>product</td><td>comparison</td><td>A social-friendly stars-over-time demo for similarity analysis.</td></tr>
+<tr><td><strong>BTC / gold / oil under shocks</strong><br><span class='muted'>btc_gold_oil_shocks</span></td><td>markets</td><td>comparison</td><td>A regime-aware market comparison demo.</td></tr>
+<tr><td><strong>Grid load vs heatwave</strong><br><span class='muted'>energy_load_heatwave</span></td><td>energy</td><td>dataset</td><td>A small multivariate energy system demo with heatwave-driven shifts.</td></tr>
+<tr><td><strong>Wearable recovery cohort</strong><br><span class='muted'>wearable_recovery_cohort</span></td><td>wearable</td><td>dataset</td><td>A longitudinal cohort demo for heterogeneity and adherence.</td></tr></tbody>
+      </table>
+    </div>
+    
+  </section>
+</main>
+</body>
+</html>

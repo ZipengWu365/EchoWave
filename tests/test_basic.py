@@ -55,6 +55,8 @@ from tsontology import (
     live_demo_guide,
     parse_numeric_text,
     profile_from_text,
+    project_api_reference_html,
+    project_docs_home_html,
     project_demo_manifest,
     profile_dataset,
     register_plugin,
@@ -561,9 +563,10 @@ def test_project_homepage_html_contains_core_sections() -> None:
     html = project_homepage_html()
     assert "EchoWave" in html
     assert "OpenClaw" in html
-    assert "Agent-ready by design" in html
-    assert "Install" in html
-    assert "Where EchoWave fits in the ecosystem" in html
+    assert "guide/index.html" in html
+    assert "guide/tutorials.html" in html
+    assert "guide/api.html" in html
+    assert "left sidebar" in html
 
 
 
@@ -698,9 +701,18 @@ def test_github_readme_contains_ecosystem_positioning() -> None:
 
 def test_homepage_mentions_ecosystem_and_coverage() -> None:
     html = project_homepage_html(version="0.12.0")
-    assert "Where EchoWave fits in the ecosystem" in html
-    assert "Capability coverage" in html
-    assert "Agent-ready by design" in html
+    assert "Tutorials, API material, and ecosystem detail now live in dedicated docs pages" in html
+    assert "guide/ecosystem.html" in html
+    assert "guide/agents.html" in html
+
+
+def test_docs_pages_render_sidebar_layout() -> None:
+    docs_home = project_docs_home_html()
+    api_html = project_api_reference_html()
+    assert "docs-sidebar" in docs_home
+    assert "Getting Started" in docs_home
+    assert "doc-link active" in api_html
+    assert "compare_series" in api_html
 
 
 def test_explain_dataset_returns_plain_summary_card() -> None:
@@ -812,6 +824,8 @@ def test_project_pages_bundle_contains_docs_surface() -> None:
     bundle = project_pages_bundle(version="0.16.0")
     assert "index.html" in bundle
     assert "playground.html" in bundle
+    assert "guide/index.html" in bundle
+    assert "guide/api.html" in bundle
     assert "reports/github_breakout_similarity.html" in bundle
     assert "social/github_breakout_card.svg" in bundle
 

@@ -26,6 +26,7 @@ from echowave import (  # noqa: E402
     openai_function_schemas,
     pages_deploy_guide,
     project_demo_manifest,
+    project_docs_pages,
     project_homepage_html,
     project_launchpad_html,
     project_playground_html,
@@ -114,6 +115,8 @@ def main() -> None:
     _write(ROOT / "playground.html", project_playground_html())
     _write(ROOT / "start-here.html", project_launchpad_html())
     _write(ROOT / "local_demo.html", demo_server_html())
+    for rel, content in project_docs_pages().items():
+        _write(ROOT / rel, content)
 
     _write(ROOT / "START_HERE.md", start_here_guide())
     _write(ROOT / "INSTALLATION.md", installation_guide() + "\n\n" + doctor_guide())

@@ -15,6 +15,7 @@ from typing import Any
 
 from .copydeck import FLAGSHIP_DEMOS, PACKAGE_VERSION
 from .datasets import starter_dataset
+from .docs_site import project_docs_pages
 from .homepage import project_homepage_html
 from .launchpad import project_launchpad_html
 from .playground import project_playground_html
@@ -182,6 +183,7 @@ def project_pages_bundle(*, version: str = PACKAGE_VERSION) -> dict[str, str]:
                 "It is a good example of how EchoWave can turn a dataset handoff into an artifact someone else can act on.",
             ],
         ),
+        **project_docs_pages(version=version),
     }
 
 

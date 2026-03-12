@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang='en'>
+<head><meta charset='utf-8'/><meta name='viewport' content='width=device-width, initial-scale=1'/><link rel='preconnect' href='https://fonts.googleapis.com'>
+<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap' rel='stylesheet'><title>EchoWave docs - API Reference</title><style>
+:root {
+  --page-bg: #FFFFFF;
+  --surface: #FAFAFA;
+  --surface-strong: #FFFFFF;
+  --surface-sun: #FFF4C2;
+  --surface-sun-strong: #FFF9E4;
+  --sun-500: #FFC83D;
+  --sun-300: #FFE27A;
+  --sun-100: #FFF4C2;
+  --sun-700: #C7950A;
+  --blue-600: #2F6BFF;
+  --blue-700: #2554CC;
+  --text-900: #1F2937;
+  --text-600: #6B7280;
+  --border: #E5E7EB;
+  --shadow-sm: 0 10px 30px rgba(31, 41, 55, 0.06);
+  --shadow-md: 0 18px 50px rgba(31, 41, 55, 0.08);
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 14px;
+  --max-width: 1180px;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top right, rgba(255, 226, 122, 0.16), transparent 24%),
+    linear-gradient(180deg, #fffef9 0%, var(--page-bg) 12%, var(--page-bg) 100%);
+  color: var(--text-900);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
+a {
+  color: var(--blue-600);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--blue-700);
+}
+code, pre {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+select, input, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  color: var(--text-900);
+  font: inherit;
+}
+.shell {
+  width: min(var(--max-width), calc(100vw - 32px));
+  margin: 0 auto;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.94);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px) saturate(180%);
+}
+.topbar-inner {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.brand-mark {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--sun-500), var(--sun-300));
+  box-shadow: inset 0 0 0 1px rgba(31, 41, 55, 0.06);
+}
+.brand-copy strong {
+  display: block;
+  font-size: 1.12rem;
+  letter-spacing: -0.02em;
+}
+.brand-copy span {
+  color: var(--text-600);
+  font-size: 0.95rem;
+}
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.95rem;
+}
+.nav a {
+  color: var(--text-600);
+  font-weight: 500;
+}
+.nav a:hover {
+  color: var(--text-900);
+}
+.section {
+  padding: 26px 0 18px;
+}
+.section-head {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 200, 61, 0.38);
+  background: var(--surface-sun);
+  color: var(--sun-700);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hero {
+  padding: 42px 0 18px;
+}
+.hero-grid, .grid-2, .grid-3 {
+  display: grid;
+  gap: 20px;
+}
+.hero-grid {
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: start;
+}
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+.grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.card {
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
+}
+.card.sun {
+  background: linear-gradient(180deg, #fffdfa 0%, var(--surface-sun-strong) 100%);
+}
+.card.soft {
+  background: var(--surface);
+}
+.feature-card {
+  display: grid;
+  gap: 10px;
+}
+.feature-card p,
+.card p {
+  margin: 0;
+}
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.logo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-600);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+.logo-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun-500), var(--blue-600));
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-600);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+.pill.sun {
+  border-color: rgba(255, 200, 61, 0.42);
+  background: var(--surface-sun);
+  color: var(--sun-700);
+}
+.pill.blue {
+  border-color: rgba(47, 107, 255, 0.18);
+  background: rgba(47, 107, 255, 0.08);
+  color: var(--blue-700);
+}
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--text-900);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.button.primary {
+  border-color: rgba(255, 200, 61, 0.48);
+  background: linear-gradient(180deg, #ffd65f 0%, var(--sun-500) 100%);
+  color: var(--text-900);
+}
+.button.secondary {
+  border-color: rgba(47, 107, 255, 0.18);
+  background: rgba(47, 107, 255, 0.08);
+  color: var(--blue-700);
+}
+.button.ghost {
+  background: transparent;
+  box-shadow: none;
+}
+.button.text {
+  padding: 0;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--blue-700);
+}
+h1, h2, h3 {
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+h1 {
+  font-size: clamp(2.6rem, 5vw, 4.5rem);
+  line-height: 0.98;
+}
+h2 {
+  font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+}
+h3 {
+  font-size: 1.08rem;
+}
+.subhead, .lead, .muted {
+  color: var(--text-600);
+}
+.subhead {
+  max-width: 46rem;
+  font-size: 1.12rem;
+}
+.lead {
+  margin: 0;
+  max-width: 68rem;
+}
+.hero-stat {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+.hero-stage {
+  display: grid;
+  gap: 18px;
+}
+.stat {
+  border: 1px solid rgba(255, 200, 61, 0.28);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 244, 194, 0.55);
+  padding: 12px 14px;
+}
+.stat strong {
+  display: block;
+  font-size: 1.2rem;
+}
+.panel-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.workflow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.step {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+}
+.step-number {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--sun-500);
+  color: var(--text-900);
+  font-weight: 800;
+}
+.code-block, pre {
+  margin: 0;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: #fffef8;
+  color: var(--text-900);
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+.surface-frame {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.surface-frame.pad {
+  padding: 16px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+th, td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+th {
+  background: #fffdf6;
+  color: var(--text-600);
+  font-size: 0.92rem;
+}
+tr:last-child td {
+  border-bottom: none;
+}
+iframe.demo {
+  width: 100%;
+  min-height: 460px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+}
+img.brand-card {
+  width: 100%;
+  max-width: 460px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.footer {
+  padding: 28px 0 54px;
+  color: var(--text-600);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 18px;
+  align-items: start;
+}
+.diagram {
+  display: grid;
+  gap: 14px;
+}
+.diagram-flow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.diagram-arrow {
+  color: var(--blue-700);
+  font-weight: 800;
+}
+.diagram-band {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.diagram-card {
+  padding: 18px;
+  border: 1px dashed rgba(47, 107, 255, 0.22);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, rgba(255, 244, 194, 0.38) 0%, #ffffff 100%);
+}
+.note-box {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.note-box.info {
+  border-color: rgba(47, 107, 255, 0.18);
+  background: rgba(47, 107, 255, 0.05);
+}
+.note-box.warn {
+  border-color: rgba(255, 200, 61, 0.45);
+  background: rgba(255, 244, 194, 0.66);
+}
+.author-meta {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+}
+.callout {
+  padding: 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 200, 61, 0.42);
+  background: linear-gradient(180deg, #fff9e4 0%, #ffffff 100%);
+  box-shadow: var(--shadow-sm);
+}
+@media (max-width: 980px) {
+  .topbar-inner {
+    padding: 12px 0;
+    align-items: flex-start;
+  }
+  .hero-grid, .grid-2, .grid-3, .workflow, .diagram-band, .hero-stat, .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+    .docs-wrap { display:grid; grid-template-columns: 280px minmax(0, 1fr); gap: 24px; padding: 28px 0 40px; }
+    .docs-sidebar { position: sticky; top: 94px; align-self: start; display:grid; gap:18px; }
+    .sidebar-card { background: var(--surface-strong); border:1px solid var(--border); border-radius: var(--radius-md); padding: 18px; box-shadow: var(--shadow-sm); }
+    .sidebar-title { margin:0 0 10px; font-size: 0.86rem; color: var(--text-600); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .doc-link { display:block; padding: 10px 12px; border-radius: 12px; color: var(--text-600); font-weight: 600; }
+    .doc-link:hover { background: rgba(47,107,255,0.06); color: var(--text-900); }
+    .doc-link.active { background: rgba(255, 244, 194, 0.78); color: var(--text-900); border:1px solid rgba(255,200,61,0.38); }
+    .docs-main { display:grid; gap: 24px; min-width: 0; }
+    .docs-hero { display:grid; gap: 12px; }
+    .docs-hero h1 { font-size: clamp(2.1rem, 4vw, 3.3rem); line-height: 1.02; }
+    .docs-card { background: var(--surface-strong); border:1px solid var(--border); border-radius: var(--radius-md); padding: 22px 24px; box-shadow: var(--shadow-sm); display:grid; gap: 12px; }
+    .docs-grid-2, .docs-grid-3 { display:grid; gap: 20px; }
+    .docs-grid-2 { grid-template-columns: 1fr 1fr; }
+    .docs-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .meta-line { display:flex; flex-wrap:wrap; gap: 10px; }
+    .meta-chip { display:inline-flex; align-items:center; gap:6px; padding: 6px 10px; border-radius: 999px; background: var(--surface); border:1px solid var(--border); color: var(--text-600); font-size: 0.84rem; font-weight: 700; }
+    .meta-chip strong { color: var(--text-900); }
+    .entry-stack { display:grid; gap: 16px; }
+    .entry { border-top: 1px solid var(--border); padding-top: 16px; }
+    .entry:first-child { border-top: 0; padding-top: 0; }
+    .entry h3 { font-size: 1.1rem; }
+    .inline-code { font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; background: #fffef8; border:1px solid var(--border); padding: 2px 6px; border-radius: 8px; }
+    .small-table { width:100%; border-collapse:collapse; }
+    .small-table th, .small-table td { padding: 11px 12px; text-align:left; border-bottom:1px solid var(--border); vertical-align: top; }
+    .small-table th { background: #fffdf6; color: var(--text-600); font-size: 0.9rem; }
+    .small-table tr:last-child td { border-bottom: 0; }
+    .toc-note { font-size: 0.92rem; color: var(--text-600); }
+    @media (max-width: 980px) {
+      .docs-wrap { grid-template-columns: 1fr; }
+      .docs-sidebar { position: static; }
+      .docs-grid-2, .docs-grid-3 { grid-template-columns: 1fr; }
+    }
+    </style></head>
+<body>
+<header class='topbar'>
+  <div class='shell topbar-inner'>
+    <div class='brand'>
+      <span class='brand-mark'></span>
+      <div class='brand-copy'>
+        <strong>EchoWave</strong>
+        <span>Explainable time-series similarity for humans and agents.</span>
+      </div>
+    </div>
+    <nav class='nav'>
+      <a href='../index.html'>Home</a>
+      <a href='index.html'>Docs</a>
+      <a href='tutorials.html'>Tutorials</a>
+      <a href='api.html'>API</a>
+      <a href='../playground.html'>Playground</a>
+      <a href='https://github.com/ZipengWu365/EchoWave'>GitHub</a>
+    </nav>
+  </div>
+</header>
+<main class='shell docs-wrap'>
+  <aside class='docs-sidebar'>
+    <div class='sidebar-card'>
+      <div class='sidebar-title'>Documentation</div>
+      <a class='doc-link' href='index.html'>Docs Home</a><a class='doc-link' href='getting-started.html'>Getting Started</a><a class='doc-link' href='tutorials.html'>Tutorials</a><a class='doc-link active' href='api.html'>API Reference</a><a class='doc-link' href='scenarios.html'>Scenarios</a><a class='doc-link' href='ecosystem.html'>Ecosystem</a><a class='doc-link' href='agents.html'>Agent Tools</a>
+    </div>
+    <div class='sidebar-card'>
+      <div class='sidebar-title'>Quick links</div>
+      <a class='doc-link' href='../playground.html'>Static playground</a>
+      <a class='doc-link' href='../start-here.html'>Start here</a>
+      <a class='doc-link' href='../reports/github_breakout_similarity.html'>Flagship report</a>
+    </div>
+    <div class='sidebar-card'>
+      <div class='sidebar-title'>Maintainer</div>
+      <div class='toc-note'><strong>Zipeng Wu</strong><br>The University of Birmingham<br><a href='mailto:zxw365@student.bham.ac.uk'>zxw365@student.bham.ac.uk</a></div>
+    </div>
+  </aside>
+  <section class='docs-main'>
+    <div class='docs-hero'>
+      <div class='eyebrow'>Documentation</div>
+      <h1>API Reference</h1>
+      <p class='subhead'>The public API surface is intentionally small and role-based: compare, profile, summarize, and hand off.</p>
+    </div>
+    <div class='docs-card'><span class='pill blue'>core profiling</span><div class='entry-stack'><div class='entry'><h3><span class='inline-code'>profile_dataset</span></h3><p><strong>Signature:</strong> <span class='inline-code'>profile_dataset(data, *, domain=None, timestamps=None, time_axis=0, channel_axis=-1, subject_axis=0, sampling_rate=None, tr=None, channel_names=None, roi_names=None, network_labels=None, subject_ids=None, metadata=None, bootstrap=0, random_state=None) -&gt; DatasetProfile</span></p><p><strong>Purpose:</strong> Primary entry point. Profile an entire dataset as a dataset.</p><p><strong>Why this exists:</strong> The core design choice of EchoWave is that the object of interest is the dataset, not just a single series. This function aggregates unit-level signals, multivariate structure, cohort variation, and observation characteristics into one profile.</p><p><strong>When to use it:</strong> Use when you want the ontology axes, archetypes, task hints, reliability, and dataset-card outputs for a whole dataset or cohort.</p><p><strong>Returns:</strong> DatasetProfile</p><p><strong>Recommended environments:</strong> notebook, python_script, cli_batch, pandas_pipeline, neuro_stack, ml_benchmark</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>1D/2D/3D arrays</li><li>pandas DataFrame or tabular file path</li><li>FMRIInput / EEGInput</li><li>IrregularTimeSeriesInput</li><li>EventStreamInput</li><li>MNE-like or xarray-like object</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>profile.axes</li><li>profile.subdimensions</li><li>profile.archetypes</li><li>profile.task_hints</li><li>profile.reliability</li><li>profile.to_card_json()</li></ul></div></div></div><div class='entry'><h3><span class='inline-code'>profile_series</span></h3><p><strong>Signature:</strong> <span class='inline-code'>profile_series(series, *, timestamps=None, domain=None) -&gt; SeriesProfile</span></p><p><strong>Purpose:</strong> Profile a single univariate series when a full dataset object is not needed.</p><p><strong>Why this exists:</strong> Users often want a lightweight sanity-check before moving to dataset-level profiling. This function keeps the interface simple for one series while still using the same ontology machinery.</p><p><strong>When to use it:</strong> Use for quick checks, demos, or when your data truly consist of a single univariate stream.</p><p><strong>Returns:</strong> SeriesProfile</p><p><strong>Recommended environments:</strong> notebook, python_script</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>1D array-like series</li><li>optional timestamps</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>profile.axes</li><li>profile.metrics</li><li>profile.notes</li><li>profile.to_markdown()</li></ul></div></div></div></div></div><div class='docs-card'><span class='pill blue'>profile outputs</span><div class='entry-stack'><div class='entry'><h3><span class='inline-code'>DatasetProfile</span></h3><p><strong>Signature:</strong> <span class='inline-code'>DatasetProfile(...)</span></p><p><strong>Purpose:</strong> Rich result object returned by profile_dataset.</p><p><strong>Why this exists:</strong> A structural profile has both machine-readable and human-readable uses. The result object keeps raw metrics, ontology scores, notes, evidence, and rendering helpers together.</p><p><strong>When to use it:</strong> Use after profiling to export reports, cards, or JSON payloads for downstream pipelines.</p><p><strong>Returns:</strong> Dataclass-like object with rendering methods</p><p><strong>Recommended environments:</strong> notebook, python_script, cli_batch, ml_benchmark</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>created by profile_dataset</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>to_dict()</li><li>to_json()</li><li>to_markdown()</li><li>to_card_json()</li><li>to_card_markdown()</li><li>to_summary_card_markdown()</li><li>to_narrative_report()</li></ul></div></div></div><div class='entry'><h3><span class='inline-code'>SeriesProfile</span></h3><p><strong>Signature:</strong> <span class='inline-code'>SeriesProfile(...)</span></p><p><strong>Purpose:</strong> Result object returned by profile_series.</p><p><strong>Why this exists:</strong> Mirrors DatasetProfile for single-series inspection while keeping the same rendering ergonomics.</p><p><strong>When to use it:</strong> Use when a quick series-level inspection is enough.</p><p><strong>Returns:</strong> Dataclass-like object with rendering methods</p><p><strong>Recommended environments:</strong> notebook, python_script</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>created by profile_series</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>to_dict()</li><li>to_json()</li><li>to_markdown()</li><li>to_card_json()</li><li>to_summary_card_markdown()</li><li>to_narrative_report()</li></ul></div></div></div></div></div><div class='docs-card'><span class='pill blue'>typed semantic inputs</span><div class='entry-stack'><div class='entry'><h3><span class='inline-code'>FMRIInput</span></h3><p><strong>Signature:</strong> <span class='inline-code'>FMRIInput(values, tr=None, timestamps=None, roi_names=None, network_labels=None, subject_ids=None, ...) </span></p><p><strong>Purpose:</strong> Typed wrapper for fMRI time-series collections.</p><p><strong>Why this exists:</strong> Neuroimaging arrays often lose semantic context such as TR, ROI names, and network labels. The wrapper preserves those pieces so fMRI-specific proxies and network summaries can run correctly.</p><p><strong>When to use it:</strong> Use when you have subject × time × ROI data or ROI time-series and want neuro-aware profiling.</p><p><strong>Returns:</strong> Typed input object for profile_dataset</p><p><strong>Recommended environments:</strong> notebook, python_script, neuro_stack, ml_benchmark</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>NumPy-like fMRI arrays</li><li>optional ROI names</li><li>optional network labels</li><li>optional TR</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>fmri_metrics plugin</li><li>coupling_networkedness</li><li>heterogeneity</li><li>task_hints</li></ul></div></div></div><div class='entry'><h3><span class='inline-code'>EEGInput</span></h3><p><strong>Signature:</strong> <span class='inline-code'>EEGInput(values, sampling_rate=None, timestamps=None, channel_names=None, subject_ids=None, montage_name=None, ...) </span></p><p><strong>Purpose:</strong> Typed wrapper for EEG/MEG-style multichannel recordings.</p><p><strong>Why this exists:</strong> Electrophysiology users need channel names and sampling rate to unlock bandpower and rhythmicity-aware proxies. A typed wrapper is cleaner than overloading raw arrays with ad-hoc kwargs.</p><p><strong>When to use it:</strong> Use when you have dense multichannel neural recordings and want domain-aware spectral summaries.</p><p><strong>Returns:</strong> Typed input object for profile_dataset</p><p><strong>Recommended environments:</strong> notebook, python_script, neuro_stack, ml_benchmark</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>NumPy-like EEG arrays</li><li>sampling rate</li><li>channel names</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>eeg_bandpower plugin</li><li>rhythmicity</li><li>noise_contamination</li><li>alpha_peak_prominence</li></ul></div></div></div><div class='entry'><h3><span class='inline-code'>IrregularSubjectInput / IrregularTimeSeriesInput</span></h3><p><strong>Signature:</strong> <span class='inline-code'>IrregularSubjectInput(values, timestamps, channel_names=None, metadata=None); IrregularTimeSeriesInput(subjects, domain=None, ...) </span></p><p><strong>Purpose:</strong> Represent timestamped irregular or asynchronous observations explicitly.</p><p><strong>Why this exists:</strong> Irregular data should not be silently coerced into regular grids. These wrappers preserve real timestamps, per-channel asynchrony, and missing support so irregular-aware proxies and reliability caveats can be computed honestly.</p><p><strong>When to use it:</strong> Use for ICU vitals, clinical monitoring, sparse observational cohorts, or any nonuniformly sampled series.</p><p><strong>Returns:</strong> Typed input objects for profile_dataset</p><p><strong>Recommended environments:</strong> notebook, python_script, pandas_pipeline, cli_batch</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>per-subject irregular value arrays</li><li>parallel timestamp arrays</li><li>optional channel names</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>sampling_irregularity</li><li>irregular_observation plugin</li><li>reliability notes</li></ul></div></div></div><div class='entry'><h3><span class='inline-code'>EventStreamInput</span></h3><p><strong>Signature:</strong> <span class='inline-code'>EventStreamInput(timestamps, channels=None, values=None, subjects=None, event_types=None, ...) </span></p><p><strong>Purpose:</strong> Represent sparse event streams such as alarms, coded events, transactions, or interventions.</p><p><strong>Why this exists:</strong> A stream of timestamped events is not the same as a dense sampled signal. This wrapper lets EchoWave estimate burstiness, event-type diversity, and event-stream archetypes without pretending the data are regular arrays.</p><p><strong>When to use it:</strong> Use for sparse operational events, treatment events, alarms, clicks, or transactional logs.</p><p><strong>Returns:</strong> Typed input object for profile_dataset</p><p><strong>Recommended environments:</strong> notebook, python_script, cli_batch, pandas_pipeline</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>event timestamps</li><li>optional event labels/channels</li><li>optional values/marks</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>event_stream plugin</li><li>eventness_burstiness</li><li>archetypes</li></ul></div></div></div></div></div><div class='docs-card'><span class='pill blue'>ontology inspection</span><div class='entry-stack'><div class='entry'><h3><span class='inline-code'>schema_dict / get_schema</span></h3><p><strong>Signature:</strong> <span class='inline-code'>schema_dict() -&gt; dict; get_schema() -&gt; tuple[AxisSpec, ...]</span></p><p><strong>Purpose:</strong> Expose the stable ontology schema programmatically.</p><p><strong>Why this exists:</strong> An ontology-driven library must make its schema inspectable and versioned. These functions let downstream tools, dataset cards, and documentation stay aligned with the real axis/subdimension/proxy map.</p><p><strong>When to use it:</strong> Use when building dashboards, validators, reports, or benchmark cards around EchoWave.</p><p><strong>Returns:</strong> Schema dictionary or typed schema tuple</p><p><strong>Recommended environments:</strong> notebook, python_script, cli_batch, ml_benchmark</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>none</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>axes</li><li>subdimensions</li><li>proxy names</li><li>schema_version</li></ul></div></div></div></div></div><div class='docs-card'><span class='pill blue'>extensibility</span><div class='entry-stack'><div class='entry'><h3><span class='inline-code'>register_adaptor / register_plugin / clear_custom_extensions</span></h3><p><strong>Signature:</strong> <span class='inline-code'>register_adaptor(adaptor); register_plugin(plugin); clear_custom_extensions()</span></p><p><strong>Purpose:</strong> Extend EchoWave to new data containers and domain-specific metrics.</p><p><strong>Why this exists:</strong> Cross-disciplinary infrastructure must be extensible. Adaptors let the package ingest new object types; plugins let communities add domain metrics without forking the ontology core.</p><p><strong>When to use it:</strong> Use when integrating a local data object, a lab-specific pipeline, or new domain metrics.</p><p><strong>Returns:</strong> Registry side-effects</p><p><strong>Recommended environments:</strong> python_script, neuro_stack, ml_benchmark, pandas_pipeline</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>custom adaptor objects</li><li>custom plugin objects</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>plugin_metrics</li><li>metadata[&#x27;native_adaptor&#x27;]</li><li>custom notes</li></ul></div></div></div></div></div><div class='docs-card'><span class='pill blue'>plain-language communication</span><div class='entry-stack'><div class='entry'><h3><span class='inline-code'>summary_card / narrative_report / profile.to_summary_card_* / profile.to_narrative_report</span></h3><p><strong>Signature:</strong> <span class='inline-code'>summary_card(profile, audience=&#x27;general&#x27;, format=&#x27;markdown&#x27;); narrative_report(profile, audience=&#x27;general&#x27;, format=&#x27;markdown&#x27;); DatasetProfile.to_summary_card_markdown(); DatasetProfile.to_narrative_report()</span></p><p><strong>Purpose:</strong> Turn a structural profile into something a non-method user can read quickly.</p><p><strong>Why this exists:</strong> A cross-disciplinary tool must explain itself to clinicians, operators, product teams, and collaborators who do not want to inspect raw proxy metrics. These APIs convert the same profile into a summary card and a prose narrative without hiding the underlying evidence.</p><p><strong>When to use it:</strong> Use when presenting results to domain experts, attaching a profile to a dataset handoff, or writing methods-light project notes.</p><p><strong>Returns:</strong> Markdown/JSON plain-language reports</p><p><strong>Recommended environments:</strong> notebook, python_script, cli_batch</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>DatasetProfile or SeriesProfile</li><li>optional audience label such as general, clinical, product, or neuroscience</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>executive summary</li><li>top structure axes</li><li>watchouts</li><li>recommended next actions</li><li>narrative report sections</li></ul></div></div></div></div></div><div class='docs-card'><span class='pill blue'>built-in guidance</span><div class='entry-stack'><div class='entry'><h3><span class='inline-code'>case_gallery</span></h3><p><strong>Signature:</strong> <span class='inline-code'>case_gallery(domain=None, audience=None, environment=None, format=&#x27;markdown&#x27;)</span></p><p><strong>Purpose:</strong> Browse high-visibility cross-disciplinary use cases where EchoWave fits naturally.</p><p><strong>Why this exists:</strong> New users often understand a tool fastest through concrete cases instead of abstract API descriptions. The case gallery shows popular time-series settings such as web traffic, retail demand, energy load, wearables, ICU monitoring, and fMRI.</p><p><strong>When to use it:</strong> Use when onboarding collaborators, choosing demos, or matching the package to a real-world workflow.</p><p><strong>Returns:</strong> Markdown/text/JSON case gallery</p><p><strong>Recommended environments:</strong> notebook, python_script, cli_batch</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>optional domain, audience, and environment filters</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>popular cases</li><li>recommended entrypoints</li><li>what to show non-method users</li><li>practical value</li></ul></div></div></div><div class='entry'><h3><span class='inline-code'>about / api_reference / scenario_guide / environment_matrix / workflow_recommendation / user_guide</span></h3><p><strong>Signature:</strong> <span class='inline-code'>about(format=&#x27;markdown&#x27;); api_reference(format=&#x27;markdown&#x27;); scenario_guide(domain=None, environment=None, scenario=None, format=&#x27;markdown&#x27;); environment_matrix(format=&#x27;markdown&#x27;); workflow_recommendation(domain=None, environment=None, scenario=None, format=&#x27;markdown&#x27;); user_guide(format=&#x27;markdown&#x27;)</span></p><p><strong>Purpose:</strong> In-package documentation and onboarding helpers.</p><p><strong>Why this exists:</strong> Community tools need a discoverable explanation layer. These functions let users ask the package itself what it does, when to use each API, and which workflows fit their domain or environment.</p><p><strong>When to use it:</strong> Use when onboarding a new lab, writing docs, teaching users, or generating scenario-specific guidance from Python or the CLI.</p><p><strong>Returns:</strong> Markdown/text/JSON guide content</p><p><strong>Recommended environments:</strong> notebook, python_script, cli_batch</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>optional domain/environment filters</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>about</li><li>API catalog</li><li>scenario playbooks</li><li>environment matrix</li><li>workflow guide</li></ul></div></div></div><div class='entry'><h3><span class='inline-code'>hot_case_gallery / similarity_playbook / project_homepage_html / project_playground_html</span></h3><p><strong>Signature:</strong> <span class='inline-code'>hot_case_gallery(...); similarity_playbook(...); project_homepage_html(version=&#x27;0.12.0&#x27;); project_playground_html(version=&#x27;0.12.0&#x27;)</span></p><p><strong>Purpose:</strong> Provide shareable, high-attention case ideas plus a static project-homepage starting point.</p><p><strong>Why this exists:</strong> Community adoption grows faster when the package already knows how to explain itself through timely examples and a reusable project page.</p><p><strong>When to use it:</strong> Use when you want demos that can travel on social, in blog posts, on GitHub Pages, or in onboarding decks.</p><p><strong>Returns:</strong> Markdown/JSON guides and a self-contained HTML string</p><p><strong>Recommended environments:</strong> python_script, cli_batch, notebook</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>optional audience/window filters</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>hot cases</li><li>similarity guidance</li><li>homepage HTML</li></ul></div></div></div></div></div><div class='docs-card'><span class='pill blue'>similarity analysis</span><div class='entry-stack'><div class='entry'><h3><span class='inline-code'>compare_series</span></h3><p><strong>Signature:</strong> <span class='inline-code'>compare_series(left, right, *, left_timestamps=None, right_timestamps=None, left_name=&#x27;left&#x27;, right_name=&#x27;right&#x27;, n_points=256) -&gt; SimilarityReport</span></p><p><strong>Purpose:</strong> Compare two raw trajectories using shape, DTW, trend, derivative, and spectral similarity.</p><p><strong>Why this exists:</strong> Cross-disciplinary users often want to say &#x27;does this curve look like that one?&#x27; before they want a full forecasting or classification model. This API gives that question a structured answer.</p><p><strong>When to use it:</strong> Use for GitHub star growth, crypto or commodity price windows, launch-week traffic curves, and any pair of trajectories where shape matters.</p><p><strong>Returns:</strong> SimilarityReport</p><p><strong>Recommended environments:</strong> notebook, python_script, cli_batch, pandas_pipeline</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>univariate arrays</li><li>multichannel arrays</li><li>optional timestamps</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>similarity_score</li><li>component_scores</li><li>to_summary_card_markdown()</li><li>to_narrative_report()</li></ul></div></div></div><div class='entry'><h3><span class='inline-code'>compare_profiles</span></h3><p><strong>Signature:</strong> <span class='inline-code'>compare_profiles(left, right, *, left_name=&#x27;left profile&#x27;, right_name=&#x27;right profile&#x27;) -&gt; SimilarityReport</span></p><p><strong>Purpose:</strong> Compare two EchoWave profiles or raw datasets at the ontology-axis level.</p><p><strong>Why this exists:</strong> Sometimes raw units and scales differ too much for direct shape matching, but the datasets are still structurally analogous. Profile similarity answers that higher-level question.</p><p><strong>When to use it:</strong> Use for cross-domain analogies, benchmark curation, or when you want to explain that two datasets are &#x27;the same kind of temporal problem&#x27;.</p><p><strong>Returns:</strong> SimilarityReport</p><p><strong>Recommended environments:</strong> notebook, python_script, ml_benchmark, pandas_pipeline</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>DatasetProfile</li><li>SeriesProfile</li><li>or raw inputs accepted by profile_dataset</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>overall_axis_similarity</li><li>dynamic_similarity</li><li>multivariate_similarity</li><li>metadata[&#x27;axis_similarity&#x27;]</li></ul></div></div></div><div class='entry'><h3><span class='inline-code'>rolling_similarity</span></h3><p><strong>Signature:</strong> <span class='inline-code'>rolling_similarity(left, right, *, window, step=1, left_timestamps=None, right_timestamps=None, n_points=128) -&gt; list[dict]</span></p><p><strong>Purpose:</strong> Track how similarity changes over aligned rolling windows.</p><p><strong>Why this exists:</strong> Many high-traffic stories are regime stories: BTC and gold are similar in some windows but not others, and launch-week growth patterns drift over time.</p><p><strong>When to use it:</strong> Use for windowed market comparisons, launch tracking, and changing relationships over time.</p><p><strong>Returns:</strong> list of per-window similarity summaries</p><p><strong>Recommended environments:</strong> notebook, python_script, pandas_pipeline</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>pair of arrays or multichannel arrays</li><li>window length</li><li>optional timestamps</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>similarity_score</li><li>shape_similarity</li><li>trend_similarity</li><li>spectral_similarity</li></ul></div></div></div></div></div><div class='docs-card'><span class='pill blue'>agent driving</span><div class='entry-stack'><div class='entry'><h3><span class='inline-code'>AgentDriver / agent_drive / agent_context</span></h3><p><strong>Signature:</strong> <span class='inline-code'>AgentDriver(goal=&#x27;understand_dataset&#x27;, budget=&#x27;lean|balanced|deep&#x27;, ...); agent_drive(data, reference=None, goal=..., budget=...); agent_context(profile_or_similarity_report, budget=&#x27;lean&#x27;)</span></p><p><strong>Purpose:</strong> Let an agent or application choose the cheapest useful EchoWave workflow and export a compact context bundle.</p><p><strong>Why this exists:</strong> LLM agents often waste tokens by running too many analyses and by carrying oversized intermediate reports. This API chooses a small workflow first, stops early when the signal is already clear, and compresses the result into a reusable context payload.</p><p><strong>When to use it:</strong> Use when EchoWave sits inside an agent loop, a notebook assistant, a retrieval pipeline, or a batch report generator that needs compact summaries.</p><p><strong>Returns:</strong> AgentDriveResult or compact context dict/markdown/json</p><p><strong>Recommended environments:</strong> notebook, python_script, cli_batch, pandas_pipeline, ml_benchmark</p><div class='docs-grid-2'><div><strong>Accepted inputs</strong><ul class='panel-list'><li>the same raw inputs accepted by profile_dataset or compare_series</li><li>optional reference trajectory for comparison goals</li><li>a goal string that explains what the agent is trying to solve</li></ul></div><div><strong>Inspect these outputs</strong><ul class='panel-list'><li>result.steps</li><li>result.compact_context</li><li>result.token_saving_rationale</li><li>result.to_context_markdown()</li></ul></div></div></div></div></div>
+  </section>
+</main>
+</body>
+</html>

@@ -10,6 +10,16 @@ from .hotcases import hot_case_gallery, similarity_playbook
 from .homepage import project_homepage_html
 from .playground import project_playground_html
 from .launchpad import project_launchpad_html
+from .docs_site import (
+    project_agents_html,
+    project_api_reference_html,
+    project_docs_home_html,
+    project_docs_pages,
+    project_ecosystem_html,
+    project_getting_started_html,
+    project_scenarios_html,
+    project_tutorials_html,
+)
 from .sitebundle import project_demo_manifest, project_pages_bundle, write_pages_bundle
 from .visuals import axis_bar_svg, profile_html_report, profile_radar_svg, profile_social_card_svg, rolling_similarity_svg, series_overlay_svg, similarity_components_svg, similarity_html_report, similarity_social_card_svg
 from .datasets import list_starter_datasets, starter_dataset, write_starter_dataset
@@ -39,6 +49,7 @@ __all__ = [
     'AgentDriver', 'AgentDriveResult', 'agent_drive', 'agent_context', 'agent_driving_guide',
     'profile_dataset', 'profile_series', 'summary_card', 'narrative_report', 'case_gallery', 'hot_case_gallery',
     'similarity_playbook', 'project_homepage_html', 'project_playground_html', 'project_launchpad_html',
+    'project_docs_home_html', 'project_getting_started_html', 'project_tutorials_html', 'project_api_reference_html', 'project_scenarios_html', 'project_ecosystem_html', 'project_agents_html', 'project_docs_pages',
     'project_demo_manifest', 'project_pages_bundle', 'write_pages_bundle',
     'profile_html_report', 'similarity_html_report', 'profile_radar_svg', 'profile_social_card_svg', 'axis_bar_svg',
     'series_overlay_svg', 'rolling_similarity_svg', 'similarity_components_svg', 'similarity_social_card_svg',
