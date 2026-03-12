@@ -339,7 +339,38 @@ def _safe_kendall_tau(x: np.ndarray, y: np.ndarray) -> float:
 def _corr_to_similarity(corr: float) -> float:
     if not np.isfinite(corr):
         return float("nan")
-    return float(np.clip((corr + 1.0) / 2.0, 0.0, 1.0))
+    return float(np.clip(corr, 0.0, 1.0))
+
+
+def _geometric_similarity(*values: float) -> float:
+    vals = [float(v) for v in values if np.isfinite(v)]
+    if not vals:
+        return float("nan")
+    if any(v <= EPS for v in vals):
+        return 0.0
+    clipped = np.clip(np.asarray(vals, dtype=float), EPS, 1.0)
+    return float(np.exp(np.mean(np.log(clipped))))
+
+
+def _difference_view(x: np.ndarray) -> np.ndarray:
+    arr = np.asarray(x, dtype=float).reshape(-1)
+    if arr.size < 4:
+        return np.asarray([], dtype=float)
+    return _zscore(np.diff(arr))
+
+
+def _monotonic_fraction(x: np.ndarray) -> float:
+    arr = np.asarray(x, dtype=float).reshape(-1)
+    arr = arr[np.isfinite(arr)]
+    if arr.size < 4:
+        return float("nan")
+    diff = np.diff(arr)
+    if diff.size == 0:
+        return float("nan")
+    tol = 1e-6
+    nondecreasing = float(np.mean(diff >= -tol))
+    nonincreasing = float(np.mean(diff <= tol))
+    return float(max(nondecreasing, nonincreasing))
 
 
 def _best_lag_corr(x: np.ndarray, y: np.ndarray, max_lag: int | None = None) -> float:
@@ -435,6 +466,38 @@ def _distance_to_similarity(distance: float, scale: float = 1.0) -> float:
     if not np.isfinite(distance):
         return float("nan")
     return float(np.exp(-max(0.0, distance) / max(scale, EPS)))
+
+
+def _strict_dtw_similarity(x: np.ndarray, y: np.ndarray) -> float:
+    x = np.asarray(x, dtype=float).reshape(-1)
+    y = np.asarray(y, dtype=float).reshape(-1)
+    if min(x.size, y.size) < 6:
+        return float("nan")
+    level_window = max(3, min(18, min(x.size, y.size) // 20))
+    level_score = _distance_to_similarity(_dtw_distance(x, y, window=level_window), scale=0.45)
+    dx = _difference_view(x)
+    dy = _difference_view(y)
+    if min(dx.size, dy.size) < 6:
+        return level_score
+    diff_window = max(3, min(16, min(dx.size, dy.size) // 20))
+    diff_score = _distance_to_similarity(_dtw_distance(dx, dy, window=diff_window), scale=0.35)
+    return _geometric_similarity(level_score, diff_score)
+
+
+def _spectral_similarity(x: np.ndarray, y: np.ndarray) -> float:
+    x = np.asarray(x, dtype=float).reshape(-1)
+    y = np.asarray(y, dtype=float).reshape(-1)
+    _, px = _normalized_spectrum(x)
+    _, py = _normalized_spectrum(y)
+    m = min(px.size, py.size)
+    if m < 4:
+        return float("nan")
+    px = px[:m]
+    py = py[:m]
+    base = float(np.clip(1.0 - _js_divergence(px, py), 0.0, 1.0))
+    uniform = np.full(m, 1.0 / m, dtype=float)
+    structure = _corr_to_similarity(_safe_corr(px - uniform, py - uniform))
+    return _geometric_similarity(base, structure)
 
 
 def _resampled_multichannel(data: Any, timestamps: Any | None = None, n_points: int = 256) -> np.ndarray:
@@ -536,6 +599,7 @@ def compare_series(
     trend_scores = []
     derivative_scores = []
     derivative_corrs = []
+    monotonic_pairs = []
     spectral_scores = []
     for idx in range(left_cmp.shape[1]):
         xl = left_cmp[:, idx]
@@ -547,30 +611,22 @@ def compare_series(
         best_lag_corrs.append(_best_lag_corr(xl, xr))
         nmi_scores.append(_normalized_mutual_information(xl, xr))
 
-        corr = _corr_to_similarity(pearson)
-        correlations.append(corr)
-
-        dtw = _distance_to_similarity(_dtw_distance(xl, xr), scale=0.8)
-        dtw_scores.append(dtw)
-
+        diff_l = _difference_view(xl)
+        diff_r = _difference_view(xr)
         trend_l = _smooth_trend(xl)
         trend_r = _smooth_trend(xr)
         trend_corr = _safe_corr(trend_l, trend_r)
-        trend_scores.append(_corr_to_similarity(trend_corr))
+        trend_change_corr = _safe_corr(_difference_view(trend_l), _difference_view(trend_r))
+        trend_scores.append(_geometric_similarity(_corr_to_similarity(trend_corr), _corr_to_similarity(trend_change_corr)))
 
-        dxl = np.diff(xl)
-        dxr = np.diff(xr)
-        derivative_corr = _safe_corr(dxl, dxr)
+        derivative_corr = _safe_corr(diff_l, diff_r)
         derivative_corrs.append(derivative_corr)
         derivative_scores.append(_corr_to_similarity(derivative_corr))
 
-        _, pl = _normalized_spectrum(xl)
-        _, pr = _normalized_spectrum(xr)
-        m = min(pl.size, pr.size)
-        if m >= 4:
-            spectral_scores.append(float(np.clip(1.0 - _js_divergence(pl[:m], pr[:m]), 0.0, 1.0)))
-        else:
-            spectral_scores.append(float("nan"))
+        correlations.append(_geometric_similarity(_corr_to_similarity(pearson), _corr_to_similarity(derivative_corr)))
+        dtw_scores.append(_strict_dtw_similarity(xl, xr))
+        spectral_scores.append(_spectral_similarity(diff_l, diff_r))
+        monotonic_pairs.append(min(_monotonic_fraction(xl), _monotonic_fraction(xr)))
 
     components = {
         "shape_similarity": float(np.nanmean(correlations)),
@@ -589,10 +645,10 @@ def compare_series(
     }
 
     weights = {
-        "shape_similarity": 0.27,
-        "dtw_similarity": 0.23,
+        "shape_similarity": 0.20,
+        "dtw_similarity": 0.20,
         "trend_similarity": 0.20,
-        "derivative_similarity": 0.15,
+        "derivative_similarity": 0.25,
         "spectral_similarity": 0.15,
     }
     valid = [(key, value) for key, value in components.items() if np.isfinite(value)]
@@ -606,6 +662,9 @@ def compare_series(
     notes: list[str] = []
     if channel_mode == "aggregate_channels":
         notes.append("Channel counts did not match, so the comparison used aggregate trajectories rather than one-to-one channel pairing.")
+    monotone_like = bool(monotonic_pairs and np.nanmean(monotonic_pairs) >= 0.9)
+    if monotone_like:
+        notes.append("Both inputs look strongly monotonic or cumulative, so EchoWave tightened the comparison around first differences, differenced DTW, and differenced spectra.")
     if np.isfinite(reference_metrics["pearson_r"]) and np.isfinite(reference_metrics["spearman_rho"]) and abs(reference_metrics["spearman_rho"] - reference_metrics["pearson_r"]) >= 0.15:
         notes.append("Spearman is noticeably higher than Pearson, so rank-order agreement is stronger than strict linear agreement.")
     if np.isfinite(reference_metrics["pearson_r"]) and np.isfinite(reference_metrics["first_difference_r"]) and reference_metrics["pearson_r"] >= 0.75 and reference_metrics["first_difference_r"] <= 0.35:
@@ -622,6 +681,8 @@ def compare_series(
         "Run rolling or windowed similarity if you expect the relationship to change over time.",
         "Use structural-profile similarity when scales, frequencies, or observation modes differ too much for raw-shape comparison.",
     ]
+    if monotone_like:
+        suggestions.append("For cumulative or monotonic inputs, compare first differences or daily increments before making an analog claim.")
     if components["spectral_similarity"] >= 0.65:
         suggestions.append("Inspect spectral or seasonality-aware models because the two series share rhythm strongly.")
     if components["dtw_similarity"] >= 0.65 and components["shape_similarity"] < 0.55:
@@ -639,8 +700,10 @@ def compare_series(
         notes=notes,
         suggestions=suggestions,
         metadata={
-            "aggregate_method": "weighted component average",
+            "aggregate_method": "strict weighted component average",
             "component_mean": component_mean,
+            "strictness_profile": "local_change_aware",
+            "monotonic_like_inputs": monotone_like,
             "channel_mode": channel_mode,
             "resample_points": int(n_points),
             "left_channels": int(left_rs.shape[1]),

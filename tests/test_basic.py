@@ -532,6 +532,23 @@ def test_compare_series_scores_sine_higher_than_noise() -> None:
 
 
 
+def test_compare_series_penalizes_monotonic_cumulative_mismatch() -> None:
+    left_daily = np.r_[np.zeros(8), np.ones(5) * 8.0, np.ones(8) * 1.5, np.zeros(10), np.ones(9) * 0.3]
+    right_daily = np.r_[np.ones(10) * 2.0, np.zeros(6), np.ones(10) * 0.5, np.ones(14) * 1.1]
+    left = np.cumsum(left_daily)
+    right = np.cumsum(right_daily)
+
+    report = compare_series(left, right, left_name="left", right_name="right")
+
+    assert report.reference_metrics["pearson_r"] > 0.75
+    assert report.reference_metrics["first_difference_r"] < 0.0
+    assert report.similarity_score < 0.35
+    assert report.component_mean < 0.3
+    assert report.component_scores["derivative_similarity"] == 0.0
+    assert report.metadata["monotonic_like_inputs"] is True
+    assert any("monotonic or cumulative" in note for note in report.notes)
+
+
 def test_compare_profiles_detects_structural_similarity() -> None:
     t = np.linspace(0, 10 * np.pi, 240)
     left = np.column_stack([np.sin(t), np.sin(t + 0.2)])

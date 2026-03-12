@@ -255,9 +255,9 @@ def _reference_metric_items(report: Any) -> list[tuple[str, float]]:
         "pearson_r",
         "spearman_rho",
         "normalized_mutual_information",
+        "first_difference_r",
         "kendall_tau",
         "best_lag_pearson_r",
-        "first_difference_r",
     )
     items = []
     metrics = getattr(report, "reference_metrics", {}) or {}

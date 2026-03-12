@@ -364,8 +364,8 @@ def _reference_metric_chips(report: Any, *, limit: int = 4) -> str:
         ("Pearson", "pearson_r"),
         ("Spearman", "spearman_rho"),
         ("Mutual info", "normalized_mutual_information"),
+        ("Diff r", "first_difference_r"),
         ("Kendall", "kendall_tau"),
-        ("Best-lag r", "best_lag_pearson_r"),
     )
     for label, key in metric_map:
         value = _report_metric(report, key)
