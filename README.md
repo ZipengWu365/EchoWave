@@ -22,6 +22,15 @@ Formerly released as **tsontology**. The legacy package name and CLI aliases sti
 
 **What it is not:** a forecasting library, a classifier library, a fastest-possible DTW engine, or a motif-mining toolkit.
 
+## Project snapshot
+
+- **Package name:** `echowave`
+- **Core promise:** EchoWave compares time series and time-series datasets, explains why they match or differ, and emits compact JSON plus shareable HTML reports.
+- **Best for:** analog search, regime comparison, irregular longitudinal data, and dataset-level similarity handoff
+- **Primary outputs:** plain-English summaries, shareable HTML reports, and compact agent-ready JSON
+- **Live docs and homepage:** https://zipengwu365.github.io/EchoWave/
+- **Repository:** https://github.com/ZipengWu365/EchoWave
+
 ## 60-second quickstart
 
 ```bash
@@ -270,6 +279,7 @@ Pair it with other libraries when you move into:
 - [LICENSE](LICENSE)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- [SECURITY.md](SECURITY.md)
 - [CITATION.cff](CITATION.cff)
 - beta-level agent schemas
 - beginner and flagship notebooks

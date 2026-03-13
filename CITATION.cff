@@ -1,9 +1,22 @@
 cff-version: 1.2.0
-title: tsontology
-message: If you use this software, please cite the project repository or release artifact.
+message: If you use EchoWave in research, benchmarks, or reports, please cite the software record below.
+title: EchoWave
 type: software
 authors:
-  - family-names: Contributors
-    given-names: tsontology
-version: 0.11.0
+  - family-names: Wu
+    given-names: Zipeng
+    email: zxw365@student.bham.ac.uk
+    affiliation: The University of Birmingham
+abstract: Explainable structural similarity for time series and time-series datasets, with shareable HTML reports and agent-ready JSON outputs.
+version: 0.16.0
 license: MIT
+repository-code: https://github.com/ZipengWu365/EchoWave
+repository-artifact: https://pypi.org/project/echowave/
+url: https://zipengwu365.github.io/EchoWave/
+keywords:
+  - time-series
+  - similarity
+  - dataset-similarity
+  - structural-similarity
+  - longitudinal-data
+  - explainable-ai

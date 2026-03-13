@@ -144,6 +144,7 @@ def trust_guide(*, format: GuideFormat = "markdown") -> str | dict:
             "LICENSE",
             "CONTRIBUTING.md",
             "CODE_OF_CONDUCT.md",
+            "SECURITY.md",
             "CITATION.cff",
             "starter datasets",
             "flagship notebooks",
@@ -401,6 +402,18 @@ Path("my_dataset_report.html").write_text(profile.to_html_report(), encoding="ut
 """
 
 
+def _project_snapshot_readme() -> str:
+    return f"""## Project snapshot
+
+- **Package name:** `echowave`
+- **Core promise:** {PRODUCT_PROMISE}
+- **Best for:** analog search, regime comparison, irregular longitudinal data, and dataset-level similarity handoff
+- **Primary outputs:** plain-English summaries, shareable HTML reports, and compact agent-ready JSON
+- **Live docs and homepage:** {PROJECT_DOCUMENTATION_URL}
+- **Repository:** {PROJECT_REPOSITORY_URL}
+"""
+
+
 def github_readme(*, format: GuideFormat = "markdown") -> str | dict:
     badges = "\n".join(README_BADGES)
     beginner_lines = "\n".join(f"- **{item['title']}** - {item['why']}" for item in BEGINNER_EXAMPLES)
@@ -410,6 +423,7 @@ def github_readme(*, format: GuideFormat = "markdown") -> str | dict:
     zero_install = "\n".join(f"- **{item['title']}** - {item['why']}" for item in ZERO_INSTALL_OPTIONS)
     expected_lines = "\n".join(QUICKSTART_EXPECTED_LINES)
     own_data = _bring_your_own_data_readme()
+    project_snapshot = _project_snapshot_readme()
     text = f"""# {DISPLAY_NAME}
 
 > **{HEADLINE}**
@@ -427,6 +441,8 @@ Formerly released as **tsontology**. The legacy package name and CLI aliases sti
 **What it is:** {PRODUCT_PROMISE}
 
 **What it is not:** a forecasting library, a classifier library, a fastest-possible DTW engine, or a motif-mining toolkit.
+
+{project_snapshot}
 
 ## 60-second quickstart
 
@@ -566,6 +582,7 @@ Pair it with other libraries when you move into:
 - [LICENSE](LICENSE)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- [SECURITY.md](SECURITY.md)
 - [CITATION.cff](CITATION.cff)
 - beta-level agent schemas
 - beginner and flagship notebooks

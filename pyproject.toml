@@ -31,8 +31,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ZipengWu365/EchoWave"
-Documentation = "https://zipengwu365.github.io/EchoWave/"
+Homepage = "https://zipengwu365.github.io/EchoWave/"
+Documentation = "https://zipengwu365.github.io/EchoWave/guide/"
 Repository = "https://github.com/ZipengWu365/EchoWave"
 Issues = "https://github.com/ZipengWu365/EchoWave/issues"
 
