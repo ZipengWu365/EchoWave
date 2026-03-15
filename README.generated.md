@@ -31,6 +31,7 @@ Formerly released as **tsontology**. The legacy package name and CLI aliases sti
 - **Live docs and homepage:** https://zipengwu365.github.io/EchoWave/
 - **Repository:** https://github.com/ZipengWu365/EchoWave
 
+
 ## 60-second quickstart
 
 ```bash
@@ -213,6 +214,7 @@ print(ts_compare(x, y))
 - [Compatibility guide](COMPATIBILITY.md)
 - [Environment doctor](DOCTOR.md)
 - [Example gallery](EXAMPLES_GALLERY.md)
+- [Similarity method atlas](SIMILARITY_METHOD_ATLAS.md)
 - [Notebooks](examples/notebooks)
 - [Integration templates](INTEGRATIONS.md)
 - [Decision stories](CASE_STUDIES.md)

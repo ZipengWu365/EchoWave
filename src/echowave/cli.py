@@ -30,6 +30,7 @@ from .profile import profile_dataset
 from .repo_docs import agent_schema_guide, case_studies_guide, doctor_guide, github_readme, installation_guide, integration_templates_guide, live_demo_guide, pages_deploy_guide, pypi_long_description, quickstart_guide, routing_contract_guide, starter_datasets_guide, start_here_guide, trust_guide, utility_benchmark_guide, zero_install_guide
 from .schema import schema_dict
 from .similarity import compare_profiles, compare_series
+from .similarity_method_atlas import similarity_method_atlas_guide
 
 
 _TABLE_KEYS = {"timestamp", "timestamps", "time", "times"}
@@ -192,6 +193,9 @@ def _render_guide(args: argparse.Namespace) -> str:
     if args.guide == "utility-benchmark":
         payload = utility_benchmark_guide(format=guide_format)
         return json.dumps(payload, indent=2) if guide_format == "json" else payload
+    if args.guide == "similarity-methods":
+        payload = similarity_method_atlas_guide(format="dict" if guide_format == "json" else guide_format)
+        return json.dumps(payload, indent=2) if guide_format == "json" else payload
     raise ValueError(f"Unknown guide topic: {args.guide}")
 
 
@@ -230,7 +234,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rolling-step", type=int, default=1, help="Step size for agent-driven rolling similarity.")
     parser.add_argument("--no-stop-on-clear-signal", action="store_true", help="Do not let the agent layer stop early after a decisive raw-series result.")
     parser.add_argument("--format", choices=["text", "json", "markdown", "card-json", "card-markdown", "summary-card", "summary-card-json", "narrative", "schema-json", "similarity-json", "similarity-markdown", "similarity-summary", "similarity-narrative", "agent-json", "agent-markdown", "agent-context", "html-report", "html-similarity", "tool-json"], default="text", help="Output format for profiling, similarity, or agent-driving commands.")
-    parser.add_argument("--guide", choices=["about", "api", "scenarios", "environments", "workflow", "cases", "hot-cases", "similarity", "agent-driving", "homepage", "playground", "start-here", "doctor", "compatibility", "asset-audit", "user-guide", "ecosystem", "coverage", "agent-manifest", "github-readme", "pypi-description", "routing", "docs-index", "quickstart", "installation", "zero-install", "pages", "live-demo", "integrations", "case-studies", "trust", "starter-datasets", "agent-schemas", "routing-contracts", "utility-benchmark"], default=None, help="Print a built-in guide instead of profiling input data.")
+    parser.add_argument("--guide", choices=["about", "api", "scenarios", "environments", "workflow", "cases", "hot-cases", "similarity", "similarity-methods", "agent-driving", "homepage", "playground", "start-here", "doctor", "compatibility", "asset-audit", "user-guide", "ecosystem", "coverage", "agent-manifest", "github-readme", "pypi-description", "routing", "docs-index", "quickstart", "installation", "zero-install", "pages", "live-demo", "integrations", "case-studies", "trust", "starter-datasets", "agent-schemas", "routing-contracts", "utility-benchmark"], default=None, help="Print a built-in guide instead of profiling input data.")
     parser.add_argument("--guide-format", choices=["text", "json", "markdown"], default="markdown", help="Output format for guide commands.")
     parser.add_argument("--output", type=Path, default=None, help="Optional output file.")
     parser.add_argument("--serve-demo", action="store_true", help="Run the local live demo server instead of profiling files.")

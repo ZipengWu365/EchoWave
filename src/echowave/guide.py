@@ -1071,6 +1071,39 @@ EXTRA_API_ENTRIES: tuple[ApiEntry, ...] = (
         recommended_environments=("notebook", "python_script", "pandas_pipeline"),
     ),
     ApiEntry(
+        name="ncc_sequence / max_ncc / best_shift / sbd / acf_distance / lcss_similarity / lcss_distance / edr_distance / erp_distance / twed_distance",
+        category="similarity analysis",
+        signature=(
+            "ncc_sequence(x, y, *, normalize=True) -> tuple[np.ndarray, np.ndarray]; "
+            "max_ncc(...) -> float; best_shift(...) -> int; sbd(...) -> float; "
+            "acf_distance(x, y, *, max_lag=10) -> float; "
+            "lcss_similarity(x, y, *, epsilon=1.0, window=None) -> float; "
+            "lcss_distance(...) -> float; edr_distance(x, y, *, epsilon=1.0, normalized=True) -> float; "
+            "erp_distance(x, y, *, gap_value=0.0) -> float; "
+            "twed_distance(x, y, *, lambda_=1.0, nu=0.001, t_x=None, t_y=None) -> float"
+        ),
+        purpose="Expose the extracted low-level similarity primitives directly when you need one explicit metric instead of a report bundle.",
+        why_exists=(
+            "EchoWave's main surface is intentionally report-first, but advanced users still need direct access to shift-aware, rhythm-aware, and elastic distances for retrieval, thresholding, and custom pipelines."
+        ),
+        when_to_use=(
+            "Use when you already know which similarity family you need and want a scalar score or lag estimate to plug into downstream logic."
+        ),
+        returns="NumPy arrays, scalar similarities, scalar distances, or a best-lag integer depending on the function",
+        accepted_inputs=(
+            "1D arrays",
+            "2D multichannel arrays",
+            "optional timestamps for TWED",
+            "optional gap or tolerance hyperparameters for elastic methods",
+        ),
+        outputs_to_inspect=(
+            "the returned scalar score or distance",
+            "the lag array from ncc_sequence",
+            "best_shift for lead-lag interpretation",
+        ),
+        recommended_environments=("notebook", "python_script", "ml_benchmark", "pandas_pipeline"),
+    ),
+    ApiEntry(
         name="hot_case_gallery / similarity_playbook / project_homepage_html / project_playground_html",
         category="built-in guidance",
         signature="hot_case_gallery(...); similarity_playbook(...); project_homepage_html(version='0.12.0'); project_playground_html(version='0.12.0')",

@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang='en'>
+<head><meta charset='utf-8'/><meta name='viewport' content='width=device-width, initial-scale=1'/><link rel='preconnect' href='https://fonts.googleapis.com'>
+<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+<link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap' rel='stylesheet'><title>EchoWave docs - Similarity Methods Atlas</title><style>
+:root {
+  --page-bg: #FFFFFF;
+  --surface: #FAFAFA;
+  --surface-strong: #FFFFFF;
+  --surface-sun: #FFF4C2;
+  --surface-sun-strong: #FFF9E4;
+  --sun-500: #FFC83D;
+  --sun-300: #FFE27A;
+  --sun-100: #FFF4C2;
+  --sun-700: #C7950A;
+  --blue-600: #2F6BFF;
+  --blue-700: #2554CC;
+  --text-900: #1F2937;
+  --text-600: #6B7280;
+  --border: #E5E7EB;
+  --shadow-sm: 0 10px 30px rgba(31, 41, 55, 0.06);
+  --shadow-md: 0 18px 50px rgba(31, 41, 55, 0.08);
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 14px;
+  --max-width: 980px;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top right, rgba(255, 226, 122, 0.16), transparent 24%),
+    linear-gradient(180deg, #fffef9 0%, var(--page-bg) 12%, var(--page-bg) 100%);
+  color: var(--text-900);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+a {
+  color: var(--blue-600);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--blue-700);
+}
+code, pre {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+select, input, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-strong);
+  color: var(--text-900);
+  font: inherit;
+}
+.shell {
+  width: min(var(--max-width), calc(100vw - 20px));
+  margin: 0 auto;
+}
+svg, img {
+  max-width: 100%;
+  height: auto;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.94);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px) saturate(180%);
+}
+.topbar-inner {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.brand-mark {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--sun-500), var(--sun-300));
+  box-shadow: inset 0 0 0 1px rgba(31, 41, 55, 0.06);
+}
+.brand-copy strong {
+  display: block;
+  font-size: 1.12rem;
+  letter-spacing: -0.02em;
+}
+.brand-copy span {
+  color: var(--text-600);
+  font-size: 0.95rem;
+}
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.95rem;
+}
+.nav a {
+  color: var(--text-600);
+  font-weight: 500;
+}
+.nav a:hover {
+  color: var(--text-900);
+}
+.section {
+  padding: 26px 0 18px;
+}
+.section-head {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 200, 61, 0.38);
+  background: var(--surface-sun);
+  color: var(--sun-700);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hero {
+  padding: 42px 0 18px;
+}
+.hero-grid, .grid-2, .grid-3 {
+  display: grid;
+  gap: 20px;
+}
+.hero-grid {
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: start;
+}
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+.grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.card {
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+  overflow: hidden;
+}
+.card.sun {
+  background: linear-gradient(180deg, #fffdfa 0%, var(--surface-sun-strong) 100%);
+}
+.card.soft {
+  background: var(--surface);
+}
+.feature-card {
+  display: grid;
+  gap: 10px;
+}
+.feature-card p,
+.card p {
+  margin: 0;
+}
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.logo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-600);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+.logo-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--sun-500), var(--blue-600));
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-600);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+.pill.sun {
+  border-color: rgba(255, 200, 61, 0.42);
+  background: var(--surface-sun);
+  color: var(--sun-700);
+}
+.pill.blue {
+  border-color: rgba(47, 107, 255, 0.18);
+  background: rgba(47, 107, 255, 0.08);
+  color: var(--blue-700);
+}
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--text-900);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.button.primary {
+  border-color: rgba(255, 200, 61, 0.48);
+  background: linear-gradient(180deg, #ffd65f 0%, var(--sun-500) 100%);
+  color: var(--text-900);
+}
+.button.secondary {
+  border-color: rgba(47, 107, 255, 0.18);
+  background: rgba(47, 107, 255, 0.08);
+  color: var(--blue-700);
+}
+.button.ghost {
+  background: transparent;
+  box-shadow: none;
+}
+.button.text {
+  padding: 0;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--blue-700);
+}
+h1, h2, h3 {
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+h1 {
+  font-size: clamp(2.6rem, 5vw, 4.5rem);
+  line-height: 0.98;
+}
+h2 {
+  font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+}
+h3 {
+  font-size: 1.08rem;
+}
+.subhead, .lead, .muted {
+  color: var(--text-600);
+}
+.subhead {
+  max-width: 46rem;
+  font-size: 1.12rem;
+}
+.lead {
+  margin: 0;
+  max-width: 68rem;
+}
+.hero-stat {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+.hero-stage {
+  display: grid;
+  gap: 18px;
+}
+.stat {
+  border: 1px solid rgba(255, 200, 61, 0.28);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 244, 194, 0.55);
+  padding: 12px 14px;
+}
+.stat strong {
+  display: block;
+  font-size: 1.2rem;
+}
+.panel-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.workflow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.step {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+}
+.step-number {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--sun-500);
+  color: var(--text-900);
+  font-weight: 800;
+}
+.code-block, pre {
+  margin: 0;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: #fffef8;
+  color: var(--text-900);
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+.surface-frame {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+  overflow: hidden;
+}
+.surface-frame.pad {
+  padding: 16px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+  display: block;
+  overflow-x: auto;
+}
+th, td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+th {
+  background: #fffdf6;
+  color: var(--text-600);
+  font-size: 0.92rem;
+}
+tr:last-child td {
+  border-bottom: none;
+}
+iframe.demo {
+  width: 100%;
+  min-height: 460px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+}
+img.brand-card {
+  width: 100%;
+  max-width: 460px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-sm);
+}
+.footer {
+  padding: 28px 0 54px;
+  color: var(--text-600);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 18px;
+  align-items: start;
+}
+.diagram {
+  display: grid;
+  gap: 14px;
+}
+.diagram-flow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.diagram-arrow {
+  color: var(--blue-700);
+  font-weight: 800;
+}
+.diagram-band {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.diagram-card {
+  padding: 18px;
+  border: 1px dashed rgba(47, 107, 255, 0.22);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, rgba(255, 244, 194, 0.38) 0%, #ffffff 100%);
+}
+.note-box {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.note-box.info {
+  border-color: rgba(47, 107, 255, 0.18);
+  background: rgba(47, 107, 255, 0.05);
+}
+.note-box.warn {
+  border-color: rgba(255, 200, 61, 0.45);
+  background: rgba(255, 244, 194, 0.66);
+}
+.author-meta {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+}
+.callout {
+  padding: 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 200, 61, 0.42);
+  background: linear-gradient(180deg, #fff9e4 0%, #ffffff 100%);
+  box-shadow: var(--shadow-sm);
+}
+@media (max-width: 980px) {
+  .topbar-inner {
+    padding: 12px 0;
+    align-items: flex-start;
+  }
+  .hero-grid, .grid-2, .grid-3, .workflow, .diagram-band, .hero-stat, .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+    .docs-wrap { display:grid; grid-template-columns: 240px minmax(0, 1fr); gap: 18px; padding: 24px 0 36px; }
+    .docs-sidebar { position: sticky; top: 88px; align-self: start; display:grid; gap:14px; min-width: 0; }
+    .sidebar-card { background: var(--surface-strong); border:1px solid var(--border); border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow-sm); overflow: hidden; }
+    .sidebar-title { margin:0 0 10px; font-size: 0.86rem; color: var(--text-600); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .doc-link { display:block; padding: 10px 12px; border-radius: 12px; color: var(--text-600); font-weight: 600; word-break: break-word; }
+    .doc-link:hover { background: rgba(47,107,255,0.06); color: var(--text-900); }
+    .doc-link.active { background: rgba(255, 244, 194, 0.78); color: var(--text-900); border:1px solid rgba(255,200,61,0.38); }
+    .docs-main { display:grid; gap: 24px; min-width: 0; }
+    .docs-hero { display:grid; gap: 12px; }
+    .docs-hero h1 { font-size: clamp(2.1rem, 4vw, 3.3rem); line-height: 1.02; }
+    .docs-card { background: var(--surface-strong); border:1px solid var(--border); border-radius: var(--radius-md); padding: 20px; box-shadow: var(--shadow-sm); display:grid; gap: 12px; min-width: 0; overflow: hidden; }
+    .docs-grid-2, .docs-grid-3 { display:grid; gap: 20px; }
+    .docs-grid-2 { grid-template-columns: 1fr 1fr; }
+    .docs-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .meta-line { display:flex; flex-wrap:wrap; gap: 10px; min-width: 0; }
+    .meta-chip { display:inline-flex; align-items:center; gap:6px; padding: 6px 10px; border-radius: 999px; background: var(--surface); border:1px solid var(--border); color: var(--text-600); font-size: 0.84rem; font-weight: 700; min-width: 0; }
+    .meta-chip strong { color: var(--text-900); }
+    .entry-stack { display:grid; gap: 16px; }
+    .entry { border-top: 1px solid var(--border); padding-top: 16px; }
+    .entry:first-child { border-top: 0; padding-top: 0; }
+    .entry h3 { font-size: 1.1rem; }
+    .inline-code { display: inline-block; max-width: 100%; overflow-x: auto; vertical-align: bottom; white-space: nowrap; font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; background: #fffef8; border:1px solid var(--border); padding: 2px 6px; border-radius: 8px; }
+    .small-table { width:100%; border-collapse:collapse; display:block; overflow-x:auto; }
+    .small-table th, .small-table td { padding: 11px 12px; text-align:left; border-bottom:1px solid var(--border); vertical-align: top; }
+    .small-table th { background: #fffdf6; color: var(--text-600); font-size: 0.9rem; }
+    .small-table tr:last-child td { border-bottom: 0; }
+    .toc-note { font-size: 0.92rem; color: var(--text-600); }
+    .example-card { align-content: start; }
+    .example-preview { border: 1px solid var(--border); border-radius: 16px; background: linear-gradient(180deg, #fffdfa 0%, #ffffff 100%); padding: 12px; overflow: hidden; }
+    .example-preview svg { display: block; width: 100%; height: auto; }
+    .example-link-row { display:flex; flex-wrap:wrap; gap:10px; margin-top: 4px; }
+    .example-figure-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:20px; }
+    .example-figure-wide { grid-column: 1 / -1; }
+    .asset-list { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .asset-link { display:grid; gap:4px; padding: 14px 16px; border-radius: 14px; border:1px solid var(--border); background: var(--surface); color: var(--text-900); }
+    .asset-link:hover { border-color: rgba(47,107,255,0.18); background: rgba(47,107,255,0.04); color: var(--text-900); }
+    .asset-link strong { font-size: 0.96rem; }
+    .asset-link span { color: var(--text-600); font-size: 0.88rem; }
+    .gallery-section { display:grid; gap: 14px; }
+    .gallery-section h2 { font-size: 1.18rem; }
+    .gallery-grid { display:grid; gap: 16px; }
+    .gallery-card { display:grid; grid-template-columns: 220px minmax(0, 1fr); gap: 18px; align-items: start; padding: 16px 18px; border:1px solid var(--border); border-radius: 18px; background: var(--surface-strong); box-shadow: var(--shadow-sm); }
+    .gallery-thumb { display:block; border: 1px solid var(--border); border-radius: 16px; padding: 10px; background: linear-gradient(180deg, #fffdfa 0%, #ffffff 100%); overflow: hidden; }
+    .gallery-thumb svg { display:block; width: 100%; height: auto; }
+    .gallery-body { display:grid; gap: 8px; min-width: 0; }
+    .gallery-body h3 { font-size: 1.2rem; line-height: 1.25; }
+    .gallery-body p { margin: 0; }
+    .gallery-links { display:flex; flex-wrap:wrap; gap: 12px; font-weight: 700; }
+    .gallery-links a { color: var(--blue-700); }
+    .gallery-links a:hover { text-decoration: underline; }
+    .gallery-kicker { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-600); }
+    .example-page-intro { display:grid; gap: 16px; }
+    .example-breadcrumb { font-size: 0.9rem; color: var(--text-600); }
+    .example-head { display:grid; gap: 10px; }
+    .example-head h1 { font-size: clamp(1.8rem, 3vw, 2.55rem); line-height: 1.08; }
+    .example-summary-grid { display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; }
+    .example-teaser { display:grid; gap: 14px; }
+    .example-score { font-size: 2.5rem; line-height: 0.95; font-weight: 800; letter-spacing: -0.05em; color: var(--text-900); }
+    .example-score-label { font-size: 0.95rem; color: var(--text-600); font-weight: 700; }
+    .component-list { display:grid; gap: 10px; }
+    .component-row { display:grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+    .component-row span { color: var(--text-600); }
+    .component-track { grid-column: 1 / -1; height: 8px; border-radius: 999px; background: #f3f4f6; overflow: hidden; }
+    .component-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--sun-500), #f1b62a); }
+    @media (max-width: 1180px) {
+      .docs-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .example-figure-grid, .asset-list { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 980px) {
+      .docs-wrap { grid-template-columns: 1fr; }
+      .docs-sidebar { position: static; }
+      .docs-grid-2, .docs-grid-3 { grid-template-columns: 1fr; }
+      .example-figure-grid { grid-template-columns: 1fr; }
+      .gallery-card, .example-summary-grid { grid-template-columns: 1fr; }
+    }
+    
+    .formula-chip { display:block; font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; white-space: normal; overflow-wrap: anywhere; line-height: 1.5; background: #fffef8; border:1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
+    .native-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .native-card { display:grid; gap: 10px; }
+    .status-stack { display:flex; flex-wrap:wrap; gap: 10px; }
+    .table-note { color: var(--text-600); font-size: 0.92rem; }
+    @media (max-width: 980px) {
+      .native-grid { grid-template-columns: 1fr; }
+    }
+    </style></head>
+<body>
+<header class='topbar'>
+  <div class='shell topbar-inner'>
+    <div class='brand'>
+      <span class='brand-mark'></span>
+      <div class='brand-copy'>
+        <strong>EchoWave</strong>
+        <span>Explainable time-series similarity for humans and agents.</span>
+      </div>
+    </div>
+    <nav class='nav'>
+      <a href='../index.html'>Home</a>
+      <a href='index.html'>Docs</a>
+      <a href='tutorials.html'>Tutorials</a>
+      <a href='api.html'>API</a>
+      <a href='../playground.html'>Playground</a>
+      <a href='https://github.com/ZipengWu365/EchoWave'>GitHub</a>
+    </nav>
+  </div>
+</header>
+<main class='shell docs-wrap'>
+  <aside class='docs-sidebar'>
+    <div class='sidebar-card'>
+      <div class='sidebar-title'>Documentation</div>
+      <a class='doc-link' href='index.html'>Docs Home</a><a class='doc-link' href='getting-started.html'>Getting Started</a><a class='doc-link' href='tutorials.html'>Tutorials</a><a class='doc-link' href='api.html'>API Reference</a><a class='doc-link active' href='methods.html'>Methods Atlas</a><a class='doc-link' href='scenarios.html'>Scenarios</a><a class='doc-link' href='ecosystem.html'>Ecosystem</a><a class='doc-link' href='agents.html'>Agent Tools</a>
+    </div>
+    <div class='sidebar-card'>
+      <div class='sidebar-title'>Quick links</div>
+      <a class='doc-link' href='../playground.html'>Static playground</a>
+      <a class='doc-link' href='../start-here.html'>Start here</a>
+      <a class='doc-link' href='../reports/github_breakout_similarity.html'>Real-data flagship report</a>
+    </div>
+    <div class='sidebar-card'>
+      <div class='sidebar-title'>Maintainer</div>
+      <div class='toc-note'><strong>Zipeng Wu</strong><br>The University of Birmingham<br><a href='mailto:zxw365@student.bham.ac.uk'>zxw365@student.bham.ac.uk</a></div>
+    </div>
+    
+  </aside>
+  <section class='docs-main'>
+    <div class='docs-hero'><div class='eyebrow'>Documentation</div><h1>Similarity Methods Atlas</h1><p class='subhead'>A full audit of EchoWave&#x27;s current comparison math plus the extracted time-series similarity methods from ts_similarity_package, each with an explicit mathematical expression.</p></div>
+    
+    <div class='docs-grid-2'>
+      <div class='docs-card'>
+        <span class='pill sun'>Audit summary</span>
+        <p><strong>This page extracts the method inventory from `ts_similarity_package` and audits which parts fit EchoWave's report-first product direction.</strong></p>
+        <div class='meta-line'>
+          <span class='meta-chip'><strong>EchoWave native</strong> 10</span>
+          <span class='meta-chip'><strong>Extracted methods</strong> 40</span>
+          <span class='meta-chip'><strong>Families</strong> 7</span>
+          <span class='meta-chip'><strong>Version</strong> 0.16.0</span>
+        </div>
+        <div class='status-stack'><span class='meta-chip'><strong>Implemented in EchoWave</strong> 8</span><span class='meta-chip'><strong>Conceptually covered</strong> 5</span><span class='meta-chip'><strong>Possible addition</strong> 14</span><span class='meta-chip'><strong>Low-priority addition</strong> 13</span></div>
+      </div>
+      <div class='docs-card'>
+        <span class='pill blue'>What EchoWave now exposes</span>
+        <ul class='panel-list'>
+          <li><strong>max_ncc / best_shift / sbd</strong> now cover explicit lead-lag and shift-aware similarity.</li>
+          <li><strong>twed_distance</strong> now covers timestamp-aware elastic comparison for irregular series.</li>
+          <li><strong>erp_distance</strong>, <strong>lcss_similarity</strong>, <strong>lcss_distance</strong>, and <strong>edr_distance</strong> now cover robust partial-match and gap-aware elastic matching.</li>
+          <li><strong>acf_distance</strong> now adds a rhythm-focused structural distance beside the existing report-level spectral view.</li>
+        </ul>
+      </div>
+    </div>
+    <div class='docs-card'>
+      <span class='pill sun'>Current EchoWave comparison layer</span>
+      <p class='table-note'>These are the similarity characterizations EchoWave already uses in raw-series comparison reports. Every entry below includes the mathematical expression used or approximated by the current code path.</p>
+      <div class='native-grid'><article class='docs-card native-card'><span class='pill sun'>shape_similarity</span><p><strong>Family:</strong> EchoWave native component</p><p><strong>Kind:</strong> similarity</p><code class='formula-chip'>s_shape = GM(clip(r(x,y), 0, 1), clip(r(Delta x, Delta y), 0, 1))</code><p>Combines level correlation with first-difference correlation so the headline match does not ignore local dynamics.</p></article><article class='docs-card native-card'><span class='pill sun'>dtw_similarity</span><p><strong>Family:</strong> EchoWave native component</p><p><strong>Kind:</strong> similarity</p><code class='formula-chip'>s_dtw = GM(exp(-DTW_w(x,y)/0.45), exp(-DTW_w(Delta x, Delta y)/0.35))</code><p>Turns constrained DTW distances into a similarity score and blends level-space and derivative-space warping.</p></article><article class='docs-card native-card'><span class='pill sun'>trend_similarity</span><p><strong>Family:</strong> EchoWave native component</p><p><strong>Kind:</strong> similarity</p><code class='formula-chip'>s_trend = GM(clip(r(T(x), T(y)), 0, 1), clip(r(Delta T(x), Delta T(y)), 0, 1))</code><p>Smooths both series first, then compares both the trend level and the trend slope.</p></article><article class='docs-card native-card'><span class='pill sun'>derivative_similarity</span><p><strong>Family:</strong> EchoWave native component</p><p><strong>Kind:</strong> similarity</p><code class='formula-chip'>s_diff = clip(r(Delta x, Delta y), 0, 1)</code><p>Focuses on whether local changes move together even when the levels differ.</p></article><article class='docs-card native-card'><span class='pill sun'>spectral_similarity</span><p><strong>Family:</strong> EchoWave native component</p><p><strong>Kind:</strong> similarity</p><code class='formula-chip'>s_spec = GM(1 - JSD(P_x, P_y), clip(r(P_x - U, P_y - U), 0, 1))</code><p>Compares normalized spectra of differenced series, mixing JS overlap with structural similarity relative to a uniform spectrum U.</p></article><article class='docs-card native-card'><span class='pill blue'>pearson_r</span><p><strong>Family:</strong> EchoWave reference metric</p><p><strong>Kind:</strong> similarity</p><code class='formula-chip'>r(x,y) = sum_t (x_t - x_bar)(y_t - y_bar) / sqrt(sum_t (x_t - x_bar)^2 sum_t (y_t - y_bar)^2)</code><p>Familiar linear correlation exposed directly in every raw-series similarity report.</p></article><article class='docs-card native-card'><span class='pill blue'>spearman_rho</span><p><strong>Family:</strong> EchoWave reference metric</p><p><strong>Kind:</strong> similarity</p><code class='formula-chip'>rho(x,y) = corr(rank(x), rank(y))</code><p>Rank-order correlation used as a robustness check against nonlinear monotone relationships.</p></article><article class='docs-card native-card'><span class='pill blue'>kendall_tau</span><p><strong>Family:</strong> EchoWave reference metric</p><p><strong>Kind:</strong> similarity</p><code class='formula-chip'>tau(x,y) = (C - D) / choose(n, 2)</code><p>Pairwise concordance measure that stays interpretable when rank ordering matters more than amplitude.</p></article><article class='docs-card native-card'><span class='pill blue'>best_lag_pearson_r</span><p><strong>Family:</strong> EchoWave reference metric</p><p><strong>Kind:</strong> similarity</p><code class='formula-chip'>max_lag_r(x,y) = max_ell r(x_t, y_{t-ell})</code><p>Searches over a bounded lag window to show whether a shift-aware linear relationship is stronger than the aligned one.</p></article><article class='docs-card native-card'><span class='pill blue'>normalized_mutual_information</span><p><strong>Family:</strong> EchoWave reference metric</p><p><strong>Kind:</strong> similarity</p><code class='formula-chip'>NMI(X,Y) = I(X;Y) / sqrt(H(X) H(Y))</code><p>Histogram-based nonlinear dependence score used as a familiar cross-check against linear metrics.</p></article></div>
+    </div>
+    <div class='docs-card'>
+      <span class='pill blue'>Implemented and recommended additions from ts_similarity_package</span>
+      <p class='table-note'>This table keeps both the methods already added to EchoWave and the next strongest candidates that still fit the package's report-first direction.</p>
+      <table class='small-table'>
+        <thead><tr><th>Method</th><th>EchoWave fit</th><th>Formula</th><th>Why it fits</th></tr></thead>
+        <tbody><tr><td><strong>max_ncc</strong><br><span class='muted'>sliding</span></td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$s(x,y)=\max_\ell NCC(x,shift(y,\ell))$</code></td><td>This method is now available as a public low-level EchoWave similarity function.</td></tr><tr><td><strong>sbd</strong><br><span class='muted'>sliding</span></td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$d(x,y)=1-\max_\ell NCC(x,shift(y,\ell))$</code></td><td>This method is now available as a public low-level EchoWave similarity function.</td></tr><tr><td><strong>edr</strong><br><span class='muted'>elastic</span></td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$EDR$ uses edit distance with substitution cost $0/1$ depending on $\|x_i-y_j\|\le\epsilon$</code></td><td>This method is now available as a public low-level EchoWave similarity function.</td></tr><tr><td><strong>erp</strong><br><span class='muted'>elastic</span></td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$ERP$ uses edit distance with a real-valued gap $g$: diagonal $\|x_i-y_j\|$, gaps $\|x_i-g\|$ or $\|y_j-g\|$</code></td><td>This method is now available as a public low-level EchoWave similarity function.</td></tr><tr><td><strong>lcss_distance</strong><br><span class='muted'>elastic</span></td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$d(x,y)=1-LCSS(x,y)$</code></td><td>This method is now available as a public low-level EchoWave similarity function.</td></tr><tr><td><strong>lcss_similarity</strong><br><span class='muted'>elastic</span></td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$LCSS(x,y)=\frac{1}{\min(n,m)}\max \#\{(i,j): \|x_i-y_j\|\le \epsilon\}$ under order constraints</code></td><td>This method is now available as a public low-level EchoWave similarity function.</td></tr><tr><td><strong>twed</strong><br><span class='muted'>elastic</span></td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$TWED$ combines edit operations, point distances, timestamps, stiffness $\nu$, and penalty $\lambda$.</code></td><td>This method is now available as a public low-level EchoWave similarity function.</td></tr><tr><td><strong>acf_distance</strong><br><span class='muted'>feature-based</span></td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$d(x,y)=\|ACF_L(x)-ACF_L(y)\|_2$</code></td><td>This method is now available as a public low-level EchoWave similarity function.</td></tr><tr><td><strong>cosine_distance</strong><br><span class='muted'>lock-step</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=1-s_{cos}(x,y)$</code></td><td>The cosine distance transform is simple, but it is only worth adding if EchoWave wants a clearer vector-baseline panel.</td></tr><tr><td><strong>cosine_similarity</strong><br><span class='muted'>lock-step</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$s(x,y)=\frac{\langle x,y \rangle}{\|x\|_2\|y\|_2}$</code></td><td>Cosine similarity is familiar and cheap, but it overlaps with EchoWave&#x27;s existing z-scored shape and correlation story.</td></tr><tr><td><strong>jensen_shannon</strong><br><span class='muted'>lock-step</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$JSD(P,Q)=\sqrt{\tfrac{1}{2}KL(P\|M)+\tfrac{1}{2}KL(Q\|M)},\ M=\tfrac{P+Q}{2}$</code></td><td>Jensen-Shannon distance is already used inside EchoWave&#x27;s spectral machinery and could be exposed for normalized-distribution views when needed.</td></tr><tr><td><strong>cdtw</strong><br><span class='muted'>elastic</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$cDTW=DTW$ with a Sakoe-Chiba window $|i-j|\le w$</code></td><td>A constrained DTW variant could improve stability and speed without changing the overall mental model.</td></tr><tr><td><strong>msm</strong><br><span class='muted'>elastic</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$MSM$ is the minimum cost of move, split, and merge operations.</code></td><td>Elastic methods are a strong thematic fit, but EchoWave should only add the variants that stay explainable for non-specialists.</td></tr><tr><td><strong>soft_dtw</strong><br><span class='muted'>elastic</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$SoftDTW_\gamma(x,y)=softmin_\gamma(\mathrm{all\ alignment\ costs})$</code></td><td>Soft-DTW matters if EchoWave wants differentiable training-time hooks, but it is less important for the current report-first product surface.</td></tr><tr><td><strong>soft_dtw_divergence</strong><br><span class='muted'>elastic</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$D_\gamma(x,y)=SoftDTW(x,y)-\tfrac12 SoftDTW(x,x)-\tfrac12 SoftDTW(y,y)$</code></td><td>The divergence form is cleaner than raw soft-DTW if EchoWave later adds learning-oriented or optimization-aware workflows.</td></tr><tr><td><strong>swale_similarity</strong><br><span class='muted'>elastic</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$SWALE$ maximizes reward for matches and subtracts penalties for gaps.</code></td><td>Elastic methods are a strong thematic fit, but EchoWave should only add the variants that stay explainable for non-specialists.</td></tr><tr><td><strong>wdtw</strong><br><span class='muted'>elastic</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$WDTW(x,y)=\sqrt{\min_{\pi} \sum_{(i,j)\in\pi} w(|i-j|)\|x_i-y_j\|_2^2}$</code></td><td>Weighted DTW is useful when large phase shifts should be penalized more explicitly than in plain DTW.</td></tr><tr><td><strong>paa_distance</strong><br><span class='muted'>feature-based</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=\|PAA_s(x)-PAA_s(y)\|_2$</code></td><td>PAA offers cheap coarse-shape comparison for previews, clustering, and fast approximate search.</td></tr><tr><td><strong>spectral_distance</strong><br><span class='muted'>feature-based</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=1-s_{spectral}(x,y)$</code></td><td>Feature-space methods can strengthen explainability when the representation itself is explicit and stable.</td></tr><tr><td><strong>stats_distance</strong><br><span class='muted'>feature-based</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=\|\phi_{stats}(x)-\phi_{stats}(y)\|_2$</code></td><td>A small explicit feature vector could help dataset-to-dataset summaries without turning EchoWave into a metric zoo.</td></tr><tr><td><strong>ar_distance</strong><br><span class='muted'>model-based</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=\|[c_x,\phi_x]-[c_y,\phi_y]\|_2$ after AR(p) fitting</code></td><td>AR-parameter distance could fit EchoWave&#x27;s structural language if framed as a lightweight generative summary rather than a forecasting engine.</td></tr><tr><td><strong>markov_distance</strong><br><span class='muted'>model-based</span></td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=\|P_x-P_y\|_F$ after discretized Markov modeling</code></td><td>Transition-matrix distance could be useful for discretized behavioral or event-state sequences, but it is more specialized than EchoWave&#x27;s default story.</td></tr></tbody>
+      </table>
+    </div>
+    <section class='docs-card'><span class='pill sun'>lock-step</span><p>Pointwise comparison on an already aligned timeline.</p><table class='small-table'><thead><tr><th>Method</th><th>Output</th><th>Metric</th><th>EchoWave fit</th><th>Formula</th><th>Note</th></tr></thead><tbody><tr><td><strong>euclidean</strong></td><td>distance</td><td>yes</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$d(x,y)=\sqrt{\sum_t \|x_t-y_t\|_2^2}$</code></td><td>Equal-length, pointwise aligned baseline.</td></tr><tr><td><strong>squared_euclidean</strong></td><td>distance</td><td>no</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$d(x,y)=\sum_t \|x_t-y_t\|_2^2$</code></td><td>Useful as a loss; not a strict metric.</td></tr><tr><td><strong>manhattan</strong></td><td>distance</td><td>yes</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$d(x,y)=\sum_t \|x_t-y_t\|_1$</code></td><td>More robust to outliers than Euclidean in some settings.</td></tr><tr><td><strong>minkowski</strong></td><td>distance</td><td>yes (p&gt;=1)</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$d_p(x,y)=(\sum_t \|x_t-y_t\|_p^p)^{1/p}$</code></td><td>Generalizes Manhattan and Euclidean.</td></tr><tr><td><strong>chebyshev</strong></td><td>distance</td><td>yes</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$d(x,y)=\max_t \|x_t-y_t\|_\infty$</code></td><td>Focuses on the largest deviation.</td></tr><tr><td><strong>canberra</strong></td><td>distance</td><td>yes</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$d(x,y)=\sum_t \frac{|x_t-y_t|}{|x_t|+|y_t|}$</code></td><td>Sensitive near zero.</td></tr><tr><td><strong>lorentzian</strong></td><td>distance</td><td>not guaranteed</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$d(x,y)=\sum_t \log(1+|x_t-y_t|)$</code></td><td>Compresses large deviations logarithmically.</td></tr><tr><td><strong>cosine_similarity</strong></td><td>similarity</td><td>no</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$s(x,y)=\frac{\langle x,y \rangle}{\|x\|_2\|y\|_2}$</code></td><td>Measures directional similarity.</td></tr><tr><td><strong>cosine_distance</strong></td><td>distance-like</td><td>no</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=1-s_{cos}(x,y)$</code></td><td>Monotone transform of cosine similarity.</td></tr><tr><td><strong>pearson_similarity</strong></td><td>similarity</td><td>no</td><td><span class='pill blue'>Conceptually covered</span></td><td><code class='formula-chip'>$r(x,y)=\frac{\sum_t (x_t-\bar x)(y_t-\bar y)}{\sqrt{\sum_t (x_t-\bar x)^2}\sqrt{\sum_t (y_t-\bar y)^2}}$</code></td><td>Captures linear correlation after centering.</td></tr><tr><td><strong>pearson_distance</strong></td><td>distance-like</td><td>no</td><td><span class='pill blue'>Conceptually covered</span></td><td><code class='formula-chip'>$d(x,y)=1-r(x,y)$</code></td><td>Distance-like transform of Pearson correlation.</td></tr><tr><td><strong>jensen_shannon</strong></td><td>distance</td><td>yes</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$JSD(P,Q)=\sqrt{\tfrac{1}{2}KL(P\|M)+\tfrac{1}{2}KL(Q\|M)},\ M=\tfrac{P+Q}{2}$</code></td><td>Requires nonnegative inputs interpreted as distributions.</td></tr></tbody></table></section><section class='docs-card'><span class='pill sun'>sliding</span><p>Shift-aware comparison under pure translation or lead-lag offsets.</p><table class='small-table'><thead><tr><th>Method</th><th>Output</th><th>Metric</th><th>EchoWave fit</th><th>Formula</th><th>Note</th></tr></thead><tbody><tr><td><strong>max_ncc</strong></td><td>similarity</td><td>no</td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$s(x,y)=\max_\ell NCC(x,shift(y,\ell))$</code></td><td>Shift-invariant similarity via cross-correlation.</td></tr><tr><td><strong>sbd</strong></td><td>distance-like</td><td>no</td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$d(x,y)=1-\max_\ell NCC(x,shift(y,\ell))$</code></td><td>Shape-based distance from k-Shape.</td></tr></tbody></table></section><section class='docs-card'><span class='pill sun'>elastic</span><p>Dynamic-programming alignments that allow local stretching or compression.</p><table class='small-table'><thead><tr><th>Method</th><th>Output</th><th>Metric</th><th>EchoWave fit</th><th>Formula</th><th>Note</th></tr></thead><tbody><tr><td><strong>dtw</strong></td><td>distance</td><td>no</td><td><span class='pill blue'>Conceptually covered</span></td><td><code class='formula-chip'>$DTW(x,y)=\sqrt{\min_{\pi} \sum_{(i,j)\in\pi} \|x_i-y_j\|_2^2}$</code></td><td>Optimal nonlinear alignment.</td></tr><tr><td><strong>cdtw</strong></td><td>distance</td><td>no</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$cDTW=DTW$ with a Sakoe-Chiba window $|i-j|\le w$</code></td><td>Constrains unrealistic warps.</td></tr><tr><td><strong>wdtw</strong></td><td>distance</td><td>no</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$WDTW(x,y)=\sqrt{\min_{\pi} \sum_{(i,j)\in\pi} w(|i-j|)\|x_i-y_j\|_2^2}$</code></td><td>Penalizes large phase differences through a logistic weight.</td></tr><tr><td><strong>ddtw</strong></td><td>distance</td><td>no</td><td><span class='pill blue'>Conceptually covered</span></td><td><code class='formula-chip'>$DDTW(x,y)=DTW(\Delta x,\Delta y)$</code></td><td>Applies DTW to derivative-transformed series for shape emphasis.</td></tr><tr><td><strong>soft_dtw</strong></td><td>soft distance / loss</td><td>no</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$SoftDTW_\gamma(x,y)=softmin_\gamma(\mathrm{all\ alignment\ costs})$</code></td><td>Differentiable smoothing of DTW.</td></tr><tr><td><strong>soft_dtw_divergence</strong></td><td>divergence</td><td>no</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$D_\gamma(x,y)=SoftDTW(x,y)-\tfrac12 SoftDTW(x,x)-\tfrac12 SoftDTW(y,y)$</code></td><td>Nonnegative divergence induced by soft-DTW.</td></tr><tr><td><strong>lcss_similarity</strong></td><td>similarity</td><td>no</td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$LCSS(x,y)=\frac{1}{\min(n,m)}\max \#\{(i,j): \|x_i-y_j\|\le \epsilon\}$ under order constraints</code></td><td>Robust to noise and outliers through thresholded matching.</td></tr><tr><td><strong>lcss_distance</strong></td><td>distance-like</td><td>no</td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$d(x,y)=1-LCSS(x,y)$</code></td><td>Distance-like transform of LCSS similarity.</td></tr><tr><td><strong>edr</strong></td><td>distance</td><td>no</td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$EDR$ uses edit distance with substitution cost $0/1$ depending on $\|x_i-y_j\|\le\epsilon$</code></td><td>Thresholded edit distance on real sequences.</td></tr><tr><td><strong>swale_similarity</strong></td><td>similarity</td><td>no</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$SWALE$ maximizes reward for matches and subtracts penalties for gaps.</code></td><td>A reward-penalty view of threshold-based alignment.</td></tr><tr><td><strong>erp</strong></td><td>distance</td><td>yes</td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$ERP$ uses edit distance with a real-valued gap $g$: diagonal $\|x_i-y_j\|$, gaps $\|x_i-g\|$ or $\|y_j-g\|$</code></td><td>A metric elastic measure.</td></tr><tr><td><strong>msm</strong></td><td>distance</td><td>yes</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$MSM$ is the minimum cost of move, split, and merge operations.</code></td><td>The current implementation is univariate.</td></tr><tr><td><strong>twed</strong></td><td>distance</td><td>yes</td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$TWED$ combines edit operations, point distances, timestamps, stiffness $\nu$, and penalty $\lambda$.</code></td><td>Suitable when timestamps carry meaning.</td></tr></tbody></table></section><section class='docs-card'><span class='pill sun'>kernel</span><p>Similarity through kernel scores rather than direct distances.</p><table class='small-table'><thead><tr><th>Method</th><th>Output</th><th>Metric</th><th>EchoWave fit</th><th>Formula</th><th>Note</th></tr></thead><tbody><tr><td><strong>rbf_kernel</strong></td><td>kernel similarity</td><td>n/a</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$K(x,y)=\exp(-\gamma \|x-y\|_2^2)$</code></td><td>Kernelized similarity on equal-length vectors.</td></tr><tr><td><strong>gak</strong></td><td>kernel similarity</td><td>n/a</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$GAK(x,y)=\sum_{\pi\in A} \prod_{(i,j)\in\pi} k(x_i,y_j)$</code></td><td>Sums over all alignments instead of only the best one.</td></tr><tr><td><strong>lgak</strong></td><td>kernel score</td><td>n/a</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$LGAK(x,y)=\log(GAK(x,y)+\epsilon)$</code></td><td>Log-transformed global alignment kernel.</td></tr><tr><td><strong>weighted_ncc_kernel</strong></td><td>kernel similarity</td><td>n/a</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$K(x,y)=\sum_\ell w(\ell)NCC_\ell(x,y)$</code></td><td>Practical shift-aware kernel adapter built on NCC.</td></tr></tbody></table></section><section class='docs-card'><span class='pill sun'>feature-based</span><p>Compare derived features instead of raw waveforms.</p><table class='small-table'><thead><tr><th>Method</th><th>Output</th><th>Metric</th><th>EchoWave fit</th><th>Formula</th><th>Note</th></tr></thead><tbody><tr><td><strong>stats_distance</strong></td><td>distance</td><td>yes</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=\|\phi_{stats}(x)-\phi_{stats}(y)\|_2$</code></td><td>Compares handcrafted statistical feature vectors.</td></tr><tr><td><strong>acf_distance</strong></td><td>distance</td><td>yes</td><td><span class='pill sun'>Implemented in EchoWave</span></td><td><code class='formula-chip'>$d(x,y)=\|ACF_L(x)-ACF_L(y)\|_2$</code></td><td>Autocorrelation-pattern distance.</td></tr><tr><td><strong>spectral_cosine_similarity</strong></td><td>similarity</td><td>no</td><td><span class='pill blue'>Conceptually covered</span></td><td><code class='formula-chip'>$s(x,y)=cos(|FFT(x)|,|FFT(y)|)$</code></td><td>Frequency-domain similarity.</td></tr><tr><td><strong>spectral_distance</strong></td><td>distance-like</td><td>no</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=1-s_{spectral}(x,y)$</code></td><td>Distance-like transform of spectral cosine similarity.</td></tr><tr><td><strong>paa_distance</strong></td><td>distance</td><td>yes</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=\|PAA_s(x)-PAA_s(y)\|_2$</code></td><td>Piecewise aggregate approximation distance.</td></tr></tbody></table></section><section class='docs-card'><span class='pill sun'>model-based</span><p>Compare fitted dynamics or transition structure.</p><table class='small-table'><thead><tr><th>Method</th><th>Output</th><th>Metric</th><th>EchoWave fit</th><th>Formula</th><th>Note</th></tr></thead><tbody><tr><td><strong>ar_distance</strong></td><td>distance</td><td>yes</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=\|[c_x,\phi_x]-[c_y,\phi_y]\|_2$ after AR(p) fitting</code></td><td>Compares fitted autoregressive parameters.</td></tr><tr><td><strong>markov_distance</strong></td><td>distance</td><td>yes</td><td><span class='pill '>Possible addition</span></td><td><code class='formula-chip'>$d(x,y)=\|P_x-P_y\|_F$ after discretized Markov modeling</code></td><td>Compares transition dynamics rather than raw points.</td></tr></tbody></table></section><section class='docs-card'><span class='pill sun'>embedding-based</span><p>Encode first, then compare in a latent or compressed space.</p><table class='small-table'><thead><tr><th>Method</th><th>Output</th><th>Metric</th><th>EchoWave fit</th><th>Formula</th><th>Note</th></tr></thead><tbody><tr><td><strong>embedding_distance</strong></td><td>distance</td><td>depends on encoder + metric</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$z_x=Enc(x),\; z_y=Enc(y),\; d(x,y)=dist(z_x,z_y)$</code></td><td>Generic adapter for PAA/DFT/stats/random-projection/custom encoders.</td></tr><tr><td><strong>embedding_similarity</strong></td><td>similarity</td><td>depends on encoder + metric</td><td><span class='pill '>Low-priority addition</span></td><td><code class='formula-chip'>$s(x,y)=sim(Enc(x),Enc(y))$</code></td><td>Generic similarity on latent or compressed representations.</td></tr></tbody></table></section>
+    
+  </section>
+</main>
+</body>
+</html>

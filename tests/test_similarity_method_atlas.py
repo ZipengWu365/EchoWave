@@ -1,0 +1,45 @@
+from __future__ import annotations
+
+from tsontology import (
+    extracted_similarity_methods,
+    native_similarity_methods,
+    project_docs_pages,
+    project_similarity_methods_html,
+    similarity_method_atlas_dict,
+    similarity_method_atlas_guide,
+)
+
+
+def test_similarity_method_atlas_extracts_expected_inventory() -> None:
+    payload = similarity_method_atlas_dict()
+    extracted = extracted_similarity_methods()
+    native = native_similarity_methods()
+
+    assert payload["summary"]["extracted_method_count"] == 40
+    assert payload["summary"]["native_method_count"] >= 10
+    assert any(entry["name"] == "twed" and entry["echowave_status"] == "Implemented in EchoWave" for entry in payload["recommended_additions"])
+    assert any(entry["name"] == "max_ncc" and entry["echowave_status"] == "Implemented in EchoWave" for entry in payload["recommended_additions"])
+    assert any(entry["name"] == "erp" and entry["echowave_status"] == "Implemented in EchoWave" for entry in extracted)
+    assert any(entry["name"] == "shape_similarity" for entry in native)
+
+
+def test_similarity_method_atlas_markdown_contains_formulas() -> None:
+    text = similarity_method_atlas_guide()
+
+    assert "# EchoWave similarity method atlas" in text
+    assert "Implemented and recommended additions from ts_similarity_package" in text
+    assert "twed" in text
+    assert "max_ncc" in text
+    assert "SoftDTW" in text
+    assert "shape_similarity" in text
+
+
+def test_methods_page_is_in_docs_bundle() -> None:
+    html = project_similarity_methods_html()
+    pages = project_docs_pages()
+
+    assert "Similarity Methods Atlas" in html
+    assert "guide/methods.html" in pages
+    assert "What EchoWave now exposes" in pages["guide/methods.html"]
+    assert "Implemented and recommended additions from ts_similarity_package" in pages["guide/methods.html"]
+    assert "sbd" in pages["guide/methods.html"]

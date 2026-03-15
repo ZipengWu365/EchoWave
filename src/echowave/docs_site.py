@@ -48,6 +48,7 @@ from .real_tutorial_data import (
     usgs_earthquakes_ca_ak_2024,
 )
 from .runtime_paths import resolve_repo_subdir
+from .similarity_method_atlas import similarity_method_atlas_dict
 from .similarity import compare_series, rolling_similarity
 from .visuals import (
     axis_bar_svg,
@@ -63,6 +64,7 @@ DOC_PAGES = (
     ("getting-started", "Getting Started"),
     ("tutorials", "Tutorials"),
     ("api", "API Reference"),
+    ("methods", "Methods Atlas"),
     ("scenarios", "Scenarios"),
     ("ecosystem", "Ecosystem"),
     ("agents", "Agent Tools"),
@@ -238,6 +240,7 @@ def _overview_cards() -> str:
         ("Getting Started", "Start with your own CSV, DataFrame, or two columns and get to a first result quickly.", "getting-started.html", "sun"),
         ("Tutorials", "Runnable examples in the style of a human tutorial: load data, call a function, inspect the result.", "tutorials.html", "blue"),
         ("API Reference", "The public compare/profile surface and the result objects you will actually call from Python.", "api.html", "sun"),
+        ("Methods Atlas", "Audit EchoWave's current similarity stack, the 40 extracted methods from ts_similarity_package, and the formulas behind each one.", "methods.html", "blue"),
         ("Scenarios", "Where EchoWave fits across medicine, engineering, product, and research.", "scenarios.html", "blue"),
         ("Ecosystem", "How EchoWave complements sktime, tsfresh, DTAIDistance, and others.", "ecosystem.html", "sun"),
         ("Advanced Integrations", "Tool-calling and agent wrappers live here when you need them, not before.", "agents.html", "blue"),
@@ -1259,6 +1262,145 @@ def project_api_reference_html(*, version: str = PACKAGE_VERSION) -> str:
     )
 
 
+def _atlas_status_tone(label: str) -> str:
+    if label == "Implemented in EchoWave":
+        return "sun"
+    if label == "High-fit addition":
+        return "sun"
+    if label == "Conceptually covered":
+        return "blue"
+    if label == "Possible addition":
+        return ""
+    return ""
+
+
+def _formula_html(formula: str) -> str:
+    return f"<code class='formula-chip'>{escape(formula)}</code>"
+
+
+def project_similarity_methods_html(*, version: str = PACKAGE_VERSION) -> str:
+    atlas = similarity_method_atlas_dict()
+    summary = atlas["summary"]
+    native_methods = atlas["native_methods"]
+    recommended = atlas["recommended_additions"]
+    families = atlas["families"]
+    counts_by_status = summary["counts_by_status"]
+
+    extra_css = """
+    .formula-chip { display:block; font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; white-space: normal; overflow-wrap: anywhere; line-height: 1.5; background: #fffef8; border:1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
+    .native-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .native-card { display:grid; gap: 10px; }
+    .status-stack { display:flex; flex-wrap:wrap; gap: 10px; }
+    .table-note { color: var(--text-600); font-size: 0.92rem; }
+    @media (max-width: 980px) {
+      .native-grid { grid-template-columns: 1fr; }
+    }
+    """
+
+    status_order = (
+        "Implemented in EchoWave",
+        "High-fit addition",
+        "Conceptually covered",
+        "Possible addition",
+        "Low-priority addition",
+    )
+    status_chips = "".join(
+        f"<span class='meta-chip'><strong>{escape(label)}</strong> {count}</span>"
+        for label in status_order
+        if label in counts_by_status
+        for count in (counts_by_status[label],)
+    )
+    native_cards = "".join(
+        "<article class='docs-card native-card'>"
+        f"{_pill(entry['name'], 'blue' if 'reference metric' in entry['family'].lower() else 'sun')}"
+        f"<p><strong>Family:</strong> {escape(entry['family'])}</p>"
+        f"<p><strong>Kind:</strong> {escape(entry['kind'])}</p>"
+        f"{_formula_html(entry['formula'])}"
+        f"<p>{escape(entry['notes'])}</p>"
+        "</article>"
+        for entry in native_methods
+    )
+    recommended_rows = "".join(
+        "<tr>"
+        f"<td><strong>{escape(entry['name'])}</strong><br><span class='muted'>{escape(entry['family'])}</span></td>"
+        f"<td><span class='pill {_atlas_status_tone(entry['echowave_status'])}'>{escape(entry['echowave_status'])}</span></td>"
+        f"<td>{_formula_html(entry['formula'])}</td>"
+        f"<td>{escape(entry['echowave_rationale'])}</td>"
+        "</tr>"
+        for entry in recommended
+    )
+
+    family_sections = []
+    for family in families:
+        rows = "".join(
+            "<tr>"
+            f"<td><strong>{escape(entry['name'])}</strong></td>"
+            f"<td>{escape(entry['kind'])}</td>"
+            f"<td>{escape(entry['metric'])}</td>"
+            f"<td><span class='pill {_atlas_status_tone(entry['echowave_status'])}'>{escape(entry['echowave_status'])}</span></td>"
+            f"<td>{_formula_html(entry['formula'])}</td>"
+            f"<td>{escape(entry['notes'])}</td>"
+            "</tr>"
+            for entry in family["entries"]
+        )
+        family_sections.append(
+            "<section class='docs-card'>"
+            f"{_pill(family['name'], 'sun')}"
+            f"<p>{escape(family['description'])}</p>"
+            "<table class='small-table'>"
+            "<thead><tr><th>Method</th><th>Output</th><th>Metric</th><th>EchoWave fit</th><th>Formula</th><th>Note</th></tr></thead>"
+            f"<tbody>{rows}</tbody>"
+            "</table>"
+            "</section>"
+        )
+
+    body = f"""
+    <div class='docs-grid-2'>
+      <div class='docs-card'>
+        {_pill('Audit summary', 'sun')}
+        <p><strong>This page extracts the method inventory from `ts_similarity_package` and audits which parts fit EchoWave's report-first product direction.</strong></p>
+        <div class='meta-line'>
+          <span class='meta-chip'><strong>EchoWave native</strong> {summary['native_method_count']}</span>
+          <span class='meta-chip'><strong>Extracted methods</strong> {summary['extracted_method_count']}</span>
+          <span class='meta-chip'><strong>Families</strong> {summary['family_count']}</span>
+          <span class='meta-chip'><strong>Version</strong> {escape(version)}</span>
+        </div>
+        <div class='status-stack'>{status_chips}</div>
+      </div>
+      <div class='docs-card'>
+        {_pill('What EchoWave now exposes', 'blue')}
+        <ul class='panel-list'>
+          <li><strong>max_ncc / best_shift / sbd</strong> now cover explicit lead-lag and shift-aware similarity.</li>
+          <li><strong>twed_distance</strong> now covers timestamp-aware elastic comparison for irregular series.</li>
+          <li><strong>erp_distance</strong>, <strong>lcss_similarity</strong>, <strong>lcss_distance</strong>, and <strong>edr_distance</strong> now cover robust partial-match and gap-aware elastic matching.</li>
+          <li><strong>acf_distance</strong> now adds a rhythm-focused structural distance beside the existing report-level spectral view.</li>
+        </ul>
+      </div>
+    </div>
+    <div class='docs-card'>
+      {_pill('Current EchoWave comparison layer', 'sun')}
+      <p class='table-note'>These are the similarity characterizations EchoWave already uses in raw-series comparison reports. Every entry below includes the mathematical expression used or approximated by the current code path.</p>
+      <div class='native-grid'>{native_cards}</div>
+    </div>
+    <div class='docs-card'>
+      {_pill('Implemented and recommended additions from ts_similarity_package', 'blue')}
+      <p class='table-note'>This table keeps both the methods already added to EchoWave and the next strongest candidates that still fit the package's report-first direction.</p>
+      <table class='small-table'>
+        <thead><tr><th>Method</th><th>EchoWave fit</th><th>Formula</th><th>Why it fits</th></tr></thead>
+        <tbody>{recommended_rows}</tbody>
+      </table>
+    </div>
+    {''.join(family_sections)}
+    """
+    return _doc_shell(
+        page_key="methods",
+        title="Similarity Methods Atlas",
+        lead="A full audit of EchoWave's current comparison math plus the extracted time-series similarity methods from ts_similarity_package, each with an explicit mathematical expression.",
+        body=body,
+        extra_css=extra_css,
+    )
+
+
 def project_scenarios_html(*, version: str = PACKAGE_VERSION) -> str:
     cards = []
     for scenario in SCENARIOS:
@@ -1376,6 +1518,7 @@ def project_docs_pages(*, version: str = PACKAGE_VERSION) -> dict[str, str]:
         "guide/getting-started.html": project_getting_started_html(version=version),
         "guide/tutorials.html": project_tutorials_html(version=version),
         "guide/api.html": project_api_reference_html(version=version),
+        "guide/methods.html": project_similarity_methods_html(version=version),
         "guide/scenarios.html": project_scenarios_html(version=version),
         "guide/ecosystem.html": project_ecosystem_html(version=version),
         "guide/agents.html": project_agents_html(version=version),
@@ -1390,6 +1533,7 @@ __all__ = [
     "project_getting_started_html",
     "project_tutorials_html",
     "project_api_reference_html",
+    "project_similarity_methods_html",
     "project_scenarios_html",
     "project_ecosystem_html",
     "project_agents_html",

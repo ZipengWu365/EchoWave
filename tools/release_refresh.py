@@ -33,6 +33,7 @@ from echowave import (  # noqa: E402
     pypi_long_description,
     quickstart_guide,
     routing_contract_guide,
+    similarity_method_atlas_guide,
     starter_datasets_guide,
     start_here_guide,
     tool_schemas,
@@ -129,6 +130,7 @@ def main() -> None:
     _write(ROOT / "STARTER_DATASETS.md", starter_datasets_guide())
     _write(ROOT / "AGENT_SCHEMAS.md", agent_schema_guide())
     _write(ROOT / "ROUTING_CONTRACTS.md", routing_contract_guide())
+    _write(ROOT / "SIMILARITY_METHOD_ATLAS.md", similarity_method_atlas_guide())
     _write(ROOT / "UTILITY_BENCHMARK.md", utility_benchmark_guide())
     _write(ROOT / "PROJECT_HOMEPAGE.md", "# EchoWave homepage\n\nUse `homepage.html` or `docs/index.html` as the official GitHub Pages front door.\n")
     _write(ROOT / "RELEASE_DRAFT_v0.16.0.md", _release_draft())

@@ -38,6 +38,8 @@ _SUBMODULES = (
     "repo_docs",
     "schema",
     "similarity",
+    "similarity_method_atlas",
+    "similarity_methods",
     "sitebundle",
     "tabular",
     "visuals",
