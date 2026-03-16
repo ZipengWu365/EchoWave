@@ -240,7 +240,7 @@ def _overview_cards() -> str:
         ("Getting Started", "Start with your own CSV, DataFrame, or two columns and get to a first result quickly.", "getting-started.html", "sun"),
         ("Tutorials", "Runnable examples in the style of a human tutorial: load data, call a function, inspect the result.", "tutorials.html", "blue"),
         ("API Reference", "The public compare/profile surface and the result objects you will actually call from Python.", "api.html", "sun"),
-        ("Methods Atlas", "Audit EchoWave's current similarity stack, the 40 extracted methods from ts_similarity_package, and the formulas behind each one.", "methods.html", "blue"),
+        ("Methods Atlas", "Audit EchoWave's current similarity stack, the 127 extracted methods from ts_similarity_package_v2_pkg, and the formulas behind each one.", "methods.html", "blue"),
         ("Scenarios", "Where EchoWave fits across medicine, engineering, product, and research.", "scenarios.html", "blue"),
         ("Ecosystem", "How EchoWave complements sktime, tsfresh, DTAIDistance, and others.", "ecosystem.html", "sun"),
         ("Advanced Integrations", "Tool-calling and agent wrappers live here when you need them, not before.", "agents.html", "blue"),
@@ -1324,6 +1324,7 @@ def project_similarity_methods_html(*, version: str = PACKAGE_VERSION) -> str:
         "<tr>"
         f"<td><strong>{escape(entry['name'])}</strong><br><span class='muted'>{escape(entry['family'])}</span></td>"
         f"<td><span class='pill {_atlas_status_tone(entry['echowave_status'])}'>{escape(entry['echowave_status'])}</span></td>"
+        f"<td><span class='inline-code'>{escape(entry['echowave_api'] or '-')}</span></td>"
         f"<td>{_formula_html(entry['formula'])}</td>"
         f"<td>{escape(entry['echowave_rationale'])}</td>"
         "</tr>"
@@ -1337,7 +1338,12 @@ def project_similarity_methods_html(*, version: str = PACKAGE_VERSION) -> str:
             f"<td><strong>{escape(entry['name'])}</strong></td>"
             f"<td>{escape(entry['kind'])}</td>"
             f"<td>{escape(entry['metric'])}</td>"
+            f"<td>{escape(entry['complexity'])}</td>"
+            f"<td>{escape(entry['unequal_length'])}</td>"
+            f"<td>{escape(entry['multivariate'])}</td>"
+            f"<td>{escape(entry['implementation'])}</td>"
             f"<td><span class='pill {_atlas_status_tone(entry['echowave_status'])}'>{escape(entry['echowave_status'])}</span></td>"
+            f"<td><span class='inline-code'>{escape(entry['echowave_api'] or '-')}</span></td>"
             f"<td>{_formula_html(entry['formula'])}</td>"
             f"<td>{escape(entry['notes'])}</td>"
             "</tr>"
@@ -1348,7 +1354,7 @@ def project_similarity_methods_html(*, version: str = PACKAGE_VERSION) -> str:
             f"{_pill(family['name'], 'sun')}"
             f"<p>{escape(family['description'])}</p>"
             "<table class='small-table'>"
-            "<thead><tr><th>Method</th><th>Output</th><th>Metric</th><th>EchoWave fit</th><th>Formula</th><th>Note</th></tr></thead>"
+            "<thead><tr><th>Method</th><th>Output</th><th>Metric</th><th>Complexity</th><th>Unequal length</th><th>Multivariate</th><th>Implementation</th><th>EchoWave fit</th><th>EchoWave API</th><th>Formula</th><th>Note</th></tr></thead>"
             f"<tbody>{rows}</tbody>"
             "</table>"
             "</section>"
@@ -1358,11 +1364,12 @@ def project_similarity_methods_html(*, version: str = PACKAGE_VERSION) -> str:
     <div class='docs-grid-2'>
       <div class='docs-card'>
         {_pill('Audit summary', 'sun')}
-        <p><strong>This page extracts the method inventory from `ts_similarity_package` and audits which parts fit EchoWave's report-first product direction.</strong></p>
+        <p><strong>This page imports the full method registry from `ts_similarity_package_v2_pkg` and audits which parts fit EchoWave's report-first product direction.</strong></p>
         <div class='meta-line'>
           <span class='meta-chip'><strong>EchoWave native</strong> {summary['native_method_count']}</span>
           <span class='meta-chip'><strong>Extracted methods</strong> {summary['extracted_method_count']}</span>
           <span class='meta-chip'><strong>Families</strong> {summary['family_count']}</span>
+          <span class='meta-chip'><strong>High-fit / implemented</strong> {summary['recommended_method_count']}</span>
           <span class='meta-chip'><strong>Version</strong> {escape(version)}</span>
         </div>
         <div class='status-stack'>{status_chips}</div>
@@ -1371,6 +1378,9 @@ def project_similarity_methods_html(*, version: str = PACKAGE_VERSION) -> str:
         {_pill('What EchoWave now exposes', 'blue')}
         <ul class='panel-list'>
           <li><strong>max_ncc / best_shift / sbd</strong> now cover explicit lead-lag and shift-aware similarity.</li>
+          <li><strong>independent_max_ncc / independent_sbd</strong> now cover the channel-independent multivariate sliding variants highlighted by the v2 package.</li>
+          <li><strong>periodogram_distance</strong> and <strong>trend_distance</strong> now add direct frequency-domain and trend-feature distances.</li>
+          <li><strong>ordinal_pattern_js_distance</strong> and <strong>linear_trend_model_distance</strong> now cover symbolic rhythm comparison and lightweight trend-model comparison.</li>
           <li><strong>twed_distance</strong> now covers timestamp-aware elastic comparison for irregular series.</li>
           <li><strong>erp_distance</strong>, <strong>lcss_similarity</strong>, <strong>lcss_distance</strong>, and <strong>edr_distance</strong> now cover robust partial-match and gap-aware elastic matching.</li>
           <li><strong>acf_distance</strong> now adds a rhythm-focused structural distance beside the existing report-level spectral view.</li>
@@ -1383,10 +1393,10 @@ def project_similarity_methods_html(*, version: str = PACKAGE_VERSION) -> str:
       <div class='native-grid'>{native_cards}</div>
     </div>
     <div class='docs-card'>
-      {_pill('Implemented and recommended additions from ts_similarity_package', 'blue')}
-      <p class='table-note'>This table keeps both the methods already added to EchoWave and the next strongest candidates that still fit the package's report-first direction.</p>
+      {_pill('Implemented and high-fit additions from ts_similarity_package_v2_pkg', 'blue')}
+      <p class='table-note'>This table stays selective: it shows only the methods already added to EchoWave and the strongest candidates from the 127-method v2 registry. In the current build, the full high-fit shortlist is already implemented.</p>
       <table class='small-table'>
-        <thead><tr><th>Method</th><th>EchoWave fit</th><th>Formula</th><th>Why it fits</th></tr></thead>
+        <thead><tr><th>Method</th><th>EchoWave fit</th><th>EchoWave API</th><th>Formula</th><th>Why it fits</th></tr></thead>
         <tbody>{recommended_rows}</tbody>
       </table>
     </div>
@@ -1395,7 +1405,7 @@ def project_similarity_methods_html(*, version: str = PACKAGE_VERSION) -> str:
     return _doc_shell(
         page_key="methods",
         title="Similarity Methods Atlas",
-        lead="A full audit of EchoWave's current comparison math plus the extracted time-series similarity methods from ts_similarity_package, each with an explicit mathematical expression.",
+        lead="A full audit of EchoWave's current comparison math plus the 127 extracted time-series similarity methods from ts_similarity_package_v2_pkg, each with an explicit mathematical expression.",
         body=body,
         extra_css=extra_css,
     )

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from itertools import permutations
 from typing import Any
 
 import numpy as np
@@ -63,6 +64,13 @@ def _local_l2(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.linalg.norm(a - b))
 
 
+def _to_univariate_series(data: Any) -> np.ndarray:
+    arr, _ = _clean_series(_to_time_series(data))
+    if arr.shape[1] != 1:
+        raise ValueError("This method currently supports univariate series only.")
+    return arr[:, 0]
+
+
 def _autocorrelation_vector(x: np.ndarray, max_lag: int) -> np.ndarray:
     series = np.asarray(x, dtype=float).reshape(-1)
     series = series[np.isfinite(series)]
@@ -120,6 +128,27 @@ def sbd(x: Any, y: Any, *, normalize: bool = True) -> float:
     return float(1.0 - value)
 
 
+def independent_max_ncc(x: Any, y: Any, *, normalize: bool = True) -> float:
+    left, right, _, _ = _pair_series(x, y)
+    if left.shape[1] == 0:
+        return float("nan")
+    values = [
+        max_ncc(left[:, dim], right[:, dim], normalize=normalize)
+        for dim in range(left.shape[1])
+    ]
+    finite = [value for value in values if np.isfinite(value)]
+    if not finite:
+        return float("nan")
+    return float(np.mean(finite))
+
+
+def independent_sbd(x: Any, y: Any, *, normalize: bool = True) -> float:
+    value = independent_max_ncc(x, y, normalize=normalize)
+    if not np.isfinite(value):
+        return float("nan")
+    return float(1.0 - value)
+
+
 def acf_distance(x: Any, y: Any, *, max_lag: int = 10) -> float:
     left, right, _, _ = _pair_series(x, y)
     if max_lag <= 0:
@@ -132,6 +161,105 @@ def acf_distance(x: Any, y: Any, *, max_lag: int = 10) -> float:
     if not distances:
         return float("nan")
     return float(np.mean(distances))
+
+
+def _periodogram_embedding(x: np.ndarray, *, n_coeffs: int = 32, normalize: bool = True) -> np.ndarray:
+    parts = []
+    for dim in range(x.shape[1]):
+        power = np.abs(np.fft.rfft(x[:, dim])) ** 2
+        if normalize and float(np.sum(power)) > EPS:
+            power = power / float(np.sum(power))
+        keep = min(n_coeffs, len(power))
+        parts.append(power[:keep])
+        if keep < n_coeffs:
+            parts.append(np.zeros(n_coeffs - keep, dtype=float))
+    return np.concatenate(parts).astype(float)
+
+
+def periodogram_distance(x: Any, y: Any, *, n_coeffs: int = 32) -> float:
+    left, right, _, _ = _pair_series(x, y)
+    if len(left) == 0 or len(right) == 0:
+        return float("nan")
+    ex = _periodogram_embedding(left, n_coeffs=n_coeffs, normalize=True)
+    ey = _periodogram_embedding(right, n_coeffs=n_coeffs, normalize=True)
+    return float(np.linalg.norm(ex - ey))
+
+
+def _trend_feature_vector(x: np.ndarray) -> np.ndarray:
+    t = np.arange(len(x), dtype=float)
+    feats = []
+    for dim in range(x.shape[1]):
+        values = x[:, dim]
+        if len(values) < 2:
+            feats.extend([float(values[0]) if len(values) else 0.0, 0.0, 0.0])
+            continue
+        slope, intercept = np.polyfit(t, values, 1)
+        pred = slope * t + intercept
+        feats.extend([float(intercept), float(slope), float(np.std(values - pred))])
+    return np.asarray(feats, dtype=float)
+
+
+def trend_distance(x: Any, y: Any) -> float:
+    left, right, _, _ = _pair_series(x, y)
+    if len(left) == 0 or len(right) == 0:
+        return float("nan")
+    return float(np.linalg.norm(_trend_feature_vector(left) - _trend_feature_vector(right)))
+
+
+def _ordinal_pattern_distribution(x: Any, *, order: int = 3, delay: int = 1) -> np.ndarray:
+    values = _to_univariate_series(x)
+    if order < 2 or delay < 1:
+        raise ValueError("order must be >= 2 and delay must be >= 1.")
+    n_vectors = len(values) - (order - 1) * delay
+    patterns = list(permutations(range(order)))
+    index = {pattern: idx for idx, pattern in enumerate(patterns)}
+    counts = np.zeros(len(patterns), dtype=float)
+    if n_vectors <= 0:
+        return counts
+    for idx in range(n_vectors):
+        window = values[idx : idx + order * delay : delay]
+        pattern = tuple(np.argsort(window, kind="mergesort"))
+        counts[index[pattern]] += 1.0
+    if float(np.sum(counts)) > EPS:
+        counts = counts / float(np.sum(counts))
+    return counts
+
+
+def _jensen_shannon_distance(p: np.ndarray, q: np.ndarray) -> float:
+    if p.shape != q.shape:
+        raise ValueError("Jensen-Shannon distance requires equal-length vectors.")
+    if np.any(p < 0) or np.any(q < 0):
+        raise ValueError("Jensen-Shannon distance requires nonnegative inputs.")
+    px = p / float(np.sum(p) if float(np.sum(p)) > EPS else 1.0)
+    py = q / float(np.sum(q) if float(np.sum(q)) > EPS else 1.0)
+    m = 0.5 * (px + py)
+    def _kl(a: np.ndarray, b: np.ndarray) -> float:
+        mask = a > EPS
+        return float(np.sum(a[mask] * np.log(a[mask] / b[mask])))
+    js_div = 0.5 * _kl(px, m) + 0.5 * _kl(py, m)
+    return float(np.sqrt(max(js_div, 0.0)))
+
+
+def ordinal_pattern_js_distance(x: Any, y: Any, *, order: int = 3, delay: int = 1) -> float:
+    px = _ordinal_pattern_distribution(x, order=order, delay=delay)
+    py = _ordinal_pattern_distribution(y, order=order, delay=delay)
+    return _jensen_shannon_distance(px, py)
+
+
+def _linear_trend_parameters(x: np.ndarray) -> np.ndarray:
+    t = np.arange(len(x), dtype=float)
+    if len(x) < 2:
+        return np.array([float(x[0]) if len(x) else 0.0, 0.0, 0.0], dtype=float)
+    slope, intercept = np.polyfit(t, x, 1)
+    pred = slope * t + intercept
+    resid = np.std(x - pred)
+    return np.array([float(intercept), float(slope), float(resid)], dtype=float)
+
+
+def linear_trend_model_distance(x: Any, y: Any) -> float:
+    left = _to_univariate_series(x)
+    right = _to_univariate_series(y)
+    return float(np.linalg.norm(_linear_trend_parameters(left) - _linear_trend_parameters(right)))
 
 
 def _window_bounds(i: int, m: int, window: int | None) -> tuple[int, int]:
@@ -272,7 +400,13 @@ __all__ = [
     "max_ncc",
     "best_shift",
     "sbd",
+    "independent_max_ncc",
+    "independent_sbd",
     "acf_distance",
+    "periodogram_distance",
+    "trend_distance",
+    "ordinal_pattern_js_distance",
+    "linear_trend_model_distance",
     "lcss_similarity",
     "lcss_distance",
     "edr_distance",

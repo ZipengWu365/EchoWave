@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import csv
 from dataclasses import asdict, dataclass
+from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
 GuideFormat = Literal["markdown", "dict"]
@@ -23,10 +26,15 @@ class ExtractedMethod:
     family: str
     kind: str
     metric: str
+    complexity: str
+    unequal_length: str
+    multivariate: str
+    implementation: str
     formula: str
     notes: str
     echowave_status: str
     echowave_rationale: str
+    echowave_api: str
 
 
 _FAMILY_ORDER = (
@@ -36,7 +44,7 @@ _FAMILY_ORDER = (
     "kernel",
     "feature-based",
     "model-based",
-    "embedding-based",
+    "embedding",
 )
 
 _FAMILY_DESCRIPTIONS = {
@@ -46,147 +54,149 @@ _FAMILY_DESCRIPTIONS = {
     "kernel": "Similarity through kernel scores rather than direct distances.",
     "feature-based": "Compare derived features instead of raw waveforms.",
     "model-based": "Compare fitted dynamics or transition structure.",
-    "embedding-based": "Encode first, then compare in a latent or compressed space.",
+    "embedding": "Encode first, then compare in a latent or compressed space.",
 }
 
 _DEFAULT_STATUS_BY_FAMILY = {
     "lock-step": (
         "Low-priority addition",
         "EchoWave already exposes familiar pointwise statistics, so adding more lock-step baselines is usually duplication rather than product leverage.",
+        "",
     ),
     "sliding": (
-        "High-fit addition",
-        "Shift-aware comparisons fit EchoWave's compare-first story and are still easy to explain in reports.",
+        "Possible addition",
+        "Shift-aware comparisons fit EchoWave's compare-first story, but EchoWave should only add the variants that remain clearly interpretable in reports.",
+        "",
     ),
     "elastic": (
         "Possible addition",
         "Elastic methods are a strong thematic fit, but EchoWave should only add the variants that stay explainable for non-specialists.",
+        "",
     ),
     "kernel": (
         "Low-priority addition",
         "Kernel scores can be useful downstream, but they are less legible than report-friendly distances or similarities.",
+        "",
     ),
     "feature-based": (
         "Possible addition",
         "Feature-space methods can strengthen explainability when the representation itself is explicit and stable.",
+        "",
     ),
     "model-based": (
         "Possible addition",
         "Model-based distances can be valuable for advanced users, but they depend on stronger modeling assumptions than EchoWave's current default surface.",
+        "",
     ),
-    "embedding-based": (
+    "embedding": (
         "Low-priority addition",
         "Generic encoder adapters are flexible, but they are too open-ended for EchoWave's default public surface.",
+        "",
     ),
 }
 
-_IMPLEMENTED_EXTRACTED_METHODS = {
-    "max_ncc",
-    "sbd",
-    "acf_distance",
-    "lcss_similarity",
-    "lcss_distance",
-    "edr",
-    "erp",
-    "twed",
+_IMPLEMENTED_METHODS_BY_SOURCE_NAME = {
+    "max_normalized_cross_correlation": "max_ncc",
+    "sbd": "sbd",
+    "independent_max_ncc": "independent_max_ncc",
+    "independent_sbd": "independent_sbd",
+    "acf_distance": "acf_distance",
+    "periodogram_distance": "periodogram_distance",
+    "trend_distance": "trend_distance",
+    "ordinal_pattern_js_distance": "ordinal_pattern_js_distance",
+    "linear_trend_model_distance": "linear_trend_model_distance",
+    "lcss_similarity": "lcss_similarity",
+    "lcss_distance": "lcss_distance",
+    "edr": "edr_distance",
+    "erp": "erp_distance",
+    "twed": "twed_distance",
 }
 
 _STATUS_OVERRIDES = {
     "pearson_similarity": (
         "Conceptually covered",
         "EchoWave already surfaces Pearson r directly as a familiar reference metric.",
+        "pearson_r",
     ),
     "pearson_distance": (
         "Conceptually covered",
         "EchoWave already exposes Pearson r, so the distance transform is trivial and does not need a separate public method.",
+        "pearson_r",
+    ),
+    "spearman_similarity": (
+        "Conceptually covered",
+        "EchoWave already exposes Spearman rho directly as a rank-robust reference metric.",
+        "spearman_rho",
+    ),
+    "spearman_distance": (
+        "Conceptually covered",
+        "EchoWave already exposes Spearman rho, so the distance transform is not worth a separate public method.",
+        "spearman_rho",
+    ),
+    "kendall_similarity": (
+        "Conceptually covered",
+        "EchoWave already exposes Kendall tau directly as a rank-order agreement reference metric.",
+        "kendall_tau",
+    ),
+    "kendall_distance": (
+        "Conceptually covered",
+        "EchoWave already exposes Kendall tau, so the distance transform is not worth a separate public method.",
+        "kendall_tau",
     ),
     "dtw": (
         "Conceptually covered",
-        "EchoWave already reports a DTW-based similarity component.",
+        "EchoWave already reports a constrained DTW-based similarity component.",
+        "dtw_similarity",
+    ),
+    "cdtw": (
+        "Conceptually covered",
+        "EchoWave's DTW similarity already uses a constrained warping path rather than unconstrained DTW.",
+        "dtw_similarity",
     ),
     "ddtw": (
         "Conceptually covered",
         "EchoWave's DTW similarity already mixes in derivative-space warping.",
+        "dtw_similarity",
     ),
     "spectral_cosine_similarity": (
         "Conceptually covered",
         "EchoWave already includes a spectral similarity component, although the current formula blends spectral JS overlap with structural correlation.",
-    ),
-    "max_ncc": (
-        "High-fit addition",
-        "Explicit shift-invariant similarity would strengthen EchoWave's story around phase offsets and lead-lag comparisons.",
-    ),
-    "sbd": (
-        "High-fit addition",
-        "SBD pairs naturally with EchoWave's shape language and gives a clean, reportable shift-aware distance.",
-    ),
-    "twed": (
-        "High-fit addition",
-        "EchoWave already cares about timestamps and irregular sampling; TWED is the cleanest timestamp-aware elastic addition.",
-    ),
-    "erp": (
-        "High-fit addition",
-        "ERP adds a metric elastic distance with explicit gap semantics that can still be explained clearly in a report.",
-    ),
-    "lcss_similarity": (
-        "High-fit addition",
-        "LCSS adds a robust partial-match view that is useful when noisy sections or missing peaks should not dominate the verdict.",
-    ),
-    "lcss_distance": (
-        "High-fit addition",
-        "The distance form of LCSS would complement the similarity form for retrieval and thresholding workflows.",
-    ),
-    "edr": (
-        "High-fit addition",
-        "EDR gives EchoWave a robust edit-style distance for noisy or threshold-based analog search.",
-    ),
-    "acf_distance": (
-        "High-fit addition",
-        "Autocorrelation-pattern distance would complement EchoWave's existing spectral view with a directly interpretable rhythm comparison.",
-    ),
-    "cdtw": (
-        "Possible addition",
-        "A constrained DTW variant could improve stability and speed without changing the overall mental model.",
-    ),
-    "wdtw": (
-        "Possible addition",
-        "Weighted DTW is useful when large phase shifts should be penalized more explicitly than in plain DTW.",
-    ),
-    "soft_dtw": (
-        "Possible addition",
-        "Soft-DTW matters if EchoWave wants differentiable training-time hooks, but it is less important for the current report-first product surface.",
-    ),
-    "soft_dtw_divergence": (
-        "Possible addition",
-        "The divergence form is cleaner than raw soft-DTW if EchoWave later adds learning-oriented or optimization-aware workflows.",
-    ),
-    "stats_distance": (
-        "Possible addition",
-        "A small explicit feature vector could help dataset-to-dataset summaries without turning EchoWave into a metric zoo.",
-    ),
-    "paa_distance": (
-        "Possible addition",
-        "PAA offers cheap coarse-shape comparison for previews, clustering, and fast approximate search.",
+        "spectral_similarity",
     ),
     "jensen_shannon": (
-        "Possible addition",
-        "Jensen-Shannon distance is already used inside EchoWave's spectral machinery and could be exposed for normalized-distribution views when needed.",
+        "Conceptually covered",
+        "EchoWave already uses Jensen-Shannon overlap inside its spectral similarity component.",
+        "spectral_similarity",
     ),
-    "cosine_similarity": (
-        "Possible addition",
-        "Cosine similarity is familiar and cheap, but it overlaps with EchoWave's existing z-scored shape and correlation story.",
+    "shift_pearson_similarity": (
+        "Conceptually covered",
+        "EchoWave already exposes a best-lag Pearson metric for shift-aware linear relationships.",
+        "best_lag_pearson_r",
     ),
-    "cosine_distance": (
-        "Possible addition",
-        "The cosine distance transform is simple, but it is only worth adding if EchoWave wants a clearer vector-baseline panel.",
+    "shift_pearson_distance": (
+        "Conceptually covered",
+        "EchoWave already exposes a best-lag Pearson metric, so the distance transform is not worth a separate public method.",
+        "best_lag_pearson_r",
     ),
-    "ar_distance": (
-        "Possible addition",
-        "AR-parameter distance could fit EchoWave's structural language if framed as a lightweight generative summary rather than a forecasting engine.",
+    "periodogram_distance": (
+        "High-fit addition",
+        "A direct periodogram distance would complement EchoWave's current blended spectral component with a simpler frequency-domain baseline.",
+        "",
     ),
-    "markov_distance": (
-        "Possible addition",
-        "Transition-matrix distance could be useful for discretized behavioral or event-state sequences, but it is more specialized than EchoWave's default story.",
+    "trend_distance": (
+        "High-fit addition",
+        "A direct trend-feature distance fits EchoWave's trend-first explanation style and would be easy to describe in reports.",
+        "",
+    ),
+    "ordinal_pattern_js_distance": (
+        "High-fit addition",
+        "Ordinal-pattern distribution distance would give EchoWave a robust symbolic rhythm comparator that stays explainable.",
+        "",
+    ),
+    "linear_trend_model_distance": (
+        "High-fit addition",
+        "A lightweight trend-model distance matches EchoWave's structural language better than heavier model-based distances.",
+        "",
     ),
 }
 
@@ -263,59 +273,47 @@ _NATIVE_METHODS = (
     ),
 )
 
-_EXTRACTED_METHODS_RAW = (
-    ("euclidean", "lock-step", "distance", "yes", r"$d(x,y)=\sqrt{\sum_t \|x_t-y_t\|_2^2}$", "Equal-length, pointwise aligned baseline."),
-    ("squared_euclidean", "lock-step", "distance", "no", r"$d(x,y)=\sum_t \|x_t-y_t\|_2^2$", "Useful as a loss; not a strict metric."),
-    ("manhattan", "lock-step", "distance", "yes", r"$d(x,y)=\sum_t \|x_t-y_t\|_1$", "More robust to outliers than Euclidean in some settings."),
-    ("minkowski", "lock-step", "distance", "yes (p>=1)", r"$d_p(x,y)=(\sum_t \|x_t-y_t\|_p^p)^{1/p}$", "Generalizes Manhattan and Euclidean."),
-    ("chebyshev", "lock-step", "distance", "yes", r"$d(x,y)=\max_t \|x_t-y_t\|_\infty$", "Focuses on the largest deviation."),
-    ("canberra", "lock-step", "distance", "yes", r"$d(x,y)=\sum_t \frac{|x_t-y_t|}{|x_t|+|y_t|}$", "Sensitive near zero."),
-    ("lorentzian", "lock-step", "distance", "not guaranteed", r"$d(x,y)=\sum_t \log(1+|x_t-y_t|)$", "Compresses large deviations logarithmically."),
-    ("cosine_similarity", "lock-step", "similarity", "no", r"$s(x,y)=\frac{\langle x,y \rangle}{\|x\|_2\|y\|_2}$", "Measures directional similarity."),
-    ("cosine_distance", "lock-step", "distance-like", "no", r"$d(x,y)=1-s_{cos}(x,y)$", "Monotone transform of cosine similarity."),
-    ("pearson_similarity", "lock-step", "similarity", "no", r"$r(x,y)=\frac{\sum_t (x_t-\bar x)(y_t-\bar y)}{\sqrt{\sum_t (x_t-\bar x)^2}\sqrt{\sum_t (y_t-\bar y)^2}}$", "Captures linear correlation after centering."),
-    ("pearson_distance", "lock-step", "distance-like", "no", r"$d(x,y)=1-r(x,y)$", "Distance-like transform of Pearson correlation."),
-    ("jensen_shannon", "lock-step", "distance", "yes", r"$JSD(P,Q)=\sqrt{\tfrac{1}{2}KL(P\|M)+\tfrac{1}{2}KL(Q\|M)},\ M=\tfrac{P+Q}{2}$", "Requires nonnegative inputs interpreted as distributions."),
-    ("max_ncc", "sliding", "similarity", "no", r"$s(x,y)=\max_\ell NCC(x,shift(y,\ell))$", "Shift-invariant similarity via cross-correlation."),
-    ("sbd", "sliding", "distance-like", "no", r"$d(x,y)=1-\max_\ell NCC(x,shift(y,\ell))$", "Shape-based distance from k-Shape."),
-    ("dtw", "elastic", "distance", "no", r"$DTW(x,y)=\sqrt{\min_{\pi} \sum_{(i,j)\in\pi} \|x_i-y_j\|_2^2}$", "Optimal nonlinear alignment."),
-    ("cdtw", "elastic", "distance", "no", r"$cDTW=DTW$ with a Sakoe-Chiba window $|i-j|\le w$", "Constrains unrealistic warps."),
-    ("wdtw", "elastic", "distance", "no", r"$WDTW(x,y)=\sqrt{\min_{\pi} \sum_{(i,j)\in\pi} w(|i-j|)\|x_i-y_j\|_2^2}$", "Penalizes large phase differences through a logistic weight."),
-    ("ddtw", "elastic", "distance", "no", r"$DDTW(x,y)=DTW(\Delta x,\Delta y)$", "Applies DTW to derivative-transformed series for shape emphasis."),
-    ("soft_dtw", "elastic", "soft distance / loss", "no", r"$SoftDTW_\gamma(x,y)=softmin_\gamma(\mathrm{all\ alignment\ costs})$", "Differentiable smoothing of DTW."),
-    ("soft_dtw_divergence", "elastic", "divergence", "no", r"$D_\gamma(x,y)=SoftDTW(x,y)-\tfrac12 SoftDTW(x,x)-\tfrac12 SoftDTW(y,y)$", "Nonnegative divergence induced by soft-DTW."),
-    ("lcss_similarity", "elastic", "similarity", "no", r"$LCSS(x,y)=\frac{1}{\min(n,m)}\max \#\{(i,j): \|x_i-y_j\|\le \epsilon\}$ under order constraints", "Robust to noise and outliers through thresholded matching."),
-    ("lcss_distance", "elastic", "distance-like", "no", r"$d(x,y)=1-LCSS(x,y)$", "Distance-like transform of LCSS similarity."),
-    ("edr", "elastic", "distance", "no", r"$EDR$ uses edit distance with substitution cost $0/1$ depending on $\|x_i-y_j\|\le\epsilon$", "Thresholded edit distance on real sequences."),
-    ("swale_similarity", "elastic", "similarity", "no", r"$SWALE$ maximizes reward for matches and subtracts penalties for gaps.", "A reward-penalty view of threshold-based alignment."),
-    ("erp", "elastic", "distance", "yes", r"$ERP$ uses edit distance with a real-valued gap $g$: diagonal $\|x_i-y_j\|$, gaps $\|x_i-g\|$ or $\|y_j-g\|$", "A metric elastic measure."),
-    ("msm", "elastic", "distance", "yes", r"$MSM$ is the minimum cost of move, split, and merge operations.", "The current implementation is univariate."),
-    ("twed", "elastic", "distance", "yes", r"$TWED$ combines edit operations, point distances, timestamps, stiffness $\nu$, and penalty $\lambda$.", "Suitable when timestamps carry meaning."),
-    ("rbf_kernel", "kernel", "kernel similarity", "n/a", r"$K(x,y)=\exp(-\gamma \|x-y\|_2^2)$", "Kernelized similarity on equal-length vectors."),
-    ("gak", "kernel", "kernel similarity", "n/a", r"$GAK(x,y)=\sum_{\pi\in A} \prod_{(i,j)\in\pi} k(x_i,y_j)$", "Sums over all alignments instead of only the best one."),
-    ("lgak", "kernel", "kernel score", "n/a", r"$LGAK(x,y)=\log(GAK(x,y)+\epsilon)$", "Log-transformed global alignment kernel."),
-    ("weighted_ncc_kernel", "kernel", "kernel similarity", "n/a", r"$K(x,y)=\sum_\ell w(\ell)NCC_\ell(x,y)$", "Practical shift-aware kernel adapter built on NCC."),
-    ("stats_distance", "feature-based", "distance", "yes", r"$d(x,y)=\|\phi_{stats}(x)-\phi_{stats}(y)\|_2$", "Compares handcrafted statistical feature vectors."),
-    ("acf_distance", "feature-based", "distance", "yes", r"$d(x,y)=\|ACF_L(x)-ACF_L(y)\|_2$", "Autocorrelation-pattern distance."),
-    ("spectral_cosine_similarity", "feature-based", "similarity", "no", r"$s(x,y)=cos(|FFT(x)|,|FFT(y)|)$", "Frequency-domain similarity."),
-    ("spectral_distance", "feature-based", "distance-like", "no", r"$d(x,y)=1-s_{spectral}(x,y)$", "Distance-like transform of spectral cosine similarity."),
-    ("paa_distance", "feature-based", "distance", "yes", r"$d(x,y)=\|PAA_s(x)-PAA_s(y)\|_2$", "Piecewise aggregate approximation distance."),
-    ("ar_distance", "model-based", "distance", "yes", r"$d(x,y)=\|[c_x,\phi_x]-[c_y,\phi_y]\|_2$ after AR(p) fitting", "Compares fitted autoregressive parameters."),
-    ("markov_distance", "model-based", "distance", "yes", r"$d(x,y)=\|P_x-P_y\|_F$ after discretized Markov modeling", "Compares transition dynamics rather than raw points."),
-    ("embedding_distance", "embedding-based", "distance", "depends on encoder + metric", r"$z_x=Enc(x),\; z_y=Enc(y),\; d(x,y)=dist(z_x,z_y)$", "Generic adapter for PAA/DFT/stats/random-projection/custom encoders."),
-    ("embedding_similarity", "embedding-based", "similarity", "depends on encoder + metric", r"$s(x,y)=sim(Enc(x),Enc(y))$", "Generic similarity on latent or compressed representations."),
-)
+
+def _registry_path() -> Path:
+    return Path(__file__).with_name("data") / "ts_similarity_package_v2_registry.csv"
 
 
-def _status_for(name: str, family: str) -> tuple[str, str]:
-    if name in _IMPLEMENTED_EXTRACTED_METHODS:
+def _status_for(name: str, family: str) -> tuple[str, str, str]:
+    if name in _IMPLEMENTED_METHODS_BY_SOURCE_NAME:
+        api_name = _IMPLEMENTED_METHODS_BY_SOURCE_NAME[name]
         return (
             "Implemented in EchoWave",
             "This method is now available as a public low-level EchoWave similarity function.",
+            api_name,
         )
     if name in _STATUS_OVERRIDES:
         return _STATUS_OVERRIDES[name]
     return _DEFAULT_STATUS_BY_FAMILY[family]
+
+
+@lru_cache(maxsize=1)
+def _registry_rows() -> tuple[dict[str, str], ...]:
+    path = _registry_path()
+    if not path.exists():
+        raise FileNotFoundError(f"Expected vendored similarity registry at {path}")
+    with path.open(newline="", encoding="utf-8") as handle:
+        reader = csv.DictReader(handle)
+        rows = [
+            {
+                "name": row["name"].strip(),
+                "family": row["family"].strip(),
+                "kind": row["kind"].strip(),
+                "metric": row["metric"].strip(),
+                "complexity": row["complexity"].strip(),
+                "unequal_length": row["unequal_length"].strip(),
+                "multivariate": row["multivariate"].strip(),
+                "implementation": row["implementation"].strip(),
+                "formula": (row.get("formula_en") or row.get("formula_cn") or "").strip(),
+                "notes": (row.get("notes_en") or row.get("notes_cn") or "").strip(),
+            }
+            for row in reader
+        ]
+    return tuple(rows)
 
 
 def native_similarity_methods() -> list[dict[str, str]]:
@@ -324,19 +322,24 @@ def native_similarity_methods() -> list[dict[str, str]]:
 
 def extracted_similarity_methods() -> list[dict[str, str]]:
     rows: list[dict[str, str]] = []
-    for name, family, kind, metric, formula, notes in _EXTRACTED_METHODS_RAW:
-        status, rationale = _status_for(name, family)
+    for row in _registry_rows():
+        status, rationale, api_name = _status_for(row["name"], row["family"])
         rows.append(
             asdict(
                 ExtractedMethod(
-                    name=name,
-                    family=family,
-                    kind=kind,
-                    metric=metric,
-                    formula=formula,
-                    notes=notes,
+                    name=row["name"],
+                    family=row["family"],
+                    kind=row["kind"],
+                    metric=row["metric"],
+                    complexity=row["complexity"],
+                    unequal_length=row["unequal_length"],
+                    multivariate=row["multivariate"],
+                    implementation=row["implementation"],
+                    formula=row["formula"],
+                    notes=row["notes"],
                     echowave_status=status,
                     echowave_rationale=rationale,
+                    echowave_api=api_name,
                 )
             )
         )
@@ -358,7 +361,7 @@ def similarity_method_atlas_dict() -> dict[str, object]:
         "Low-priority addition": 4,
     }
     recommended = sorted(
-        [row for row in extracted if row["echowave_status"] in {"Implemented in EchoWave", "High-fit addition", "Possible addition"}],
+        [row for row in extracted if row["echowave_status"] in {"Implemented in EchoWave", "High-fit addition"}],
         key=lambda row: (status_order[row["echowave_status"]], _FAMILY_ORDER.index(row["family"]), row["name"]),
     )
     counts_by_status: dict[str, int] = {}
@@ -371,6 +374,9 @@ def similarity_method_atlas_dict() -> dict[str, object]:
             "family_count": len(_FAMILY_ORDER),
             "family_descriptions": dict(_FAMILY_DESCRIPTIONS),
             "counts_by_status": counts_by_status,
+            "source_package": "ts_similarity_package_v2_pkg",
+            "source_registry": _registry_path().name,
+            "recommended_method_count": len(recommended),
         },
         "native_methods": native,
         "recommended_additions": recommended,
@@ -397,7 +403,7 @@ def similarity_method_atlas_guide(*, format: GuideFormat = "markdown") -> str | 
     lines = [
         "# EchoWave similarity method atlas",
         "",
-        "This guide audits EchoWave's current raw-series similarity stack, extracts the method inventory from `ts_similarity_package`, and marks which methods fit EchoWave's product direction.",
+        "This guide audits EchoWave's current raw-series similarity stack, then imports the full method registry from `ts_similarity_package_v2_pkg` and marks which methods fit EchoWave's product direction.",
         "",
         "## Current EchoWave comparison layer",
         "",
@@ -417,15 +423,16 @@ def similarity_method_atlas_guide(*, format: GuideFormat = "markdown") -> str | 
 
     lines.extend(
         [
-            "## Implemented and recommended additions from ts_similarity_package",
+            "## Implemented and high-fit additions from ts_similarity_package_v2_pkg",
             "",
-            "| method | family | EchoWave fit | formula | why it matters |",
-            "|---|---|---|---|---|",
+            "| method | family | EchoWave fit | EchoWave API | formula | why it matters |",
+            "|---|---|---|---|---|---|",
         ]
     )
     for entry in payload["recommended_additions"]:  # type: ignore[index]
+        api_name = entry["echowave_api"] or "-"
         lines.append(
-            f"| {entry['name']} | {entry['family']} | {entry['echowave_status']} | `{_md_cell(entry['formula'])}` | {_md_cell(entry['echowave_rationale'])} |"
+            f"| {entry['name']} | {entry['family']} | {entry['echowave_status']} | `{_md_cell(api_name)}` | `{_md_cell(entry['formula'])}` | {_md_cell(entry['echowave_rationale'])} |"
         )
 
     lines.extend(["", "## Full extracted atlas", ""])
@@ -436,13 +443,14 @@ def similarity_method_atlas_guide(*, format: GuideFormat = "markdown") -> str | 
                 "",
                 family["description"],
                 "",
-                "| method | output | metric | EchoWave fit | formula | note |",
-                "|---|---|---|---|---|---|",
+                "| method | output | metric | complexity | unequal length | multivariate | implementation | EchoWave fit | EchoWave API | formula | note |",
+                "|---|---|---|---|---|---|---|---|---|---|---|",
             ]
         )
         for entry in family["entries"]:
+            api_name = entry["echowave_api"] or "-"
             lines.append(
-                f"| {entry['name']} | {entry['kind']} | {entry['metric']} | {entry['echowave_status']} | `{_md_cell(entry['formula'])}` | {_md_cell(entry['notes'])} |"
+                f"| {entry['name']} | {entry['kind']} | {entry['metric']} | {entry['complexity']} | {entry['unequal_length']} | {entry['multivariate']} | {entry['implementation']} | {entry['echowave_status']} | `{_md_cell(api_name)}` | `{_md_cell(entry['formula'])}` | {_md_cell(entry['notes'])} |"
             )
         lines.append("")
 

@@ -1071,12 +1071,17 @@ EXTRA_API_ENTRIES: tuple[ApiEntry, ...] = (
         recommended_environments=("notebook", "python_script", "pandas_pipeline"),
     ),
     ApiEntry(
-        name="ncc_sequence / max_ncc / best_shift / sbd / acf_distance / lcss_similarity / lcss_distance / edr_distance / erp_distance / twed_distance",
+        name="ncc_sequence / max_ncc / best_shift / sbd / independent_max_ncc / independent_sbd / acf_distance / periodogram_distance / trend_distance / ordinal_pattern_js_distance / linear_trend_model_distance / lcss_similarity / lcss_distance / edr_distance / erp_distance / twed_distance",
         category="similarity analysis",
         signature=(
             "ncc_sequence(x, y, *, normalize=True) -> tuple[np.ndarray, np.ndarray]; "
             "max_ncc(...) -> float; best_shift(...) -> int; sbd(...) -> float; "
+            "independent_max_ncc(...) -> float; independent_sbd(...) -> float; "
             "acf_distance(x, y, *, max_lag=10) -> float; "
+            "periodogram_distance(x, y, *, n_coeffs=32) -> float; "
+            "trend_distance(x, y) -> float; "
+            "ordinal_pattern_js_distance(x, y, *, order=3, delay=1) -> float; "
+            "linear_trend_model_distance(x, y) -> float; "
             "lcss_similarity(x, y, *, epsilon=1.0, window=None) -> float; "
             "lcss_distance(...) -> float; edr_distance(x, y, *, epsilon=1.0, normalized=True) -> float; "
             "erp_distance(x, y, *, gap_value=0.0) -> float; "
