@@ -149,6 +149,16 @@ Because many time-series teams do not just need a distance score. They need to k
 - a local live demo server for pasted arrays and quick comparisons
 - compatibility presets and environment doctor guidance for mixed scientific stacks
 
+## Low-level elastic shortcuts
+
+The extracted elastic similarity functions now support two operating modes:
+
+- `mode="exact"` keeps the full scoring behavior and remains the default for final reporting.
+- `mode="fast"` is for screening and shortlist workflows where speed matters more than exact-path fidelity.
+- `edr_distance`, `erp_distance`, and `twed_distance` also accept `window` so you can bound the dynamic-programming path when needed.
+- A practical pattern is: run `mode="fast"` across many candidate pairs, then rerun only the shortlist with `mode="exact"` before you publish or defend the result.
+- If you already know the alignment should stay local, pass `window=...` so the elastic path does not wander across the whole grid.
+
 ## Zero-install and low-friction entry points
 
 - **Static playground** - Preview similarity reports, visuals, and flagship cases without installing Python or starting a server.

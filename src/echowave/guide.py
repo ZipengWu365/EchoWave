@@ -1082,24 +1082,24 @@ EXTRA_API_ENTRIES: tuple[ApiEntry, ...] = (
             "trend_distance(x, y) -> float; "
             "ordinal_pattern_js_distance(x, y, *, order=3, delay=1) -> float; "
             "linear_trend_model_distance(x, y) -> float; "
-            "lcss_similarity(x, y, *, epsilon=1.0, window=None) -> float; "
-            "lcss_distance(...) -> float; edr_distance(x, y, *, epsilon=1.0, normalized=True) -> float; "
-            "erp_distance(x, y, *, gap_value=0.0) -> float; "
-            "twed_distance(x, y, *, lambda_=1.0, nu=0.001, t_x=None, t_y=None) -> float"
+            "lcss_similarity(x, y, *, epsilon=1.0, window=None, mode='exact') -> float; "
+            "lcss_distance(x, y, *, epsilon=1.0, window=None, mode='exact') -> float; "
+            "edr_distance(x, y, *, epsilon=1.0, normalized=True, window=None, mode='exact') -> float; "
+            "erp_distance(x, y, *, gap_value=0.0, window=None, mode='exact') -> float; "
+            "twed_distance(x, y, *, lambda_=1.0, nu=0.001, t_x=None, t_y=None, window=None, mode='exact') -> float"
         ),
-        purpose="Expose the extracted low-level similarity primitives directly when you need one explicit metric instead of a report bundle.",
+        purpose="Expose the extracted low-level similarity primitives directly when you need one explicit metric instead of a report bundle, including a fast screening path for the elastic distances.",
         why_exists=(
             "EchoWave's main surface is intentionally report-first, but advanced users still need direct access to shift-aware, rhythm-aware, and elastic distances for retrieval, thresholding, and custom pipelines."
         ),
-        when_to_use=(
-            "Use when you already know which similarity family you need and want a scalar score or lag estimate to plug into downstream logic."
-        ),
+        when_to_use="Use when you already know which similarity family you need and want a scalar score or lag estimate to plug into downstream logic; use `mode='fast'` for shortlist screening and `mode='exact'` for final reporting.",
         returns="NumPy arrays, scalar similarities, scalar distances, or a best-lag integer depending on the function",
         accepted_inputs=(
             "1D arrays",
             "2D multichannel arrays",
             "optional timestamps for TWED",
-            "optional gap or tolerance hyperparameters for elastic methods",
+            "optional gap, tolerance, or band-width hyperparameters for elastic methods",
+            "`mode='fast'` for shortlist screening, `mode='exact'` for final scoring",
         ),
         outputs_to_inspect=(
             "the returned scalar score or distance",

@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 from itertools import permutations
-from typing import Any
+from typing import Any, Literal
 
 import numpy as np
 
 from .metrics import EPS
+
+_FAST_MODE_MAX_POINTS = 512
+_FAST_MODE_BAND_RATIO = 0.10
 
 
 def _to_time_series(data: Any) -> np.ndarray:
@@ -64,11 +67,108 @@ def _local_l2(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.linalg.norm(a - b))
 
 
+def _validate_mode(mode: Literal["exact", "fast"] | str) -> Literal["exact", "fast"]:
+    if mode not in {"exact", "fast"}:
+        raise ValueError("mode must be 'exact' or 'fast'.")
+    return mode
+
+
+def _resolved_window(n: int, m: int, window: int | None, mode: Literal["exact", "fast"]) -> int | None:
+    if window is None:
+        if mode == "exact":
+            return None
+        window = int(np.ceil(_FAST_MODE_BAND_RATIO * max(n, m)))
+    return max(int(window), abs(n - m))
+
+
+def _resample_series(
+    values: np.ndarray,
+    *,
+    max_points: int,
+    timestamps: np.ndarray | None = None,
+) -> tuple[np.ndarray, np.ndarray | None]:
+    if len(values) <= max_points:
+        return values, timestamps
+    old_grid = np.linspace(0.0, 1.0, len(values), dtype=float)
+    new_grid = np.linspace(0.0, 1.0, max_points, dtype=float)
+    out = np.empty((max_points, values.shape[1]), dtype=float)
+    for dim in range(values.shape[1]):
+        out[:, dim] = np.interp(new_grid, old_grid, values[:, dim])
+    if timestamps is None:
+        return out, None
+    ts = np.asarray(timestamps, dtype=float).reshape(-1)
+    return out, np.interp(new_grid, old_grid, ts)
+
+
+def _prepare_elastic_pair(
+    left: Any,
+    right: Any,
+    *,
+    mode: Literal["exact", "fast"] | str,
+    left_timestamps: Any | None = None,
+    right_timestamps: Any | None = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray | None, np.ndarray | None, Literal["exact", "fast"]]:
+    resolved_mode = _validate_mode(mode)
+    left_arr, right_arr, left_ts, right_ts = _pair_series(
+        left,
+        right,
+        left_timestamps=left_timestamps,
+        right_timestamps=right_timestamps,
+    )
+    if resolved_mode == "fast":
+        left_arr, left_ts = _resample_series(left_arr, max_points=_FAST_MODE_MAX_POINTS, timestamps=left_ts)
+        right_arr, right_ts = _resample_series(right_arr, max_points=_FAST_MODE_MAX_POINTS, timestamps=right_ts)
+    return left_arr, right_arr, left_ts, right_ts, resolved_mode
+
+
 def _to_univariate_series(data: Any) -> np.ndarray:
     arr, _ = _clean_series(_to_time_series(data))
     if arr.shape[1] != 1:
         raise ValueError("This method currently supports univariate series only.")
     return arr[:, 0]
+
+
+def _row_match_mask(row: np.ndarray, candidates: np.ndarray, epsilon: float) -> np.ndarray:
+    if candidates.size == 0:
+        return np.zeros(0, dtype=bool)
+    if row.size == 1:
+        return np.abs(candidates[:, 0] - float(row[0])) <= epsilon
+    diff = candidates - row[None, :]
+    return np.sum(diff * diff, axis=1) <= epsilon * epsilon
+
+
+def _row_l2_distances(row: np.ndarray, candidates: np.ndarray) -> np.ndarray:
+    if candidates.size == 0:
+        return np.zeros(0, dtype=float)
+    if row.size == 1:
+        return np.abs(candidates[:, 0] - float(row[0]))
+    diff = candidates - row[None, :]
+    return np.sqrt(np.sum(diff * diff, axis=1))
+
+
+def _pointwise_l2_to_reference(values: np.ndarray, ref: np.ndarray) -> np.ndarray:
+    if values.size == 0:
+        return np.zeros(0, dtype=float)
+    if values.shape[1] == 1:
+        return np.abs(values[:, 0] - float(ref[0]))
+    diff = values - ref[None, :]
+    return np.sqrt(np.sum(diff * diff, axis=1))
+
+
+def _previous_rows(values: np.ndarray) -> np.ndarray:
+    if values.size == 0:
+        return values.copy()
+    zero = np.zeros((1, values.shape[1]), dtype=float)
+    return np.vstack([zero, values[:-1]])
+
+
+def _consecutive_l2_costs(values: np.ndarray, previous: np.ndarray) -> np.ndarray:
+    if values.size == 0:
+        return np.zeros(0, dtype=float)
+    if values.shape[1] == 1:
+        return np.abs(values[:, 0] - previous[:, 0])
+    diff = values - previous
+    return np.sqrt(np.sum(diff * diff, axis=1))
 
 
 def _autocorrelation_vector(x: np.ndarray, max_lag: int) -> np.ndarray:
@@ -272,73 +372,117 @@ def _match(a: np.ndarray, b: np.ndarray, epsilon: float) -> bool:
     return _local_l2(a, b) <= epsilon
 
 
-def lcss_similarity(x: Any, y: Any, *, epsilon: float = 1.0, window: int | None = None) -> float:
-    left, right, _, _ = _pair_series(x, y)
+def lcss_similarity(
+    x: Any,
+    y: Any,
+    *,
+    epsilon: float = 1.0,
+    window: int | None = None,
+    mode: Literal["exact", "fast"] = "exact",
+) -> float:
+    left, right, _, _, resolved_mode = _prepare_elastic_pair(x, y, mode=mode)
     n, m = len(left), len(right)
     if n == 0 or m == 0:
         return float("nan")
-    if window is not None:
-        window = max(window, abs(n - m))
-    D = np.zeros((n + 1, m + 1), dtype=float)
+    resolved_window = _resolved_window(n, m, window, resolved_mode)
+    prev = np.zeros(m + 1, dtype=float)
+    curr = np.zeros(m + 1, dtype=float)
     for i in range(1, n + 1):
-        j_start, j_end = _window_bounds(i, m, window)
+        curr.fill(0.0)
+        j_start, j_end = _window_bounds(i, m, resolved_window)
+        matches = _row_match_mask(left[i - 1], right[j_start - 1 : j_end - 1], epsilon)
         for j in range(j_start, j_end):
-            if _match(left[i - 1], right[j - 1], epsilon):
-                D[i, j] = D[i - 1, j - 1] + 1.0
+            if matches[j - j_start]:
+                curr[j] = prev[j - 1] + 1.0
             else:
-                D[i, j] = max(D[i - 1, j], D[i, j - 1])
-    return float(D[n, m] / max(1, min(n, m)))
+                curr[j] = max(prev[j], curr[j - 1])
+        prev, curr = curr, prev
+    return float(prev[m] / max(1, min(n, m)))
 
 
-def lcss_distance(x: Any, y: Any, *, epsilon: float = 1.0, window: int | None = None) -> float:
-    similarity = lcss_similarity(x, y, epsilon=epsilon, window=window)
+def lcss_distance(
+    x: Any,
+    y: Any,
+    *,
+    epsilon: float = 1.0,
+    window: int | None = None,
+    mode: Literal["exact", "fast"] = "exact",
+) -> float:
+    similarity = lcss_similarity(x, y, epsilon=epsilon, window=window, mode=mode)
     if not np.isfinite(similarity):
         return float("nan")
     return float(1.0 - similarity)
 
 
-def edr_distance(x: Any, y: Any, *, epsilon: float = 1.0, normalized: bool = True) -> float:
-    left, right, _, _ = _pair_series(x, y)
+def edr_distance(
+    x: Any,
+    y: Any,
+    *,
+    epsilon: float = 1.0,
+    normalized: bool = True,
+    window: int | None = None,
+    mode: Literal["exact", "fast"] = "exact",
+) -> float:
+    left, right, _, _, resolved_mode = _prepare_elastic_pair(x, y, mode=mode)
     n, m = len(left), len(right)
     if n == 0 or m == 0:
         return float("nan")
-    D = np.zeros((n + 1, m + 1), dtype=float)
-    D[:, 0] = np.arange(n + 1)
-    D[0, :] = np.arange(m + 1)
+    resolved_window = _resolved_window(n, m, window, resolved_mode)
+    prev = np.arange(m + 1, dtype=float)
+    curr = np.full(m + 1, np.inf, dtype=float)
     for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            sub = 0.0 if _match(left[i - 1], right[j - 1], epsilon) else 1.0
-            D[i, j] = min(D[i - 1, j] + 1.0, D[i, j - 1] + 1.0, D[i - 1, j - 1] + sub)
-    value = float(D[n, m])
+        curr.fill(np.inf)
+        curr[0] = float(i)
+        j_start, j_end = _window_bounds(i, m, resolved_window)
+        matches = _row_match_mask(left[i - 1], right[j_start - 1 : j_end - 1], epsilon)
+        for j in range(j_start, j_end):
+            sub = 0.0 if matches[j - j_start] else 1.0
+            curr[j] = min(prev[j] + 1.0, curr[j - 1] + 1.0, prev[j - 1] + sub)
+        prev, curr = curr, prev
+    value = float(prev[m])
     if normalized:
         value /= max(1, max(n, m))
     return value
 
 
-def erp_distance(x: Any, y: Any, *, gap_value: float | np.ndarray = 0.0) -> float:
-    left, right, _, _ = _pair_series(x, y)
+def erp_distance(
+    x: Any,
+    y: Any,
+    *,
+    gap_value: float | np.ndarray = 0.0,
+    window: int | None = None,
+    mode: Literal["exact", "fast"] = "exact",
+) -> float:
+    left, right, _, _, resolved_mode = _prepare_elastic_pair(x, y, mode=mode)
     n, m = len(left), len(right)
     if n == 0 or m == 0:
         return float("nan")
+    resolved_window = _resolved_window(n, m, window, resolved_mode)
     gap = np.asarray(gap_value, dtype=float)
     if gap.ndim == 0:
         gap = np.full(left.shape[1], float(gap))
     if gap.shape != (left.shape[1],):
         raise ValueError(f"gap_value must broadcast to shape {(left.shape[1],)}.")
-    D = np.full((n + 1, m + 1), np.inf, dtype=float)
-    D[0, 0] = 0.0
-    for i in range(1, n + 1):
-        D[i, 0] = D[i - 1, 0] + _local_l2(left[i - 1], gap)
+    left_gap_costs = _pointwise_l2_to_reference(left, gap)
+    right_gap_costs = _pointwise_l2_to_reference(right, gap)
+    prev = np.full(m + 1, np.inf, dtype=float)
+    curr = np.full(m + 1, np.inf, dtype=float)
+    prev[0] = 0.0
     for j in range(1, m + 1):
-        D[0, j] = D[0, j - 1] + _local_l2(right[j - 1], gap)
+        prev[j] = prev[j - 1] + right_gap_costs[j - 1]
     for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            D[i, j] = min(
-                D[i - 1, j - 1] + _local_l2(left[i - 1], right[j - 1]),
-                D[i - 1, j] + _local_l2(left[i - 1], gap),
-                D[i, j - 1] + _local_l2(right[j - 1], gap),
+        curr.fill(np.inf)
+        curr[0] = prev[0] + left_gap_costs[i - 1]
+        j_start, j_end = _window_bounds(i, m, resolved_window)
+        pair_costs = _row_l2_distances(left[i - 1], right[j_start - 1 : j_end - 1])
+        for j in range(j_start, j_end):
+            curr[j] = min(
+                prev[j - 1] + pair_costs[j - j_start],
+                prev[j] + left_gap_costs[i - 1],
+                curr[j - 1] + right_gap_costs[j - 1],
             )
-    return float(D[n, m])
+        prev, curr = curr, prev
+    return float(prev[m])
 
 
 def twed_distance(
@@ -349,50 +493,57 @@ def twed_distance(
     nu: float = 0.001,
     t_x: Any | None = None,
     t_y: Any | None = None,
+    window: int | None = None,
+    mode: Literal["exact", "fast"] = "exact",
 ) -> float:
-    left, right, left_ts, right_ts = _pair_series(x, y, left_timestamps=t_x, right_timestamps=t_y)
+    left, right, left_ts, right_ts, resolved_mode = _prepare_elastic_pair(
+        x,
+        y,
+        mode=mode,
+        left_timestamps=t_x,
+        right_timestamps=t_y,
+    )
     n, m = len(left), len(right)
     if n == 0 or m == 0:
         return float("nan")
+    resolved_window = _resolved_window(n, m, window, resolved_mode)
     tx = np.arange(1, n + 1, dtype=float) if left_ts is None else np.asarray(left_ts, dtype=float).reshape(-1)
     ty = np.arange(1, m + 1, dtype=float) if right_ts is None else np.asarray(right_ts, dtype=float).reshape(-1)
     if tx.size != n or ty.size != m:
         raise ValueError("Timestamp arrays must match the cleaned series lengths.")
-    zero = np.zeros(left.shape[1], dtype=float)
-    D = np.full((n + 1, m + 1), np.inf, dtype=float)
-    D[0, 0] = 0.0
-    for i in range(1, n + 1):
-        xi = left[i - 1]
-        xim1 = left[i - 2] if i > 1 else zero
-        ti = tx[i - 1]
-        tim1 = tx[i - 2] if i > 1 else 0.0
-        D[i, 0] = D[i - 1, 0] + _local_l2(xi, xim1) + nu * abs(ti - tim1) + lambda_
+    left_prev = _previous_rows(left)
+    right_prev = _previous_rows(right)
+    left_prev_ts = np.concatenate([[0.0], tx[:-1]])
+    right_prev_ts = np.concatenate([[0.0], ty[:-1]])
+    left_delete_costs = _consecutive_l2_costs(left, left_prev) + nu * np.abs(tx - left_prev_ts) + lambda_
+    right_delete_costs = _consecutive_l2_costs(right, right_prev) + nu * np.abs(ty - right_prev_ts) + lambda_
+    prev = np.full(m + 1, np.inf, dtype=float)
+    curr = np.full(m + 1, np.inf, dtype=float)
+    prev[0] = 0.0
     for j in range(1, m + 1):
-        yj = right[j - 1]
-        yjm1 = right[j - 2] if j > 1 else zero
-        tj = ty[j - 1]
-        tjm1 = ty[j - 2] if j > 1 else 0.0
-        D[0, j] = D[0, j - 1] + _local_l2(yj, yjm1) + nu * abs(tj - tjm1) + lambda_
+        prev[j] = prev[j - 1] + right_delete_costs[j - 1]
     for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            xi = left[i - 1]
-            yj = right[j - 1]
-            xim1 = left[i - 2] if i > 1 else zero
-            yjm1 = right[j - 2] if j > 1 else zero
-            ti = tx[i - 1]
-            tj = ty[j - 1]
-            tim1 = tx[i - 2] if i > 1 else 0.0
-            tjm1 = ty[j - 2] if j > 1 else 0.0
-            delete_x = D[i - 1, j] + _local_l2(xi, xim1) + nu * abs(ti - tim1) + lambda_
-            delete_y = D[i, j - 1] + _local_l2(yj, yjm1) + nu * abs(tj - tjm1) + lambda_
-            match = (
-                D[i - 1, j - 1]
-                + _local_l2(xi, yj)
-                + _local_l2(xim1, yjm1)
-                + nu * (abs(ti - tj) + abs(tim1 - tjm1))
+        curr.fill(np.inf)
+        curr[0] = prev[0] + left_delete_costs[i - 1]
+        xi = left[i - 1]
+        xim1 = left_prev[i - 1]
+        ti = tx[i - 1]
+        tim1 = left_prev_ts[i - 1]
+        j_start, j_end = _window_bounds(i, m, resolved_window)
+        pair_costs = _row_l2_distances(xi, right[j_start - 1 : j_end - 1])
+        pair_prev_costs = _row_l2_distances(xim1, right_prev[j_start - 1 : j_end - 1])
+        time_costs = nu * (
+            np.abs(ti - ty[j_start - 1 : j_end - 1])
+            + np.abs(tim1 - right_prev_ts[j_start - 1 : j_end - 1])
+        )
+        for j in range(j_start, j_end):
+            curr[j] = min(
+                prev[j] + left_delete_costs[i - 1],
+                curr[j - 1] + right_delete_costs[j - 1],
+                prev[j - 1] + pair_costs[j - j_start] + pair_prev_costs[j - j_start] + time_costs[j - j_start],
             )
-            D[i, j] = min(delete_x, delete_y, match)
-    return float(D[n, m])
+        prev, curr = curr, prev
+    return float(prev[m])
 
 
 __all__ = [

@@ -1393,6 +1393,15 @@ def project_similarity_methods_html(*, version: str = PACKAGE_VERSION) -> str:
       <div class='native-grid'>{native_cards}</div>
     </div>
     <div class='docs-card'>
+      {_pill('Operating modes for elastic methods', 'blue')}
+      <ul class='panel-list'>
+        <li><strong>`mode=\"exact\"`</strong> keeps the full elastic score path and stays the default when you need a final value for a report, notebook, or paper.</li>
+        <li><strong>`mode=\"fast\"`</strong> is the screening path for large candidate pools and interactive shortlist work; it favors speed over exact-path fidelity.</li>
+        <li><strong>`window=...`</strong> is available on `lcss_similarity`, `lcss_distance`, `edr_distance`, `erp_distance`, and `twed_distance` so you can keep the dynamic-programming path local when large warps are not plausible.</li>
+        <li><strong>Recommended workflow:</strong> score all candidates with `mode="fast"` first, then rerun the shortlisted pairs with `mode="exact"` before you present the result as a final analog claim.</li>
+      </ul>
+    </div>
+    <div class='docs-card'>
       {_pill('Implemented and high-fit additions from ts_similarity_package_v2_pkg', 'blue')}
       <p class='table-note'>This table stays selective: it shows only the methods already added to EchoWave and the strongest candidates from the 127-method v2 registry. In the current build, the full high-fit shortlist is already implemented.</p>
       <table class='small-table'>
